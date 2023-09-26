@@ -49,6 +49,11 @@ public:
 	void JumpToShotgunEnd();
 
 	/*
+	* Picking up ammo
+	*/
+	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
+
+	/*
 	* Reloading
 	*/
 	UFUNCTION(BlueprintCallable)
@@ -195,6 +200,9 @@ private:
 	void OnRep_CarriedAmmo();
 
 	TMap<EWeaponType, int32> CarriedAmmoMap;
+	
+	UPROPERTY(EditAnywhere)
+	int32 MaxCarriedAmmo = 300;
 
 	UPROPERTY(EditAnywhere)
 	int32 StartingARAmmo = 30;

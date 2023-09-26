@@ -11,22 +11,6 @@ class ABlasterGameMode;
 class ABlasterHUD;
 class UCharacterOverlay;
 
-//USTRUCT(BlueprintType)
-//struct FHUDIcons
-//{
-//	GENERATED_BODY()
-//
-//public:
-//
-//	UTexture2D* AssaultRifleIcon;
-//	UTexture2D* PistolIcon;
-//	UTexture2D* SubmachineGunIcon;
-//	UTexture2D* ShotgunIcon;
-//	UTexture2D* RocketLauncherIcon;
-//	UTexture2D* GrenadeLauncherIcon;
-//	UTexture2D* SniperRifleIcon;
-//};
-
 UCLASS()
 class BLASTER_API ABlasterPlayerController : public APlayerController
 {

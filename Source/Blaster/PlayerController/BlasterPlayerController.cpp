@@ -223,66 +223,6 @@ void ABlasterPlayerController::SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon)
 		BlasterHUD->CharacterOverlay->WeaponImage->SetBrushFromTexture(WeaponTexture);
 		BlasterHUD->CharacterOverlay->WeaponImage->SetOpacity(1);
 	}
-
-	/*if (bHUDValid)
-	{
-		UTexture2D* WeaponTexture;
-		switch (WeaponType)
-		{
-		case EWeaponType::EWT_AssaultRifle:
-			if(HUDIcons.AssaultRifleIcon)
-			{
-				WeaponTexture = HUDIcons.AssaultRifleIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-			break;
-		case EWeaponType::EWT_RocketLauncher:
-			if (HUDIcons.RocketLauncherIcon)
-			{
-				WeaponTexture = HUDIcons.RocketLauncherIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		case EWeaponType::EWT_Pistol:
-			if (HUDIcons.PistolIcon)
-			{
-				WeaponTexture = HUDIcons.PistolIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		case EWeaponType::EWT_SubmachineGun:
-			if (HUDIcons.SubmachineGunIcon)
-			{
-				WeaponTexture = HUDIcons.SubmachineGunIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		case EWeaponType::EWT_Shotgun:
-			if (HUDIcons.ShotgunIcon)
-			{
-				WeaponTexture = HUDIcons.ShotgunIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		case EWeaponType::EWT_SniperRifle:
-			if (HUDIcons.SniperRifleIcon)
-			{
-				WeaponTexture = HUDIcons.SniperRifleIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		case EWeaponType::EWT_GrenadeLauncher:
-			if (HUDIcons.GrenadeLauncherIcon)
-			{
-				WeaponTexture = HUDIcons.GrenadeLauncherIcon;
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetBrushFromTexture(WeaponTexture);
-				BlasterHUD->CharacterOverlay->WeaponIcon->SetOpacity(1);
-			}
-		default:
-			break;
-		}
-	}*/
 }
 
 void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
