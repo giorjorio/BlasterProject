@@ -1,0 +1,35 @@
+# Ignore all files by default, but scan all directories.
+*
+!*/
+
+# Do not ignore git files in the root of the repo.
+!/.git*
+
+# Do not ignore current project's `.uproject`.
+!/*.uproject
+
+# Do not ignore source, config and plugins dirs.
+!/Source/**
+!/Config/**
+!/Plugins/**
+/Plugins/MultiplayerSessions/Binaries/**
+/Plugins/MultiplayerSessions/Intermediate/**
+
+!README.md
+
+# Only allow Maps and Blueprints files from /Content dir.
+# They're tracked by git-lfs, don't forget to track other
+# files if adding them here.
+!/Content/Maps/**
+!/Content/Blueprints/**
+
+# Allow any files from /RawContent dir.
+# Any file in /RawContent dir will be managed by git lfs.
+!/RawContent/**/*
+
+# Windows
+ehthumbs.db
+Thumbs.db
+
+# Visual Studio
+.vs
