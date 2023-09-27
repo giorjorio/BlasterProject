@@ -19,6 +19,7 @@ class ABlasterPlayerState;
 class AController;
 class AWeapon;
 class UAnimMontage;
+class UBuffComponent;
 class UCameraComponent;
 class UCombatComponent;
 class UInputAction;
@@ -243,13 +244,16 @@ private:
 
 
 	/*
-	* Project Component or Classes
+	* Project Components or Classes
 	*/
 	UPROPERTY()
 	ABlasterPlayerController* BlasterPlayerController;
 
 	UPROPERTY()
 	ABlasterPlayerState* BlasterPlayerState;
+
+	UPROPERTY(VisibleAnywhere)
+	UBuffComponent* Buff;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UCombatComponent* Combat;
