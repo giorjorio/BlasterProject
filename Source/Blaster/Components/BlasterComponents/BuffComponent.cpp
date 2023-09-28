@@ -37,6 +37,8 @@ void UBuffComponent::Heal(float HealAmount, float HealingTime)
 	AmountToHeal += HealAmount;
 }
 
+
+
 void UBuffComponent::HealPampUp(float DeltaTime)
 {
 	if (!bHealing || Character == nullptr || Character->IsElimmed()) { return; }
@@ -52,6 +54,49 @@ void UBuffComponent::HealPampUp(float DeltaTime)
 		AmountToHeal = 0.f;
 	}
 
+}
+
+/*
+* Jump buff
+*/
+void UBuffComponent::BuffJump(float BuffJumpVelocity, float BuffTime)
+{
+	if (Character == nullptr) { return; }
+
+	Character->GetWorldTimerManager().SetTimer(
+		JumpBuffTimer,
+		this,
+		&UBuffComponent::ResetJump,
+		BuffTime
+	);
+
+	if (Character->GetCharacterMovement())
+	{
+		Character->GetCharacterMovement()->JumpZVelocity = BuffJumpVelocity;
+	}
+	MulticastJumpBuff(BuffJumpVelocity);
+}
+
+void UBuffComponent::MulticastJumpBuff_Implementation(float JumpVelocity)
+{
+	if (Character && Character->GetCharacterMovement())
+	{
+		Character->GetCharacterMovement()->JumpZVelocity = JumpVelocity;
+	}
+}
+
+void UBuffComponent::ResetJump()
+{
+	if (Character == nullptr || Character->GetCharacterMovement() == nullptr) { return; }
+	
+	Character->GetCharacterMovement()->JumpZVelocity = InitialJumpVelocity;
+
+	MulticastJumpBuff(InitialJumpVelocity);
+}
+
+void UBuffComponent::SetInitialJumpVelocity(float Velocity)
+{
+	InitialJumpVelocity = Velocity;
 }
 
 /*
@@ -78,10 +123,11 @@ void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float
 
 void UBuffComponent::MulticastSpeedBuff_Implementation(float BaseSpeed, float CrouchSpeed)
 {
-	if (Character == nullptr || Character->GetCharacterMovement() == nullptr) { return; }
-
-	Character->GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
-	Character->GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
+	if (Character && Character->GetCharacterMovement())
+	{
+		Character->GetCharacterMovement()->MaxWalkSpeed = BaseSpeed;
+		Character->GetCharacterMovement()->MaxWalkSpeedCrouched = CrouchSpeed;
+	}
 }
 
 void UBuffComponent::ResetSpeeds()

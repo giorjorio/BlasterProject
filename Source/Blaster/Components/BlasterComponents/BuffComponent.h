@@ -24,6 +24,12 @@ public:
 	void Heal(float HealAmount, float HealingTime);
 
 	/*
+	* Jump buff
+	*/
+	void BuffJump(float BuffJumpVelocity, float BuffTime);
+	void SetInitialJumpVelocity(float Velocity);
+
+	/*
 	* Speed buff
 	*/
 	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
@@ -44,6 +50,17 @@ private:
 	bool bHealing = false;
 	float HealingRate = 0;
 	float AmountToHeal = 0;
+
+	/*
+	* Jump buff
+	*/
+	float InitialJumpVelocity;
+	FTimerHandle JumpBuffTimer;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastJumpBuff(float JumpVelocity);
+
+	void ResetJump();
 
 	/*
 	* Speed buff

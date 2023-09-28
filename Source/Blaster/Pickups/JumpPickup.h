@@ -1,14 +1,16 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Pickup.h"
-#include "SpeedPickup.generated.h"
+#include "JumpPickup.generated.h"
 
-class UNiagaraComponent;
-class UNiagaraSystem;
-
+/**
+ * 
+ */
 UCLASS()
-class BLASTER_API ASpeedPickup : public APickup
+class BLASTER_API AJumpPickup : public APickup
 {
 	GENERATED_BODY()
 
@@ -24,13 +26,10 @@ protected:
 	) override;
 
 private:
+	UPROPERTY(EditAnywhere)
+	float JumpBuffTime = 30.f;
 
 	UPROPERTY(EditAnywhere)
-	float BaseSpeedBuff = 1600.f;
-
-	UPROPERTY(EditAnywhere)
-	float CrouchSpeedBuff = 850.f;
-
-	UPROPERTY(EditAnywhere)
-	float SpeedBuffTime = 30.f;
+	float JumpZVelocityBuff = 2000.f;
+	
 };
