@@ -2,10 +2,12 @@
 
 #include "Pickup.h"
 
+#include "Blaster/Weapons/WeaponTypes.h"
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 #include "Sound/SoundCue.h"
-#include "Blaster/Weapons/WeaponTypes.h"
 
 
 
@@ -23,6 +25,10 @@ APickup::APickup()
 	OverlapSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	OverlapSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
 	OverlapSphere->AddLocalOffset(FVector(0.f, 0.f, 85.f));
+	
+	PickupEffectComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PickupEffectComponent"));
+	PickupEffectComponent->SetupAttachment(RootComponent);
+	PickupEffectComponent->AddLocalOffset(FVector(0.f, 0.f, 15.f));
 
 	PickupMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PickupMesh"));
 	PickupMesh->SetupAttachment(OverlapSphere);
@@ -30,6 +36,8 @@ APickup::APickup()
 	PickupMesh->SetRelativeScale3D(FVector(4.5f, 4.5f, 4.5f));
 	PickupMesh->SetRenderCustomDepth(true);
 	PickupMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_PURPLE);
+
+	
 
 }
 
@@ -70,6 +78,15 @@ void APickup::Destroyed()
 			this,
 			PickupSound,
 			GetActorLocation()
+		);
+	}
+	if (PickupEffect)
+	{
+		UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+			this,
+			PickupEffect,
+			GetActorLocation(),
+			GetActorRotation()
 		);
 	}
 }

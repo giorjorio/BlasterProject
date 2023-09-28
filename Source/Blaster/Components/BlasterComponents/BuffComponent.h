@@ -18,7 +18,16 @@ public:
 	UBuffComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	/*
+	* Health buff
+	*/
 	void Heal(float HealAmount, float HealingTime);
+
+	/*
+	* Speed buff
+	*/
+	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
+	void SetInitialSpeeds(float BaseSpeed, float CrouchSpeed);
 
 
 protected:
@@ -29,9 +38,25 @@ private:
 	UPROPERTY()
 	ABlasterCharacter* Character;
 
+	/*
+	* Health buff
+	*/
 	bool bHealing = false;
 	float HealingRate = 0;
 	float AmountToHeal = 0;
+
+	/*
+	* Speed buff
+	*/
+	float InitialBaseSpeed;
+	float InitialCrouchSpeed;
+	FTimerHandle SpeedBuffTimer;
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastSpeedBuff(float BaseSpeed, float CrouchSpeed);
+	
+	void ResetSpeeds();
+
 
 public:	
 

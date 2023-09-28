@@ -7,6 +7,8 @@
 #include "Pickup.generated.h"
 
 
+class UNiagaraComponent;
+class UNiagaraSystem;
 class USphereComponent;
 class USoundCue;
 
@@ -37,6 +39,12 @@ protected:
 	float BaseTurnRate = 45.f;
 
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	UNiagaraComponent* PickupEffectComponent;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupEffect;
 
 	UPROPERTY(EditAnywhere)
 	USphereComponent* OverlapSphere;

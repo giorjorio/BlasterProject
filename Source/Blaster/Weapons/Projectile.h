@@ -58,9 +58,6 @@ protected:
 	UPROPERTY()
 	UNiagaraComponent* TrailSystemComponent;
 
-
-
-
 private:
 
 	UPROPERTY(EditAnywhere)
