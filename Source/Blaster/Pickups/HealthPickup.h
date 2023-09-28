@@ -30,7 +30,7 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere)
-	float HealAmount = 100.f;
+	float HealAmount = 50.f;
 
 	UPROPERTY(EditAnywhere)
 	float HealingTime = 5.f;

@@ -47,6 +47,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/*
+	* HUD
+	*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShowSniperScopeWidget(bool bShowScope);
+
+	void UpdateHUDHealth();
+
+	/*
 	* Montages
 	*/
 	void PlayFireMontage(bool bAiming);
@@ -68,9 +76,8 @@ public:
 	void MulticastElim();
 
 	virtual void OnRep_ReplicatedMovement() override;
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void ShowSniperScopeWidget(bool bShowScope);
+	
+	
 
 protected:
 	/*
@@ -97,7 +104,7 @@ protected:
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
 
 	void RotateInPlace(float DeltaTime);
-	void UpdateHUDHealth();
+	
 
 	/*
 	* Input Actions
@@ -237,7 +244,7 @@ private:
 	float Health = 100.f;
 
 	UFUNCTION()
-	void OnRep_Health();
+	void OnRep_Health(float LastHealth);
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
@@ -277,26 +284,29 @@ public:
 	*/
 	bool bIsWeaponEquipped();
 	bool bIsAiming();
-	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
-	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
-	FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const { return AttachedGrenade; }
-	FORCEINLINE ABlasterPlayerController* GetBlasterPlayerController() const { return BlasterPlayerController; }
-	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
-	ECombatState GetCombatState() const;
 	FORCEINLINE bool GetDisableCharacterGameplay() const { return bDisableCharacterGameplay; }
-	AWeapon* GetEquippedWeapon();
-	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
-	FORCEINLINE float GetHealth() const { return Health; }
-	FVector GetHitTarget() const;
-	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
-	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
-	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
+	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
+	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
+	FORCEINLINE float GetHealth() const { return Health; }
+	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	FORCEINLINE ABlasterPlayerController* GetBlasterPlayerController() const { return BlasterPlayerController; }
+	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
+	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }
+	FORCEINLINE UBuffComponent* GetBuff() const { return Buff; }
+	FORCEINLINE UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	FORCEINLINE UCombatComponent* GetCombat() const { return Combat; }
+	FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const { return AttachedGrenade; }
+	AWeapon* GetEquippedWeapon();
+	ECombatState GetCombatState() const;
+	FVector GetHitTarget() const;
+
 
 	/*
 	* Setters
 	*/
+	FORCEINLINE void SetHealth(float HealthAmount) { Health = HealthAmount; }
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	void SetDisableCharacterGameplay(bool DisableGameplay);
 

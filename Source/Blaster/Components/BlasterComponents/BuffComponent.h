@@ -18,14 +18,20 @@ public:
 	UBuffComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	void Heal(float HealAmount, float HealingTime);
+
 
 protected:
 	virtual void BeginPlay() override;
+	void HealPampUp(float DeltaTime);
 
 private:
-
 	UPROPERTY()
 	ABlasterCharacter* Character;
+
+	bool bHealing = false;
+	float HealingRate = 0;
+	float AmountToHeal = 0;
 
 public:	
 

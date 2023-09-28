@@ -568,17 +568,19 @@ void ABlasterCharacter::PlayThrowGrenadeMontage()
 	{
 		AnimInstance->Montage_Play(ThrowGrenadeMontage);
 		
-	}
+	}	
 }
 
 /*
 * Player Health
 */
-void ABlasterCharacter::OnRep_Health()
+void ABlasterCharacter::OnRep_Health(float LastHealth)
 {
 	UpdateHUDHealth();
-	if (!bElimmed)
+
+	if (Health < LastHealth && !bElimmed)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f, LastHealth: %f"), Health, LastHealth);
 		PlayHitReactMontage();
 	}
 }
