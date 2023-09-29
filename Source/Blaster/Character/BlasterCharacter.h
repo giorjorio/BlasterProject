@@ -52,7 +52,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowSniperScopeWidget(bool bShowScope);
 
-	void UpdateHUDHealth();
+	void UpdateHUDHealth(); //Health
+	void UpdateHUDShield(); //Shield
 
 	/*
 	* Montages
@@ -238,7 +239,7 @@ private:
 	UStaticMeshComponent* AttachedGrenade;
 
 	/*
-	* Player Health
+	* Health
 	*/
 	UPROPERTY(ReplicatedUsing = OnRep_Health, VisibleAnywhere, Category = "Player Stats")
 	float Health = 100.f;
@@ -248,7 +249,6 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
-
 
 	/*
 	* Project Components or Classes
@@ -267,6 +267,18 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	UWidgetComponent* OverheadWidget;
+
+	/*
+	* Shield
+	*/
+	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
+	float Shield = 0.f;
+
+	UFUNCTION()
+	void OnRep_Shield(float LastShield);
+
+	UPROPERTY(EditAnywhere, Category = "Player Stats")
+	float MaxShield = 100.f;
 
 	/*
 	* Weapon
@@ -291,6 +303,8 @@ public:
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	FORCEINLINE float GetHealth() const { return Health; }
 	FORCEINLINE float GetMaxHealth() const { return MaxHealth; }
+	FORCEINLINE float GetShield() const { return Shield; }
+	FORCEINLINE float GetMaxShield() const { return MaxShield; }
 	FORCEINLINE ABlasterPlayerController* GetBlasterPlayerController() const { return BlasterPlayerController; }
 	FORCEINLINE ETurningInPlace GetTurningInPlace() const { return TurningInPlace; }
 	FORCEINLINE UAnimMontage* GetReloadMontage() const { return ReloadMontage; }

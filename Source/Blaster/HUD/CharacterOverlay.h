@@ -18,14 +18,20 @@ class BLASTER_API UCharacterOverlay : public UUserWidget
 	GENERATED_BODY()
 public:
 	/*
-	* Score
+	* Ammo
 	*/
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* DefeatsAmount;
+	UTextBlock* CarriedAmmoAmount;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ScoreAmount;
-	
+	UTextBlock* WeaponAmmoAmount;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* GrenadesText;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* WeaponImage;
+
 	/*
 	* Health
 	*/
@@ -42,19 +48,22 @@ public:
 	UTextBlock* MatchCountdownText;
 	
 	/*
-	* Ammo
+	* Score
 	*/
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* CarriedAmmoAmount;
+	UTextBlock* DefeatsAmount;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* WeaponAmmoAmount;
+	UTextBlock* ScoreAmount;
+
+	/*
+	* Shield
+	*/
+	UPROPERTY(meta = (BindWidget))
+	UProgressBar* ShieldBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* GrenadesText;
-
-	UPROPERTY(meta = (BindWidget))
-	UImage* WeaponImage;
+	UTextBlock* ShieldText;
 
 
 

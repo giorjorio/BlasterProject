@@ -18,14 +18,16 @@ class BLASTER_API ABlasterPlayerController : public APlayerController
 
 public:
 	void SetHUDAnnouncementCountdown(float CountdownTime);
-	void SetHUDCarriedAmmo(int32 Ammo);
-	void SetHUDDefeats(int32 Defeats);
-	void SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon);
-	void SetHUDGrenades(int32 Grenades);
 	void SetHUDMatchCoundown(float CountdownTime);
-	void SetHUDHealth(float Health, float MaxHealth);
-	void SetHUDScore(float Score);
+	void SetHUDCarriedAmmo(int32 Ammo);
 	void SetHUDWeaponAmmo(int32 Ammo);
+	void SetHUDGrenades(int32 Grenades);
+	void SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon);
+	void SetHUDHealth(float Health, float MaxHealth);
+	void SetHUDShield(float Shield, float MaxShield);
+	void SetHUDScore(float Score);
+	void SetHUDDefeats(int32 Defeats);
+	
 	
 	
 	virtual void OnPossess(APawn* InPawn) override;

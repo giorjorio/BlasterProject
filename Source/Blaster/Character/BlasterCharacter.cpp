@@ -108,7 +108,6 @@ void ABlasterCharacter::BeginPlay()
 	{
 		AttachedGrenade->SetVisibility(false);
 	}
-
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -117,6 +116,7 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 
 	DOREPLIFETIME_CONDITION(ABlasterCharacter, OverlappingWeapon, COND_OwnerOnly);
 	DOREPLIFETIME(ABlasterCharacter, Health);
+	DOREPLIFETIME(ABlasterCharacter, Shield);
 	DOREPLIFETIME(ABlasterCharacter, bDisableCharacterGameplay);
 }
 
@@ -339,7 +339,6 @@ void ABlasterCharacter::HideCharacterMesh(bool bHide)
 	}
 }
 
-
 /*
 * Dissolve Effect
 */
@@ -474,6 +473,47 @@ void ABlasterCharacter::MulticastElim_Implementation()
 }
 
 /*
+* Health
+*/
+void ABlasterCharacter::OnRep_Health(float LastHealth)
+{
+	UpdateHUDHealth();
+
+	if (Health < LastHealth && !bElimmed)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Health: %f, LastHealth: %f"), Health, LastHealth);
+		PlayHitReactMontage();
+	}
+}
+
+void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
+{
+	if (bElimmed) { return; }
+	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+	UpdateHUDHealth();
+	PlayHitReactMontage();
+
+	if (Health == 0.f)
+	{
+		if (ABlasterGameMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
+		{
+			BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+			ABlasterPlayerController* AttackerController = Cast<ABlasterPlayerController>(InstigatorController);
+			BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, AttackerController);
+		}
+	}
+}
+
+void ABlasterCharacter::UpdateHUDHealth()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+	}
+}
+
+/*
 * Montages
 */
 void ABlasterCharacter::PlayElimMontage()
@@ -571,46 +611,29 @@ void ABlasterCharacter::PlayThrowGrenadeMontage()
 	}	
 }
 
-/*
-* Player Health
-*/
-void ABlasterCharacter::OnRep_Health(float LastHealth)
-{
-	UpdateHUDHealth();
 
-	if (Health < LastHealth && !bElimmed)
+/*
+* Shield
+*/
+void ABlasterCharacter::OnRep_Shield(float LastShield)
+{
+	UpdateHUDShield();
+
+	if (Shield < LastShield && !bElimmed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f, LastHealth: %f"), Health, LastHealth);
 		PlayHitReactMontage();
 	}
 }
 
-void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
-{
-	if (bElimmed) { return; }
-	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
-	UpdateHUDHealth();
-	PlayHitReactMontage();
-
-	if(Health == 0.f)
-	{
-		if (ABlasterGameMode* BlasterGameMode = GetWorld()->GetAuthGameMode<ABlasterGameMode>())
-		{
-			BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
-			ABlasterPlayerController* AttackerController = Cast<ABlasterPlayerController>(InstigatorController);
-			BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, AttackerController);
-		}
-	}
-}
-
-void ABlasterCharacter::UpdateHUDHealth()
+void ABlasterCharacter::UpdateHUDShield()
 {
 	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
 	if (BlasterPlayerController)
 	{
-		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+		BlasterPlayerController->SetHUDShield(Shield, MaxShield);
 	}
 }
+
 
 /*
 * Weapon
