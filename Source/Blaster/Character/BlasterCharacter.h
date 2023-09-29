@@ -271,8 +271,8 @@ private:
 	/*
 	* Shield
 	*/
-	UPROPERTY(ReplicatedUsing = OnRep_Shield, VisibleAnywhere, Category = "Player Stats")
-	float Shield = 100.f;
+	UPROPERTY(ReplicatedUsing = OnRep_Shield, EditAnywhere, Category = "Player Stats")
+	float Shield = 0.f;
 
 	UFUNCTION()
 	void OnRep_Shield(float LastShield);
@@ -321,6 +321,7 @@ public:
 	* Setters
 	*/
 	FORCEINLINE void SetHealth(float HealthAmount) { Health = HealthAmount; }
+	FORCEINLINE void SetShield(float ShieldAmount) { Shield = ShieldAmount; }
 	void SetOverlappingWeapon(AWeapon* Weapon);
 	void SetDisableCharacterGameplay(bool DisableGameplay);
 

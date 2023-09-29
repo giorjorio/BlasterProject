@@ -22,8 +22,8 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	HealPampUp(DeltaTime);
-
+	HealRampUp(DeltaTime);
+	ShieldRampUp(DeltaTime);
 }
 
 
@@ -37,23 +37,22 @@ void UBuffComponent::Heal(float HealAmount, float HealingTime)
 	AmountToHeal += HealAmount;
 }
 
-
-
-void UBuffComponent::HealPampUp(float DeltaTime)
+void UBuffComponent::HealRampUp(float DeltaTime)
 {
 	if (!bHealing || Character == nullptr || Character->IsElimmed()) { return; }
 
 	const float HealThisFrame = HealingRate * DeltaTime;
-	Character->SetHealth(FMath::Clamp(Character->GetHealth() + HealThisFrame, 0.f, Character->GetMaxHealth()));
-	Character->UpdateHUDHealth();
 	AmountToHeal -= HealThisFrame;
 
 	if (AmountToHeal <= 0.f || Character->GetHealth() >= Character->GetMaxHealth())
 	{
 		bHealing = false;
 		AmountToHeal = 0.f;
+		return;
 	}
 
+	Character->SetHealth(FMath::Clamp(Character->GetHealth() + HealThisFrame, 0.f, Character->GetMaxHealth()));
+	Character->UpdateHUDHealth();
 }
 
 /*
@@ -97,6 +96,36 @@ void UBuffComponent::ResetJump()
 void UBuffComponent::SetInitialJumpVelocity(float Velocity)
 {
 	InitialJumpVelocity = Velocity;
+}
+
+/*
+* Shield Buff
+*/
+void UBuffComponent::ReplenishShield(float ShieldAmount, float ReplenishTime)
+{
+	bReplenishingShield = true;
+	ShieldReplenishRate = ShieldAmount / ReplenishTime;
+	ShieldReplenishAmount += ShieldAmount;
+	
+}
+
+void UBuffComponent::ShieldRampUp(float DeltaTime)
+{
+	if (!bReplenishingShield || Character == nullptr || Character->IsElimmed()) { return; }
+
+	const float ReplenishThisFrame = ShieldReplenishRate * DeltaTime;
+	ShieldReplenishAmount -= ReplenishThisFrame;
+
+	if (ShieldReplenishAmount <= 0.f || Character->GetShield() >= Character->GetMaxShield())
+	{
+		bReplenishingShield = false;
+		ShieldReplenishAmount = 0.f;
+		return;
+	}
+
+	Character->SetShield(FMath::Clamp(Character->GetShield() + ReplenishThisFrame, 0.f, Character->GetMaxShield()));
+	Character->UpdateHUDShield();
+
 }
 
 /*

@@ -1,19 +1,19 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
 #pragma once
 
 #include "CoreMinimal.h"
 #include "Pickup.h"
-#include "HealthPickup.generated.h"
+#include "ShieldPickup.generated.h"
 
-class UNiagaraComponent;
-class UNiagaraSystem;
-
+/**
+ * 
+ */
 UCLASS()
-class BLASTER_API AHealthPickup : public APickup
+class BLASTER_API AShieldPickup : public APickup
 {
 	GENERATED_BODY()
 
-public:
-	
 protected:
 
 	virtual void OnSphereOverlap(
@@ -24,14 +24,12 @@ protected:
 		bool bFromSweep,
 		const FHitResult& SweepResult
 	) override;
-	
+
 private:
 
 	UPROPERTY(EditAnywhere)
-	float HealAmount = 50.f;
+	float ShieldReplenishAmount = 50.f;
 
 	UPROPERTY(EditAnywhere)
-	float HealingTime = 5.f;
-
-	
+	float ShieldReplenishTime = 5.f;
 };

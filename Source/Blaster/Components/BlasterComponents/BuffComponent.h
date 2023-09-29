@@ -30,6 +30,11 @@ public:
 	void SetInitialJumpVelocity(float Velocity);
 
 	/*
+	* Shield Buff
+	*/
+	void ReplenishShield(float ShieldAmount, float ReplenishTime);
+
+	/*
 	* Speed buff
 	*/
 	void BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float BuffTime);
@@ -38,7 +43,16 @@ public:
 
 protected:
 	virtual void BeginPlay() override;
-	void HealPampUp(float DeltaTime);
+
+	/*
+	* Health buff
+	*/
+	void HealRampUp(float DeltaTime);
+
+	/*
+	* Shield Buff
+	*/
+	void ShieldRampUp(float DeltaTime);
 
 private:
 	UPROPERTY()
@@ -48,8 +62,9 @@ private:
 	* Health buff
 	*/
 	bool bHealing = false;
-	float HealingRate = 0;
-	float AmountToHeal = 0;
+	float HealingRate = 0.f;
+	float AmountToHeal = 0.f;
+	float HealedAmount = 0.f;
 
 	/*
 	* Jump buff
@@ -61,6 +76,14 @@ private:
 	void MulticastJumpBuff(float JumpVelocity);
 
 	void ResetJump();
+
+	/*
+	* Shield Buff
+	*/
+	bool bReplenishingShield = false;
+	float ShieldReplenishRate = 0.f;
+	float ShieldReplenishAmount = 0.f;
+	float ReplenishedAmount = 0.f;
 
 	/*
 	* Speed buff
