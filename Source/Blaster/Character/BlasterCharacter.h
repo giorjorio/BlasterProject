@@ -297,8 +297,10 @@ public:
 	bool bIsWeaponEquipped();
 	bool bIsAiming();
 	FORCEINLINE bool GetDisableCharacterGameplay() const { return bDisableCharacterGameplay; }
-	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
+	FORCEINLINE bool IsHPFull() const { return Health == MaxHealth; }
+	FORCEINLINE bool IsShieldFull() const { return Shield == MaxShield; }
+	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }
 	FORCEINLINE float GetAO_Yaw() const { return AO_Yaw; }
 	FORCEINLINE float GetAO_Pitch() const { return AO_Pitch; }
 	FORCEINLINE float GetHealth() const { return Health; }

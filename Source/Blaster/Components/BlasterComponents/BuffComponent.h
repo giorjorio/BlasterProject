@@ -21,7 +21,7 @@ public:
 	/*
 	* Health buff
 	*/
-	void Heal(float HealAmount, float HealingTime);
+	bool Heal(float HealAmount, float HealingTime);
 
 	/*
 	* Jump buff
@@ -32,7 +32,7 @@ public:
 	/*
 	* Shield Buff
 	*/
-	void ReplenishShield(float ShieldAmount, float ReplenishTime);
+	bool ReplenishShield(float ShieldAmount, float ReplenishTime);
 
 	/*
 	* Speed buff
@@ -64,7 +64,8 @@ private:
 	bool bHealing = false;
 	float HealingRate = 0.f;
 	float AmountToHeal = 0.f;
-	float HealedAmount = 0.f;
+	float CanHealAmount = 0.f;
+	bool CanBeHealed(float HealAmount);
 
 	/*
 	* Jump buff
@@ -83,8 +84,9 @@ private:
 	bool bReplenishingShield = false;
 	float ShieldReplenishRate = 0.f;
 	float ShieldReplenishAmount = 0.f;
-	float ReplenishedAmount = 0.f;
-
+	float CanReplenishAmount = 0.f;
+	bool CanBeReplenished(float ShieldAmount);
+	
 	/*
 	* Speed buff
 	*/

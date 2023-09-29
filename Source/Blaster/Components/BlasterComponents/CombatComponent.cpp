@@ -48,7 +48,7 @@ void UCombatComponent::BeginPlay()
 			InitializeCarriedAmmo();
 		}
 	}
-	UpdateHUDGrenades();
+	UpdateGrenades();
 
 }
 
@@ -534,8 +534,12 @@ void UCombatComponent::ThrowGrenade()
 	}
 	else if (Character && Character->HasAuthority())
 	{
-		Grenades = FMath::Clamp(Grenades - 1, 0, MaxGrenades);
-		UpdateHUDGrenades();
+		if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
+		{
+			CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxGrenades);
+			Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
+		}
+		UpdateGrenades();
 	}
 }
 
@@ -549,8 +553,12 @@ void UCombatComponent::ServerThrowGrenade_Implementation()
 		AttachActorToLeftHand(EquippedWeapon);
 		ShowAttachedGrenade(true);
 	}
-	Grenades = FMath::Clamp(Grenades - 1, 0, MaxGrenades);
-	UpdateHUDGrenades();
+	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
+	{
+		CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxGrenades);
+		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
+	}
+	UpdateGrenades();
 }
 
 void UCombatComponent::LaunchGrenade()
@@ -560,7 +568,6 @@ void UCombatComponent::LaunchGrenade()
 	{
 		ServerLaunchGrenade(HitTarget);
 	}
-	
 }
 
 void UCombatComponent::ServerLaunchGrenade_Implementation(const FVector_NetQuantize& Target)
@@ -601,11 +608,16 @@ void UCombatComponent::ThrowGrenadeFinished()
 
 void UCombatComponent::OnRep_Grenades()
 {
-	UpdateHUDGrenades();
+	UpdateGrenades();
 }
 
-void UCombatComponent::UpdateHUDGrenades()
+void UCombatComponent::UpdateGrenades()
 {
+	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
+	{
+		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
+	}
+
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
@@ -616,18 +628,28 @@ void UCombatComponent::UpdateHUDGrenades()
 /*
 * Picking up ammo
 */
-void UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount)
+bool UCombatComponent::PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount)
 {
 	if (CarriedAmmoMap.Contains(WeaponType))
 	{
-		CarriedAmmoMap[WeaponType] = FMath::Clamp(CarriedAmmoMap[WeaponType] + AmmoAmount, 0, MaxCarriedAmmoMap[WeaponType]);
+		if (CarriedAmmoMap[WeaponType] == MaxCarriedAmmoMap[WeaponType]) { return false; }
 
-		UpdateCarriedAmmo();
+		CarriedAmmoMap[WeaponType] = FMath::Clamp(CarriedAmmoMap[WeaponType] + AmmoAmount, 0, MaxCarriedAmmoMap[WeaponType]);
+		if (WeaponType == EWeaponType::EWT_Grenade)
+		{
+			UpdateGrenades();
+		}
+		else
+		{
+			UpdateCarriedAmmo();
+		}
 	}
 	if (EquippedWeapon && EquippedWeapon->IsEmpty() && EquippedWeapon->GetWeaponType() == WeaponType)
 	{
 		Reload();
 	}
+	
+	return true;
 }
 
 /*
@@ -657,6 +679,7 @@ void UCombatComponent::InitializeCarriedAmmo()
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, StartingShotgunAmmo);
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperAmmo);
 	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, StartingGrenades);
 
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, MaxARAmmo);
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, MaxRocketAmmo);
@@ -665,6 +688,8 @@ void UCombatComponent::InitializeCarriedAmmo()
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, MaxShotgunAmmo);
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, MaxGrenades);
+
 }
 
 void UCombatComponent::Reload()

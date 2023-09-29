@@ -51,7 +51,7 @@ public:
 	/*
 	* Picking up ammo
 	*/
-	void PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
+	bool PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
 
 	/*
 	* Reloading
@@ -203,7 +203,6 @@ private:
 
 	TMap<EWeaponType, int32> MaxCarriedAmmoMap;
 
-
 	UPROPERTY(EditAnywhere)
 	int32 StartingARAmmo = 60;
 
@@ -274,15 +273,18 @@ private:
 	* Grenades
 	*/
 	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Grenades)
-	int32 Grenades = 0;
+	int32 Grenades;
 
 	UFUNCTION()
 	void OnRep_Grenades();
+	
+	UPROPERTY(EditAnywhere)
+	int32 StartingGrenades = 3;
 
 	UPROPERTY(EditAnywhere)
 	int32 MaxGrenades = 4;
 
-	void UpdateHUDGrenades();
+	void UpdateGrenades();
 
 	/*
 	* HUD and Crosshairs

@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "WeaponTypes.h"
+
 #include "CoreMinimal.h"
 #include "Projectile.h"
 #include "HandGrenade.generated.h"
@@ -26,8 +28,6 @@ protected:
 
 	UFUNCTION()
 	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
-	
-	
 
 private:
 
@@ -49,4 +49,7 @@ private:
 	FTimerHandle CollisionTimer;
 
 	float NoCollisionTime = 0.1f;
+
+	UPROPERTY(EditAnywhere)
+	EWeaponType WeaponType = EWeaponType::EWT_Grenade;
 };

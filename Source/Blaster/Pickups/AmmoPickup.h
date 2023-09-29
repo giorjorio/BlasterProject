@@ -30,7 +30,7 @@ protected:
 private:
 
 	UPROPERTY(EditAnywhere)
-	int32 AmmoAmout = 30;
+	int32 AmmoAmount = 30;
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
