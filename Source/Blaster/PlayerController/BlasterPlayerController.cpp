@@ -40,7 +40,7 @@ void ABlasterPlayerController::BeginPlay()
 	{
 		ServerCheckMatchState();
 	}
-
+	SetHUDRoundProgressBars();
 }
 
 void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -120,22 +120,40 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 	}
 }
 
+void ABlasterPlayerController::SetHUDRoundProgressBars()
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RoundHealthBar;
+
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->RoundHealthBar->SetProgressBar();		
+		BlasterHUD->CharacterOverlay->RoundShieldBar->SetProgressBar();
+		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar->SetProgressBar(false);
+		BlasterHUD->CharacterOverlay->RoundJumpBuffBar->SetProgressBar(false);
+	}
+}
+
 void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 	
-	bool bHUDValid = BlasterHUD && 
-		BlasterHUD->CharacterOverlay && 
-		BlasterHUD->CharacterOverlay->HealthBar && 
-		BlasterHUD->CharacterOverlay->HealthText;
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->HealthBar &&
+		BlasterHUD->CharacterOverlay->HealthText &&
+		BlasterHUD->CharacterOverlay->RoundHealthBar;
 	
 	if (bHUDValid)
 	{
 		const float HealthPercent = Health / MaxHealth;
 		BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
-
 		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
-		BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));
+		BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));	
+		BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
 	}
 	/*else
 	{
@@ -154,15 +172,60 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
 		BlasterHUD->CharacterOverlay->ShieldBar &&
-		BlasterHUD->CharacterOverlay->ShieldText;
+		BlasterHUD->CharacterOverlay->ShieldText &&
+		BlasterHUD->CharacterOverlay->RoundShieldBar;
 
 	if (bHUDValid)
 	{
 		const float ShieldPercent = Shield / MaxShield;
 		BlasterHUD->CharacterOverlay->ShieldBar->SetPercent(ShieldPercent);
-
 		FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Shield), FMath::CeilToInt(MaxShield));
 		BlasterHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
+		BlasterHUD->CharacterOverlay->RoundShieldBar->SetPercentage(ShieldPercent);
+
+	}
+}
+
+void ABlasterPlayerController::UpdateSpeedBuffBar(float TimeLeft, float BuffTime)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar;
+
+	bool bShow = true;
+	const float BuffPercent1 = TimeLeft / BuffTime;
+
+	if(!GetWorld()->IsServer())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("TimeLeft Speed %f"), TimeLeft);
+	}
+
+	if (TimeLeft <= 0.05) { bShow = false; }
+
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar->SetPercentage(BuffPercent1, bShow);
+	}
+}
+
+void ABlasterPlayerController::UpdateJumpBuffBar(float TimeLeft, float BuffTime)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RoundJumpBuffBar;
+
+	bool bShow1 = true;
+	const float BuffPercent2 = TimeLeft / BuffTime;
+
+	if (TimeLeft <= 0.05) { bShow1 = false; }
+
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->RoundJumpBuffBar->SetPercentage(BuffPercent2, bShow1);
 	}
 }
 

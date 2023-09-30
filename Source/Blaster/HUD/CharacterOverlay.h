@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "RoundProgressBarWidget.h"
+
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "CharacterOverlay.generated.h"
@@ -16,7 +18,11 @@ UCLASS()
 class BLASTER_API UCharacterOverlay : public UUserWidget
 {
 	GENERATED_BODY()
+
+protected:
+	//virtual void BeginPlay() override;
 public:
+
 	/*
 	* Ammo
 	*/
@@ -41,6 +47,15 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* HealthText;
 
+	UPROPERTY(meta = (BindWidget))
+	URoundProgressBarWidget* RoundHealthBar;
+
+	/*
+	* Jump Buff
+	*/
+	UPROPERTY(meta = (BindWidget))
+	URoundProgressBarWidget* RoundJumpBuffBar;
+
 	/*
 	* Match info
 	*/
@@ -64,7 +79,14 @@ public:
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ShieldText;
+	
+	UPROPERTY(meta = (BindWidget))
+	URoundProgressBarWidget* RoundShieldBar;
 
-
+	/*
+	* Speed Buff
+	*/
+	UPROPERTY(meta = (BindWidget))
+	URoundProgressBarWidget* RoundSpeedBuffBar;
 
 };

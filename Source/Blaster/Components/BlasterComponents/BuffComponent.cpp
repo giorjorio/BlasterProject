@@ -2,14 +2,13 @@
 #include "BuffComponent.h"
 
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 
 UBuffComponent::UBuffComponent()
 {
 	PrimaryComponentTick.bCanEverTick = true;
-
-
 }
 
 void UBuffComponent::BeginPlay()
@@ -24,7 +23,8 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	HealRampUp(DeltaTime);
 	ShieldRampUp(DeltaTime);
-	
+	SpeedFallingOff();
+	JumpFallingOff();
 }
 
 
@@ -123,6 +123,8 @@ void UBuffComponent::BuffJump(float BuffJumpVelocity, float BuffTime)
 		BuffTime
 	);
 
+	JumpPickupBuffTime = BuffTime;
+	bJumpBuffed = true;
 	MulticastJumpBuff(BuffJumpVelocity);
 }
 
@@ -134,8 +136,32 @@ void UBuffComponent::MulticastJumpBuff_Implementation(float JumpVelocity)
 	}
 }
 
+void UBuffComponent::JumpFallingOff()
+{
+	if (!bJumpBuffed || Character == nullptr || Character->Controller == nullptr || Character->IsElimmed()) { return; }
+
+	const float TimeLeft = Character->GetWorldTimerManager().GetTimerRemaining(JumpBuffTimer);
+
+
+	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		if(Character->HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ServerJumpFallingOff()"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ClientJumpFallingOff()"));
+		}
+		Controller->UpdateJumpBuffBar(TimeLeft, JumpPickupBuffTime);
+	}
+}
+
+
 void UBuffComponent::ResetJump()
 {
+	bJumpBuffed = false;
 	MulticastJumpBuff(InitialJumpVelocity);
 }
 
@@ -238,6 +264,8 @@ void UBuffComponent::BuffSpeed(float BuffBaseSpeed, float BuffCrouchSpeed, float
 		BuffTime
 	);
 
+	SpeedPickupBuffTime = BuffTime;
+	bSpeedBuffed = true;
 	MulticastSpeedBuff(BuffBaseSpeed, BuffCrouchSpeed);
 }
 
@@ -250,8 +278,26 @@ void UBuffComponent::MulticastSpeedBuff_Implementation(float BaseSpeed, float Cr
 	}
 }
 
+void UBuffComponent::SpeedFallingOff()
+{
+	if (!bSpeedBuffed || Character == nullptr || Character->Controller == nullptr || Character->IsElimmed()) { return; }
+
+	const float TimeLeft = Character->GetWorldTimerManager().GetTimerRemaining(SpeedBuffTimer);
+
+	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
+	if (Controller)
+	{
+		if(!Character->HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("SpeedFallingOff()"), TimeLeft);
+		}
+		Controller->UpdateSpeedBuffBar(TimeLeft, SpeedPickupBuffTime);
+	}
+}
+
 void UBuffComponent::ResetSpeeds()
 {
+	bSpeedBuffed = false;
 	MulticastSpeedBuff(InitialBaseSpeed, InitialCrouchSpeed);
 }
 

@@ -54,6 +54,7 @@ public:
 
 	void UpdateHUDHealth(); //Health
 	void UpdateHUDShield(); //Shield
+	void CreateRoundProgressBars();
 
 	/*
 	* Montages

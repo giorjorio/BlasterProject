@@ -97,6 +97,8 @@ void ABlasterCharacter::BeginPlay()
 		AddInputMappinContextToPlayer();
 	}
 
+
+	CreateRoundProgressBars();
 	UpdateHUDHealth();
 	UpdateHUDShield();
 
@@ -529,6 +531,19 @@ void ABlasterCharacter::UpdateHUDHealth()
 	if (BlasterPlayerController)
 	{
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
+		//BlasterPlayerController->SetHUDRoundProgressBar(Health, MaxHealth);
+	}
+}
+
+/*
+* HUD
+*/
+void ABlasterCharacter::CreateRoundProgressBars()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
+	if (BlasterPlayerController)
+	{
+		BlasterPlayerController->SetHUDRoundProgressBars();
 	}
 }
 
@@ -777,7 +792,6 @@ void ABlasterCharacter::AimButtonPressed()
 
 	if (Combat && Combat->EquippedWeapon)
 	{	
-		UE_LOG(LogTemp, Warning, TEXT("AIM"));
 		Combat->SetAiming(true);
 	}
 }

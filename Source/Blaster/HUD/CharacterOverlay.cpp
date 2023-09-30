@@ -3,3 +3,4 @@
 
 #include "CharacterOverlay.h"
 
+#include "Materials/MaterialInterface.h"

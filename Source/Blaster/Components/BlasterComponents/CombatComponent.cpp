@@ -74,11 +74,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 		FHitResult HitResult;
 		TraceUnderCrosshairs(HitResult);
 		HitTarget = HitResult.ImpactPoint;
-		/*if (HitResult.GetActor() != nullptr)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("HitResult: %s"), *HitResult.GetActor()->GetName())
-		}*/
-		
+
 		InterptFOV(DeltaTime);
 	}
 }
@@ -132,7 +128,7 @@ void UCombatComponent::ServerSetAiming_Implementation(bool bIsAiming)
 
 void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 {
-	if (Character == nullptr && Character->Controller) { return; }
+	if (Character == nullptr || Character->Controller == nullptr) { return; }
 
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
@@ -140,7 +136,6 @@ void UCombatComponent::SetHUDCrosshairs(float DeltaTime)
 		HUD = HUD == nullptr ? Cast<ABlasterHUD>(Controller->GetHUD()) : HUD;
 		if (HUD)
 		{
-
 			if (EquippedWeapon)
 			{
 				HUDPackage.CrosshairsCenter = EquippedWeapon->CrosshairsCenter;
@@ -621,6 +616,14 @@ void UCombatComponent::UpdateGrenades()
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
+		if (Character->HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ServerUpdateGrenades()"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ClientUpdateGrenades()"));
+		}
 		Controller->SetHUDGrenades(Grenades);
 	}
 }

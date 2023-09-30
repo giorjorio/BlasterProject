@@ -7,6 +7,7 @@
 #include "BuffComponent.generated.h"
 
 class ABlasterCharacter;
+class ABlasterPlayerController;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BLASTER_API UBuffComponent : public UActorComponent
@@ -50,13 +51,26 @@ protected:
 	void HealRampUp(float DeltaTime);
 
 	/*
+	* Jump buff
+	*/
+	void JumpFallingOff();
+
+	/*
 	* Shield Buff
 	*/
 	void ShieldRampUp(float DeltaTime);
 
+	/*
+	* Speed buff
+	*/
+	void SpeedFallingOff();
+
 private:
 	UPROPERTY()
 	ABlasterCharacter* Character;
+
+	UPROPERTY()
+	ABlasterPlayerController* Controller;
 
 	/*
 	* Health buff
@@ -72,8 +86,11 @@ private:
 	/*
 	* Jump buff
 	*/
+	bool bJumpBuffed = false;
 	float InitialJumpVelocity;
+	float JumpPickupBuffTime;
 	FTimerHandle JumpBuffTimer;
+	
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastJumpBuff(float JumpVelocity);
@@ -94,8 +111,10 @@ private:
 	/*
 	* Speed buff
 	*/
+	bool bSpeedBuffed = false;
 	float InitialBaseSpeed;
 	float InitialCrouchSpeed;
+	float SpeedPickupBuffTime;
 	FTimerHandle SpeedBuffTimer;
 
 	UFUNCTION(NetMulticast, Reliable)

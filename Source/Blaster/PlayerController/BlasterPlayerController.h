@@ -23,12 +23,14 @@ public:
 	void SetHUDWeaponAmmo(int32 Ammo);
 	void SetHUDGrenades(int32 Grenades);
 	void SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon);
+	void SetHUDRoundProgressBars();
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDShield(float Shield, float MaxShield);
 	void SetHUDScore(float Score);
 	void SetHUDDefeats(int32 Defeats);
-	
-	
+
+	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
+	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
 	
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
@@ -55,7 +57,6 @@ protected:
 	*/
 	UFUNCTION()
 	void OnBlasterGameModeBeginPlay();
-
 
 	/*
 	* Sync time between client and server
@@ -90,8 +91,9 @@ private:
 	UPROPERTY()
 	ABlasterGameMode* BlasterGameMode;
 
-	//FHUDIcons HUDIcons;
-
+	/*
+	* FHUDIcons HUDIcons
+	*/
 	float LevelStartingTime = 0.f;
 	float MatchTime = 0.f;
 	float WarmupTime = 0.f;
@@ -107,8 +109,6 @@ private:
 
 	UPROPERTY()
 	UCharacterOverlay* CharacterOverlay;
-
-
 
 
 	/*bool bInitializeCharacterOverlay = false;
