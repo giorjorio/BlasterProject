@@ -47,12 +47,12 @@ protected:
 	/*
 	* Health buff
 	*/
-	void HealRampUp(float DeltaTime);
+	//void HealRampUp(float DeltaTime);
 
 	/*
 	* Shield Buff
 	*/
-	void ShieldRampUp(float DeltaTime);
+	//void ShieldRampUp(float DeltaTime);
 
 private:
 	UPROPERTY()
@@ -61,11 +61,11 @@ private:
 	/*
 	* Health buff
 	*/
-	bool bHealing = false;
+	/*bool bHealing = false;
 	float HealingRate = 0.f;
 	float AmountToHeal = 0.f;
 	float CanHealAmount = 0.f;
-	bool CanBeHealed(float HealAmount);
+	bool CanBeHealed(float HealAmount);*/
 
 	/*
 	* Jump buff

@@ -22,7 +22,7 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	HealRampUp(DeltaTime);
+	//HealRampUp(DeltaTime);
 	//ShieldRampUp(DeltaTime);
 
 	/*if (Character && Character->GetCharacterMovement())
