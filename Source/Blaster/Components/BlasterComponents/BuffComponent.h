@@ -81,11 +81,13 @@ private:
 	/*
 	* Shield Buff
 	*/
-	bool bReplenishingShield = false;
+	/*bool bReplenishingShield = false;
 	float ShieldReplenishRate = 0.f;
 	float ShieldReplenishAmount = 0.f;
 	float CanReplenishAmount = 0.f;
-	bool CanBeReplenished(float ShieldAmount);
+	float InitialShieldAmount = 0.f;
+	float InitialReplenishAmount = 0.f;*/
+	//bool CanBeReplenished(float ShieldAmount);
 	
 	/*
 	* Speed buff

@@ -23,13 +23,13 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	HealRampUp(DeltaTime);
-	ShieldRampUp(DeltaTime);
+	//ShieldRampUp(DeltaTime);
 
-	if (Character && Character->GetCharacterMovement())
+	/*if (Character && Character->GetCharacterMovement())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("JumpZVelocity: %f"), Character->GetCharacterMovement()->JumpZVelocity);
 		UE_LOG(LogTemp, Warning, TEXT("MaxWalkSpeed: %f"), Character->GetCharacterMovement()->MaxWalkSpeed);
-	}
+	}*/
 	
 }
 
@@ -37,30 +37,30 @@ void UBuffComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 /*
 * Health buff
 */
-bool UBuffComponent::CanBeHealed(float HealAmount)
-{
-	if (!bHealing)
-	{
-		if (Character)
-		{
-			CanHealAmount = Character->GetMaxHealth() - Character->GetHealth();
-			CanHealAmount -= HealAmount;
-		}
-		return true;
-	}
-	else
-	{
-		if (CanHealAmount <= 0)
-		{
-			return false;
-		}
-		else
-		{
-			CanHealAmount -= HealAmount;
-			return true;
-		}
-	}
-}
+//bool UBuffComponent::CanBeHealed(float HealAmount)
+//{
+//	if (!bHealing)
+//	{
+//		if (Character)
+//		{
+//			CanHealAmount = Character->GetMaxHealth() - Character->GetHealth();
+//			CanHealAmount -= HealAmount;
+//		}
+//		return true;
+//	}
+//	else
+//	{
+//		if (CanHealAmount <= 0)
+//		{
+//			return false;
+//		}
+//		else
+//		{
+//			CanHealAmount -= HealAmount;
+//			return true;
+//		}
+//	}
+//}
 
 bool UBuffComponent::Heal(float HealAmount, float HealingTime)
 {
@@ -71,37 +71,39 @@ bool UBuffComponent::Heal(float HealAmount, float HealingTime)
 		{
 			return false;
 		}
-		else if (!CanBeHealed(HealAmount))
-		{
-			return false;
-		}
+		//else if (!CanBeHealed(HealAmount))
+		//{
+		//	return false;
+		//}
+		Character->SetHealth(FMath::Clamp(Character->GetHealth() + HealAmount, 0.f, Character->GetMaxHealth()));
+		Character->UpdateHUDHealth();
 	}
 	
-
-	bHealing = true;
-	HealingRate = HealAmount / HealingTime;
-	AmountToHeal += HealAmount;
-
 	return true;
+
+	//bHealing = true;
+	//HealingRate = HealAmount / HealingTime;
+	//AmountToHeal += HealAmount;
+
 }
 
-void UBuffComponent::HealRampUp(float DeltaTime)
-{
-	if (!bHealing || Character == nullptr || Character->IsElimmed()) { return; }
-
-	const float HealThisFrame = HealingRate * DeltaTime;
-	AmountToHeal -= HealThisFrame;
-
-	if (AmountToHeal <= 0.f || Character->GetHealth() >= Character->GetMaxHealth())
-	{
-		bHealing = false;
-		AmountToHeal = 0.f;
-		return;
-	}
-
-	Character->SetHealth(FMath::Clamp(Character->GetHealth() + HealThisFrame, 0.f, Character->GetMaxHealth()));
-	Character->UpdateHUDHealth();
-}
+//void UBuffComponent::HealRampUp(float DeltaTime)
+//{
+//	if (!bHealing || Character == nullptr || Character->IsElimmed()) { return; }
+//
+//	const float HealThisFrame = HealingRate * DeltaTime;
+//	AmountToHeal -= HealThisFrame;
+//
+//	if (AmountToHeal <= 0.f || Character->GetHealth() >= Character->GetMaxHealth())
+//	{
+//		bHealing = false;
+//		AmountToHeal = 0.f;
+//		return;
+//	}
+//
+//	Character->SetHealth(FMath::Clamp(Character->GetHealth() + HealThisFrame, 0.f, Character->GetMaxHealth()));
+//	Character->UpdateHUDHealth();
+//}
 
 /*
 * Jump buff
@@ -149,31 +151,31 @@ void UBuffComponent::SetInitialJumpVelocity(float Velocity)
 /*
 * Shield Buff
 */
-bool UBuffComponent::CanBeReplenished(float ShieldAmount)
-{
-	if (!bReplenishingShield)
-	{
-		if (Character)
-		{
-			CanReplenishAmount = Character->GetMaxShield() - Character->GetShield();
-			CanReplenishAmount -= ShieldAmount;
-		}
-		return true;
-	}
-	else
-	{
-		if (CanReplenishAmount <= 0)
-		{
-			return false;
-		}
-		else
-		{
-			CanReplenishAmount -= ShieldAmount;
-			return true;
-		}
-	}
-}
-
+//bool UBuffComponent::CanBeReplenished(float ShieldAmount)
+//{
+//	if (!bReplenishingShield)
+//	{
+//		if (Character)
+//		{
+//			CanReplenishAmount = Character->GetMaxShield() - Character->GetShield();
+//			CanReplenishAmount -= ShieldAmount;
+//			//InitialShieldAmount = Character->GetShield();
+//		}
+//		return true;
+//	}
+//	else
+//	{
+//		if (CanReplenishAmount <= 0)
+//		{
+//			return false;
+//		}
+//		else
+//		{
+//			CanReplenishAmount -= ShieldAmount;
+//			return true;
+//		}
+//	}
+//}
 bool UBuffComponent::ReplenishShield(float ShieldAmount, float ReplenishTime)
 {
 	if (Character)
@@ -183,37 +185,46 @@ bool UBuffComponent::ReplenishShield(float ShieldAmount, float ReplenishTime)
 		{
 			return false;
 		}
-		else if(!CanBeReplenished(ShieldAmount))
+		/*else if(!CanBeReplenished(ShieldAmount))
 		{
 			return false;
-		}
+		}*/
+		Character->SetShield(FMath::Clamp(Character->GetShield() + ShieldAmount, 0.f, Character->GetMaxShield()));
+		Character->UpdateHUDShield();
 	}
-
-	bReplenishingShield = true;
-	ShieldReplenishRate = ShieldAmount / ReplenishTime;
-	ShieldReplenishAmount += ShieldAmount;
-	
 	return true;
+	//bReplenishingShield = true;
+	//ShieldReplenishRate = ShieldAmount / ReplenishTime;
+	//ShieldReplenishAmount += ShieldAmount;
+	//InitialReplenishAmount += ShieldAmount;
 }
 
-void UBuffComponent::ShieldRampUp(float DeltaTime)
-{
-	if (!bReplenishingShield || Character == nullptr || Character->IsElimmed()) { return; }
-
-	const float ReplenishThisFrame = ShieldReplenishRate * DeltaTime;
-	ShieldReplenishAmount -= ReplenishThisFrame;
-
-	if (ShieldReplenishAmount <= 0.f || Character->GetShield() >= Character->GetMaxShield())
-	{
-		bReplenishingShield = false;
-		ShieldReplenishAmount = 0.f;
-		return;
-	}
-
-	Character->SetShield(FMath::Clamp(Character->GetShield() + ReplenishThisFrame, 0.f, Character->GetMaxShield()));
-	Character->UpdateHUDShield();
-
-}
+//void UBuffComponent::ShieldRampUp(float DeltaTime)
+//{
+//	if (!bReplenishingShield || Character == nullptr || Character->IsElimmed()) { return; }
+//
+//	const float ReplenishThisFrame = ShieldReplenishRate * DeltaTime;
+//	ShieldReplenishAmount -= ReplenishThisFrame;
+//	
+//	if (ShieldReplenishAmount <= 0.f || Character->GetShield() >= Character->GetMaxShield())
+//	{
+//		if (InitialReplenishAmount > Character->GetShield()-InitialShieldAmount)
+//		{
+//			float diff = InitialReplenishAmount + InitialShieldAmount - Character->GetShield();
+//			Character->SetShield(FMath::FloorToInt32(FMath::Clamp(Character->GetShield() + diff, 0.f, Character->GetMaxShield())));
+//			Character->UpdateHUDShield();
+//		}
+//		
+//		bReplenishingShield = false;
+//		ShieldReplenishAmount = 0.f;
+//		InitialReplenishAmount = 0.f;
+//		return;
+//	}
+//
+//	Character->SetShield(FMath::Clamp(Character->GetShield() + ReplenishThisFrame/*FMath::Floor(ReplenishedAmount)*/, 0.f, Character->GetMaxShield()));
+//	Character->UpdateHUDShield();
+//
+//}
 
 /*
 * Speed buff
