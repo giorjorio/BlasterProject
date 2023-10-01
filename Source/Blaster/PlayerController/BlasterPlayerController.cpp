@@ -197,11 +197,6 @@ void ABlasterPlayerController::UpdateSpeedBuffBar(float TimeLeft, float BuffTime
 	bool bShow = true;
 	const float BuffPercent1 = TimeLeft / BuffTime;
 
-	if(!GetWorld()->IsServer())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("TimeLeft Speed %f"), TimeLeft);
-	}
-
 	if (TimeLeft <= 0.05) { bShow = false; }
 
 	if (bHUDValid)

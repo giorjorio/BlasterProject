@@ -616,14 +616,7 @@ void UCombatComponent::UpdateGrenades()
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
-		if (Character->HasAuthority())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ServerUpdateGrenades()"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("ClientUpdateGrenades()"));
-		}
+
 		Controller->SetHUDGrenades(Grenades);
 	}
 }

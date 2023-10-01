@@ -53,7 +53,8 @@ protected:
 	/*
 	* Jump buff
 	*/
-	void JumpFallingOff();
+	void JumpFallingOff(float DeltaTime);
+	float JumpTimeLeft;
 
 	/*
 	* Shield Buff
@@ -63,7 +64,8 @@ protected:
 	/*
 	* Speed buff
 	*/
-	void SpeedFallingOff();
+	void SpeedFallingOff(float DeltaTime);
+	float SpeedTimeLeft;
 
 private:
 	UPROPERTY()
@@ -93,7 +95,7 @@ private:
 	
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastJumpBuff(float JumpVelocity);
+	void MulticastJumpBuff(float JumpVelocity, bool bWork = true, float BuffTime = 0.f);
 
 	void ResetJump();
 
@@ -118,7 +120,7 @@ private:
 	FTimerHandle SpeedBuffTimer;
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastSpeedBuff(float BaseSpeed, float CrouchSpeed);
+	void MulticastSpeedBuff(float BaseSpeed, float CrouchSpeed, bool bWork = true, float BuffTime = 0.f);
 	
 	void ResetSpeeds();
 
