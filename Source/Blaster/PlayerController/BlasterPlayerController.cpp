@@ -143,16 +143,16 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 	
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->HealthBar &&
-		BlasterHUD->CharacterOverlay->HealthText &&
+		//BlasterHUD->CharacterOverlay->HealthBar &&
+		//BlasterHUD->CharacterOverlay->HealthText &&
 		BlasterHUD->CharacterOverlay->RoundHealthBar;
 	
 	if (bHUDValid)
 	{
 		const float HealthPercent = Health / MaxHealth;
-		BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
+/*		BlasterHUD->CharacterOverlay->HealthBar->SetPercent(HealthPercent);
 		FString HealthText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Health), FMath::CeilToInt(MaxHealth));
-		BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));	
+		BlasterHUD->CharacterOverlay->HealthText->SetText(FText::FromString(HealthText));*/	
 		BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
 	}
 	/*else
@@ -171,16 +171,16 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->ShieldBar &&
-		BlasterHUD->CharacterOverlay->ShieldText &&
+		//BlasterHUD->CharacterOverlay->ShieldBar &&
+		//BlasterHUD->CharacterOverlay->ShieldText &&
 		BlasterHUD->CharacterOverlay->RoundShieldBar;
 
 	if (bHUDValid)
 	{
 		const float ShieldPercent = Shield / MaxShield;
-		BlasterHUD->CharacterOverlay->ShieldBar->SetPercent(ShieldPercent);
-		FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Shield), FMath::CeilToInt(MaxShield));
-		BlasterHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
+		//BlasterHUD->CharacterOverlay->ShieldBar->SetPercent(ShieldPercent);
+		//FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Shield), FMath::CeilToInt(MaxShield));
+		//BlasterHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
 		BlasterHUD->CharacterOverlay->RoundShieldBar->SetPercentage(ShieldPercent);
 
 	}

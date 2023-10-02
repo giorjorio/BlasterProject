@@ -41,11 +41,11 @@ public:
 	/*
 	* Health
 	*/
-	UPROPERTY(meta = (BindWidget))
+	/*UPROPERTY(meta = (BindWidget))
 	UProgressBar* HealthBar;
 
 	UPROPERTY(meta = (BindWidget))
-	UTextBlock* HealthText;
+	UTextBlock* HealthText;*/
 
 	UPROPERTY(meta = (BindWidget))
 	URoundProgressBarWidget* RoundHealthBar;
@@ -74,12 +74,12 @@ public:
 	/*
 	* Shield
 	*/
-	UPROPERTY(meta = (BindWidget))
+	/*UPROPERTY(meta = (BindWidget))
 	UProgressBar* ShieldBar;
 
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* ShieldText;
-	
+	*/
 	UPROPERTY(meta = (BindWidget))
 	URoundProgressBarWidget* RoundShieldBar;
 
