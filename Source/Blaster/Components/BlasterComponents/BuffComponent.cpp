@@ -128,6 +128,7 @@ void UBuffComponent::BuffJump(float BuffJumpVelocity, float BuffTime)
 
 void UBuffComponent::MulticastJumpBuff_Implementation(float JumpVelocity, bool bWork, float BuffTime)
 {
+	UE_LOG(LogTemp, Warning, TEXT("MulticastJumpBuff_Implementation"));
 
 	if (Character == nullptr  || Character->GetCharacterMovement() == nullptr) { return; }
 

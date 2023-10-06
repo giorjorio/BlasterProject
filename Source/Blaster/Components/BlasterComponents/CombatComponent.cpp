@@ -428,6 +428,8 @@ void UCombatComponent::Fire()
 {
 	if (CanFire())
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UCombatComponent::Fire()"));
+
 		bCanFire = false;
 		ServerFire(HitTarget);
 		CrosshairShootingFactor += ShootingSpread;
@@ -450,11 +452,15 @@ void UCombatComponent::FireButtonPressed(bool bPressed)
 
 void UCombatComponent::ServerFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
+	UE_LOG(LogTemp, Warning, TEXT("ServerFire_Implementation"));
+
 	MulticastFire(TraceHitTarget);
 }
 
 void UCombatComponent::MulticastFire_Implementation(const FVector_NetQuantize& TraceHitTarget)
 {
+	UE_LOG(LogTemp, Warning, TEXT("MulticastFire_Implementation"));
+
 	if (EquippedWeapon == nullptr)
 	{
 		return;

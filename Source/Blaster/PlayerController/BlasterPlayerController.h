@@ -7,9 +7,12 @@
 
 #include "BlasterPlayerController.generated.h"
 
+
 class ABlasterGameMode;
 class ABlasterHUD;
 class UCharacterOverlay;
+
+
 
 UCLASS()
 class BLASTER_API ABlasterPlayerController : public APlayerController
@@ -18,7 +21,7 @@ class BLASTER_API ABlasterPlayerController : public APlayerController
 
 public:
 	void SetHUDAnnouncementCountdown(float CountdownTime);
-	void SetHUDMatchCoundown(float CountdownTime);
+	void SetHUDMatchCountdown(float CountdownTime);
 	void SetHUDCarriedAmmo(int32 Ammo);
 	void SetHUDWeaponAmmo(int32 Ammo);
 	void SetHUDGrenades(int32 Grenades);
@@ -28,6 +31,8 @@ public:
 	void SetHUDShield(float Shield, float MaxShield);
 	void SetHUDScore(float Score);
 	void SetHUDDefeats(int32 Defeats);
+
+	void SetBlasterHUD();
 
 	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
 	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
@@ -42,6 +47,9 @@ public:
 	void OnMatchStateSet(FName State);
 	void HandleMatchHasStarted();
 	void HandleCountdown();
+
+
+
 
 	UPROPERTY(Replicated)
 	bool bDisableGameplay = false;
@@ -90,6 +98,9 @@ private:
 
 	UPROPERTY()
 	ABlasterGameMode* BlasterGameMode;
+
+
+	void InitializeHUD();
 
 	/*
 	* FHUDIcons HUDIcons

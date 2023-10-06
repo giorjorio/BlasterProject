@@ -19,12 +19,16 @@ namespace MatchState
 
 ABlasterGameMode::ABlasterGameMode()
 {
+	UE_LOG(LogTemp, Warning, TEXT("ABlasterGameMode::ABlasterGameMode()"));
+
 	bDelayedStart = true;
 }
 
 void ABlasterGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UE_LOG(LogTemp, Warning, TEXT("ABlasterGameMode::BeginPlay()"));
 
 	bHasBeenBeginPlay = true;
 

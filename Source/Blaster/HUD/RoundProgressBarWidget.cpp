@@ -47,8 +47,12 @@ void URoundProgressBarWidget::SetProgressBar(bool bShow)
 
 void URoundProgressBarWidget::SetPercentage(float Percent, bool bShow)
 {
+	UE_LOG(LogTemp, Warning, TEXT("SetPercentageOut"));
+
 	if(RoundProgressBar_Dynamic_MI)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("SetPercentageIn"));
+
 		RoundProgressBar_Dynamic_MI->SetScalarParameterValue(TEXT("Percent"), Percent);
 		if (!bShow)
 		{

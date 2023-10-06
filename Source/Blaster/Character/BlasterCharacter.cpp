@@ -31,6 +31,8 @@
 
 ABlasterCharacter::ABlasterCharacter()
 {
+	UE_LOG(LogTemp, Warning, TEXT(" ABlasterCharacter::ABlasterCharacter()"));
+
 	PrimaryActorTick.bCanEverTick = true;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 	// Don't rotate when the controller rotates. Let that just affect the camera.
@@ -91,12 +93,21 @@ void ABlasterCharacter::AddInputMappinContextToPlayer()
 void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	if(HasAuthority())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ServerABlasterCharacter::BeginPlay()"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ClientABlasterCharacter::BeginPlay()"));
+	}
+
 
 	if (!HasAuthority())
 	{
 		AddInputMappinContextToPlayer();
 	}
-
 
 	CreateRoundProgressBars();
 	UpdateHUDHealth();
@@ -129,6 +140,23 @@ void ABlasterCharacter::PossessedBy(AController* NewController)
 
 	AddInputMappinContextToPlayer();
 }
+//
+//void ABlasterCharacter::Restart()
+//{
+//	Super::Restart();
+//
+//	UE_LOG(LogTemp, Warning, TEXT("ABlasterCharacter::Restart()"));
+//
+//	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
+//	if (BlasterPlayerController)
+//	{
+//		UE_LOG(LogTemp, Warning, TEXT("BlasterPlayerController->SetBlasterHUD()"));
+//
+//		BlasterPlayerController->SetBlasterHUD();
+//	}
+//
+//
+//}
 
 void ABlasterCharacter::PostInitializeComponents()
 {
@@ -484,7 +512,6 @@ void ABlasterCharacter::OnRep_Health(float LastHealth)
 
 	if (Health < LastHealth && !bElimmed)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Health: %f, LastHealth: %f"), Health, LastHealth);
 		PlayHitReactMontage();
 	}
 }
@@ -527,11 +554,14 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 
 void ABlasterCharacter::UpdateHUDHealth()
 {
+	UE_LOG(LogTemp, Warning, TEXT("UpdateHUDHealthBefore"));
+
 	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
 	if (BlasterPlayerController)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UpdateHUDHealthAfter"));
+
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
-		//BlasterPlayerController->SetHUDRoundProgressBar(Health, MaxHealth);
 	}
 }
 
@@ -540,6 +570,7 @@ void ABlasterCharacter::UpdateHUDHealth()
 */
 void ABlasterCharacter::CreateRoundProgressBars()
 {
+
 	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
 	if (BlasterPlayerController)
 	{
