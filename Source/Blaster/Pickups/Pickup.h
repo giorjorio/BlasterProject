@@ -39,21 +39,30 @@ protected:
 	float BaseTurnRate = 45.f;
 
 private:
+	float BindOverlapTime = 0.25f;
+
+	FTimerHandle BindOverlapTimer;
+	
+	void BindOverlapTimerFinished();
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupEffect;
 
 	UPROPERTY(VisibleAnywhere)
 	UNiagaraComponent* PickupEffectComponent;
 
 	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* PickupEffect;
+	USphereComponent* OverlapSphere;
 
 	UPROPERTY(EditAnywhere)
-	USphereComponent* OverlapSphere;
+	UStaticMeshComponent* PickupMesh;
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* PickupSound;
 
-	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* PickupMesh;
+
+
+
 
 public:	
 	
