@@ -71,7 +71,7 @@ void ABlasterPlayerController::Tick(float DeltaTime)
 
 	SetHUDTime();
 	CheckTimeSync(DeltaTime);
-	//PollInit();
+	PollInit();
 }
 
 void ABlasterPlayerController::CheckTimeSync(float DeltaTime)
@@ -116,16 +116,19 @@ void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName StateOfMat
 
 void ABlasterPlayerController::InitializeHUD()
 {
-	UE_LOG(LogTemp, Warning, TEXT("InitializeHUDBefore"));
-
 	if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(AController::GetPawn()))
 	{
 		if(!BlasterCharacter->HasAuthority())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("InitializeHUDAfter"));
-
 			SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
 			SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
+			
+			if (BlasterCharacter->GetCombat())
+			{
+				BlasterCharacter->GetCombat()->UpdateCarriedAmmo();
+				BlasterCharacter->GetCombat()->UpdateWeaponIcon();
+				BlasterCharacter->GetCombat()->UpdateWeaponAmmo();
+			}
 		}
 	}
 }
@@ -134,12 +137,8 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
-	UE_LOG(LogTemp, Warning, TEXT("OnPossessBefore"));
-
-
 	if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(InPawn))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("OnPossessAfter"));
 		SetHUDRoundProgressBars();
 		SetHUDHealth(BlasterCharacter->GetHealth(), BlasterCharacter->GetMaxHealth());
 		SetHUDShield(BlasterCharacter->GetShield(), BlasterCharacter->GetMaxShield());
@@ -147,6 +146,9 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 		if (BlasterCharacter->GetCombat())
 		{
 			SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
+			BlasterCharacter->GetCombat()->UpdateCarriedAmmo();
+			BlasterCharacter->GetCombat()->UpdateWeaponIcon();
+			BlasterCharacter->GetCombat()->UpdateWeaponAmmo();
 		}
 	}
 }
@@ -176,33 +178,19 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 	//	BlasterHUD->CharacterOverlay &&
 	//	BlasterHUD->CharacterOverlay->RoundHealthBar;
 
-	if(BlasterHUD)
+	if(BlasterHUD && BlasterHUD->CharacterOverlay && BlasterHUD->CharacterOverlay->RoundHealthBar)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("BlasterHUD"));
-
-		if (BlasterHUD->CharacterOverlay) 
+		const float HealthPercent = Health / MaxHealth;
+		if (!BlasterHUD->CharacterOverlay->IsInViewport())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("BlasterHUD->CharacterOverlay"));
-
-			if (BlasterHUD->CharacterOverlay->RoundHealthBar)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("SetHUDHealthbHUDValid"));
-
-				const float HealthPercent = Health / MaxHealth;
-				if (!BlasterHUD->CharacterOverlay->IsInViewport())
-				{
-					BlasterHUD->AddCharacterOverlay();
-				}
-				UE_LOG(LogTemp, Warning, TEXT("HealthPercent: %f, Health: %f, MaxHealth: %f"), HealthPercent, Health, MaxHealth);
-				BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
-			}
+			BlasterHUD->AddCharacterOverlay();
 		}
+		BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
 	}
 	//if (bHUDValid)
 	//{
 	//	const float HealthPercent = Health / MaxHealth;
 	//	BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
-
 	//}
 	
 	/*else
@@ -323,6 +311,12 @@ void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 	{
 		FString AmmoText = FString::Printf(TEXT("%d"), Ammo);
 		BlasterHUD->CharacterOverlay->WeaponAmmoAmount->SetText(FText::FromString(AmmoText));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("bHUDValid else"));
+		bInitializeWeaponAmmo = true;
+		HUDWeaponAmmo = Ammo;
 	}
 }
 
@@ -465,22 +459,22 @@ void ABlasterPlayerController::SetHUDTime()
 	CountdownInt = SecondsLeft;
 }
 
-//void ABlasterPlayerController::PollInit()
-//{
-//	if (CharacterOverlay == nullptr)
-//	{
-//		if (BlasterHUD && BlasterHUD->CharacterOverlay)
-//		{
-//			CharacterOverlay = BlasterHUD->CharacterOverlay;
-//			if (CharacterOverlay)
-//			{
-//				SetHUDHealth(HUDHealth, HUDMaxHealth);
-//				SetHUDScore(HUDScore);
-//				SetHUDDefeats(HUDDefeats);
-//			}
-//		}
-//	}
-//}
+void ABlasterPlayerController::PollInit()
+{
+	if (CharacterOverlay == nullptr)
+	{
+		if (BlasterHUD && BlasterHUD->CharacterOverlay)
+		{
+			CharacterOverlay = BlasterHUD->CharacterOverlay;
+			if (CharacterOverlay)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("PollInit"));
+
+				if (bInitializeWeaponAmmo) SetHUDWeaponAmmo(HUDWeaponAmmo);
+			}
+		}
+	}
+}
 
 void ABlasterPlayerController::ServerRequestServerTime_Implementation(float TimeOfClientRequest)
 {
@@ -569,25 +563,13 @@ void ABlasterPlayerController::HandleCountdown()
 	
 	if (BlasterHUD)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("HandleCountdown()BlasterHUD"));
-
 		BlasterHUD->CharacterOverlay->RemoveFromParent();
-
-		
 
 		if (BlasterHUD->Announcement == nullptr)
 		{
 			BlasterHUD->AddAnnouncement();
-			UE_LOG(LogTemp, Warning, TEXT("BlasterHUD->Announcement"));
-			if (BlasterHUD->Announcement->AnnouncementText)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("BlasterHUD->Announcement->AnnouncementText"));
-				if (BlasterHUD->Announcement->InfoText)
-				{
-					UE_LOG(LogTemp, Warning, TEXT("BlasterHUD->Announcement->InfoText"));
-				}
-			}
 		}
+
 		bool bHUDValid = BlasterHUD->Announcement &&
 			BlasterHUD->Announcement->AnnouncementText &&
 			BlasterHUD->Announcement->InfoText;

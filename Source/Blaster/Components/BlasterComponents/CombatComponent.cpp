@@ -325,6 +325,14 @@ void UCombatComponent::UpdateWeaponIcon()
 	}
 }
 
+void UCombatComponent::UpdateWeaponAmmo()
+{
+	if (EquippedWeapon)
+	{
+		EquippedWeapon->SetHUDAmmo();
+	}
+}
+
 void UCombatComponent::AttachActorToLeftHand(AActor* ActorToAttach)
 {
 	if (Character == nullptr || Character->GetMesh() == nullptr || ActorToAttach == nullptr) { return; }

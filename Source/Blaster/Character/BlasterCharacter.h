@@ -52,6 +52,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowSniperScopeWidget(bool bShowScope);
 
+	void UpdateHUDAmmo();
+	void SpawnDefaultWeapon();
+
 	void UpdateHUDHealth(); //Health
 	void UpdateHUDShield(); //Shield
 	void CreateRoundProgressBars();
@@ -186,6 +189,12 @@ private:
 
 	void HideCameraIfCharacterClose();
 	void HideCharacterMesh(bool bHide);
+
+	/*
+	* Default Weapon
+	*/
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeapon> DefaultWeaponClass;
 
 	/*
 	* Dissolve Effect

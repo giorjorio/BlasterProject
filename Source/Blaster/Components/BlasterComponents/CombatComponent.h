@@ -49,6 +49,13 @@ public:
 	void JumpToShotgunEnd();
 
 	/*
+	* HUD
+	*/
+	void UpdateCarriedAmmo();
+	void UpdateWeaponIcon();
+	void UpdateWeaponAmmo();
+
+	/*
 	* Picking up ammo
 	*/
 	bool PickupAmmo(EWeaponType WeaponType, int32 AmmoAmount);
@@ -121,7 +128,7 @@ protected:
 	void OnRep_EquippedWeapon();
 	void PlayEquipWeaponSound();
 	void ReloadEmptyWeapon();
-	void UpdateCarriedAmmo();
+	
 
 	/*
 	* Reloading
@@ -310,7 +317,7 @@ private:
 
 	FHUDPackage HUDPackage;
 
-	void UpdateWeaponIcon();
+	
 
 public:
 	FORCEINLINE int32 GetGrenades() const { return Grenades; }

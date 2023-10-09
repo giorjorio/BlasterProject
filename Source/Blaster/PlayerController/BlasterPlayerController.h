@@ -58,7 +58,7 @@ protected:
 
 	virtual void BeginPlay() override;
 	void SetHUDTime();
-	//void PollInit();
+	void PollInit();
 
 	/*
 	* Callback for the custom delegate on the BlasterGameMode
@@ -122,12 +122,12 @@ private:
 	UCharacterOverlay* CharacterOverlay;
 
 
-	/*bool bInitializeCharacterOverlay = false;
+	/*
+	* Pollinit variables
+	*/
+	float HUDWeaponAmmo;
+	bool bInitializeWeaponAmmo = false;
 
-	float HUDHealth;
-	float HUDMaxHealth;
-	float HUDScore;
-	int32 HUDDefeats;*/
 public:
 	FORCEINLINE bool GetDisabledGameplay() const { return bDisableGameplay; }
 

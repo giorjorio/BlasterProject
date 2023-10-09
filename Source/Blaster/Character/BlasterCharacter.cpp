@@ -109,9 +109,12 @@ void ABlasterCharacter::BeginPlay()
 		AddInputMappinContextToPlayer();
 	}
 
+	
 	CreateRoundProgressBars();
+	SpawnDefaultWeapon();
 	UpdateHUDHealth();
 	UpdateHUDShield();
+	UpdateHUDAmmo();
 
 	if (HasAuthority())
 	{
@@ -140,23 +143,6 @@ void ABlasterCharacter::PossessedBy(AController* NewController)
 
 	AddInputMappinContextToPlayer();
 }
-//
-//void ABlasterCharacter::Restart()
-//{
-//	Super::Restart();
-//
-//	UE_LOG(LogTemp, Warning, TEXT("ABlasterCharacter::Restart()"));
-//
-//	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
-//	if (BlasterPlayerController)
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("BlasterPlayerController->SetBlasterHUD()"));
-//
-//		BlasterPlayerController->SetBlasterHUD();
-//	}
-//
-//
-//}
 
 void ABlasterCharacter::PostInitializeComponents()
 {
@@ -371,6 +357,24 @@ void ABlasterCharacter::HideCharacterMesh(bool bHide)
 }
 
 /*
+* Default Weapon
+*/
+void ABlasterCharacter::SpawnDefaultWeapon()
+{
+	ABlasterGameMode* BlasterGameMode = Cast<ABlasterGameMode>(UGameplayStatics::GetGameMode(this));
+	UWorld* World = GetWorld();
+	if (BlasterGameMode && World && !bElimmed && DefaultWeaponClass)
+	{
+		AWeapon* StartingWeapon = World->SpawnActor<AWeapon>(DefaultWeaponClass);
+		StartingWeapon->bDestroyWeapon = true;
+		if (Combat)
+		{
+			Combat->EquipWeapon(StartingWeapon);
+		}
+	}
+}
+
+/*
 * Dissolve Effect
 */
 void ABlasterCharacter::StartDissolve()
@@ -399,7 +403,14 @@ void ABlasterCharacter::Elim()
 {
 	if (Combat && Combat->EquippedWeapon)
 	{
-		Combat->EquippedWeapon->Dropped();
+		if (Combat->EquippedWeapon->bDestroyWeapon)
+		{
+			Combat->EquippedWeapon->Destroy();
+		}
+		else
+		{
+			Combat->EquippedWeapon->Dropped();
+		}
 	}
 	MulticastElim();
 	GetWorldTimerManager().SetTimer(
@@ -578,6 +589,16 @@ void ABlasterCharacter::CreateRoundProgressBars()
 	}
 }
 
+void ABlasterCharacter::UpdateHUDAmmo()
+{
+	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(Controller) : BlasterPlayerController;
+	if (BlasterPlayerController && Combat && Combat->EquippedWeapon)
+	{
+		BlasterPlayerController->SetHUDCarriedAmmo(Combat->CarriedAmmo);
+		BlasterPlayerController->SetHUDWeaponAmmo(Combat->EquippedWeapon->GetAmmo());
+	}
+}
+
 /*
 * Montages
 */
@@ -675,7 +696,6 @@ void ABlasterCharacter::PlayThrowGrenadeMontage()
 		
 	}	
 }
-
 
 /*
 * Shield

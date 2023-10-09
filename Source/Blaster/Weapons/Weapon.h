@@ -76,11 +76,9 @@ public:
 	UPROPERTY(EditAnywhere)
 	float ZoomInterpSpeed = 20.f;
 
-
 	/*
 	* Automatic fire
 	*/
-
 	UPROPERTY(EditAnywhere, Category = Combat)
 	float FireDelay = 0.1f;
 	UPROPERTY(EditAnywhere, Category = Combat)
@@ -94,6 +92,7 @@ public:
 	*/
 	void EnableCustomDepth(bool bEnable);
 		 
+	bool bDestroyWeapon = false;
 
 protected:
 
