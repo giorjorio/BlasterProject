@@ -7,7 +7,8 @@
 #include "TeleportComponent.generated.h"
 
 
-class ABlasterCharacter;
+class ABlasterCharacter; 
+class ABlasterPlayerController;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class BLASTER_API UTeleportComponent : public UBoxComponent
@@ -26,6 +27,9 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 private:
+
+	UPROPERTY()
+	ABlasterPlayerController* Controller;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Teleport", meta = (AllowPrivateAccess = "true"))
 	AActor* Destination;
@@ -61,4 +65,5 @@ private:
 
 	UFUNCTION()
 	void Teleportation(ABlasterCharacter* BlasterCharacter);
+
 };

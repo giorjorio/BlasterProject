@@ -14,8 +14,11 @@ void UTeleportComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	OnComponentBeginOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapBegin);
-	OnComponentEndOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapEnd);
+	//if(GetOwner()->HasAuthority())
+	//{
+		OnComponentBeginOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapBegin);
+		OnComponentEndOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapEnd);
+	//}
 }
 
 void UTeleportComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -25,21 +28,34 @@ void UTeleportComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAc
 
 void UTeleportComponent::Teleportation(ABlasterCharacter* BlasterCharacter)
 {
-	if (bIsAnotherTeleport)
+	if(BlasterCharacter && BlasterCharacter->GetController())
 	{
-		BlasterCharacter->SetActorLocation(Destination->GetActorLocation() + AdjustDestination);
-		BlasterCharacter->SetActorRotation(Destination->GetActorRotation() + AdjustRotation);
-		//BlasterCharacter->GetController()->SetControlRotation(BlasterCharacter->GetActorRotation());
-	}
-	else
-	{
-		BlasterCharacter->SetActorLocation(DestinationLocation);
-		BlasterCharacter->SetActorRotation(DestinationRotation);
-		//BlasterCharacter->GetController()->SetControlRotation(BlasterCharacter->GetActorRotation());
+		if (bIsAnotherTeleport)
+		{
+			BlasterCharacter->SetActorLocation(Destination->GetActorLocation() + AdjustDestination);
+			BlasterCharacter->SetActorRotation(Destination->GetActorRotation() + AdjustRotation);
+			
+			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
+			if (Controller)
+			{
+				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
+			}
+			Controller = nullptr;
+		}
+		else
+		{
+			BlasterCharacter->SetActorLocation(DestinationLocation);
+			BlasterCharacter->SetActorRotation(DestinationRotation);
+			
+			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
+			if (Controller)
+			{
+				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
+			}
+			Controller = nullptr;
+		}
 	}
 }
-
-
 
 void UTeleportComponent::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
