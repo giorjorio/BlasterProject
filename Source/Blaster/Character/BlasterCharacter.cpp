@@ -103,13 +103,11 @@ void ABlasterCharacter::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("ClientABlasterCharacter::BeginPlay()"));
 	}
 
-
 	if (!HasAuthority())
 	{
 		AddInputMappinContextToPlayer();
 	}
 
-	
 	CreateRoundProgressBars();
 	SpawnDefaultWeapon();
 	UpdateHUDHealth();
@@ -353,6 +351,11 @@ void ABlasterCharacter::HideCharacterMesh(bool bHide)
 	if (Combat && Combat->EquippedWeapon && Combat->EquippedWeapon->GetWeaponMesh())
 	{
 		Combat->EquippedWeapon->GetWeaponMesh()->bOwnerNoSee = bHide;
+
+		if(Combat->SecondaryWeapon && Combat->SecondaryWeapon->GetWeaponMesh())
+		{
+			Combat->SecondaryWeapon->GetWeaponMesh()->bOwnerNoSee = bHide;
+		}
 	}
 }
 
@@ -887,14 +890,7 @@ void ABlasterCharacter::Equip()
 
 	if (Combat)
 	{
-		if (HasAuthority())
-		{
-			Combat->EquipWeapon(OverlappingWeapon);
-		}
-		else
-		{
-			ServerEquipButtonPressed();
-		}
+		ServerEquipButtonPressed();
 	}
 }
 

@@ -126,7 +126,7 @@ void ABlasterPlayerController::InitializeHUD()
 			if (BlasterCharacter->GetCombat())
 			{
 				BlasterCharacter->GetCombat()->UpdateCarriedAmmo();
-				BlasterCharacter->GetCombat()->UpdateWeaponIcon();
+				BlasterCharacter->GetCombat()->UpdatePrimaryWeaponIcon();
 				BlasterCharacter->GetCombat()->UpdateWeaponAmmo();
 			}
 		}
@@ -147,7 +147,7 @@ void ABlasterPlayerController::OnPossess(APawn* InPawn)
 		{
 			SetHUDGrenades(BlasterCharacter->GetCombat()->GetGrenades());
 			BlasterCharacter->GetCombat()->UpdateCarriedAmmo();
-			BlasterCharacter->GetCombat()->UpdateWeaponIcon();
+			BlasterCharacter->GetCombat()->UpdatePrimaryWeaponIcon();
 			BlasterCharacter->GetCombat()->UpdateWeaponAmmo();
 		}
 	}
@@ -334,18 +334,27 @@ void ABlasterPlayerController::SetHUDCarriedAmmo(int32 Ammo)
 	}
 }
 
-void ABlasterPlayerController::SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon)
+void ABlasterPlayerController::SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon, bool IsSecondary)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->WeaponImage;
+		BlasterHUD->CharacterOverlay->PrimaryWeaponImage &&
+		BlasterHUD->CharacterOverlay->SecondaryWeaponImage;
 
 	if (bHUDValid)
 	{
 		UTexture2D* WeaponTexture = WeaponIcon;
-		BlasterHUD->CharacterOverlay->WeaponImage->SetBrushFromTexture(WeaponTexture);
-		BlasterHUD->CharacterOverlay->WeaponImage->SetOpacity(1);
+		if(IsSecondary)
+		{
+			BlasterHUD->CharacterOverlay->SecondaryWeaponImage->SetBrushFromTexture(WeaponTexture);
+			BlasterHUD->CharacterOverlay->SecondaryWeaponImage->SetOpacity(0.5);
+		}
+		else
+		{
+			BlasterHUD->CharacterOverlay->PrimaryWeaponImage->SetBrushFromTexture(WeaponTexture);
+			BlasterHUD->CharacterOverlay->PrimaryWeaponImage->SetOpacity(1);
+		}
 	}
 }
 

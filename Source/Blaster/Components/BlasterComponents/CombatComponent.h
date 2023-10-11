@@ -52,7 +52,8 @@ public:
 	* HUD
 	*/
 	void UpdateCarriedAmmo();
-	void UpdateWeaponIcon();
+	void UpdatePrimaryWeaponIcon();
+	void UpdateSecondaryWeaponIcon();
 	void UpdateWeaponAmmo();
 
 	/*
@@ -121,12 +122,20 @@ protected:
 	/*
 	* Equip Weapon
 	*/
+	void AttachActorToBackpack(AActor* ActorToAttach);
 	void AttachActorToLeftHand(AActor* ActorToAttach);
 	void AttachActorToRightHand(AActor* ActorToAttach);
 	void DropEquippedWeapon();
+	void EquipPrimaryWeapon(AWeapon* WeaponToEquip);
+	void EquipSecondaryWeapon(AWeapon* WeaponToEquip);
+
 	UFUNCTION()
 	void OnRep_EquippedWeapon();
-	void PlayEquipWeaponSound();
+
+	UFUNCTION()
+	void OnRep_SecondaryWeapon();
+
+	void PlayEquipWeaponSound(AWeapon* WeaponToEquip);
 	void ReloadEmptyWeapon();
 	
 
@@ -167,6 +176,9 @@ private:
 
 	UPROPERTY(ReplicatedUsing = OnRep_EquippedWeapon)
 	AWeapon* EquippedWeapon;
+	
+	UPROPERTY(ReplicatedUsing = OnRep_SecondaryWeapon)
+	AWeapon* SecondaryWeapon;
 
 	UPROPERTY()
 	ABlasterHUD* HUD;

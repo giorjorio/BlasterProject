@@ -36,7 +36,10 @@ public:
 	UTextBlock* GrenadesText;
 
 	UPROPERTY(meta = (BindWidget))
-	UImage* WeaponImage;
+	UImage* PrimaryWeaponImage;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* SecondaryWeaponImage;
 
 	/*
 	* Health
