@@ -75,9 +75,7 @@ void APickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* 
 
 void APickup::BindOverlapTimerFinished()
 {
-	
 	OverlapSphere->OnComponentBeginOverlap.AddDynamic(this, &APickup::OnSphereOverlap);
-
 }
 
 void APickup::Destroyed()

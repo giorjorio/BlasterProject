@@ -924,9 +924,7 @@ void ABlasterCharacter::Equip()
 {
 	if (bDisableCharacterGameplay) { return; }
 
-
 	ServerEquipButtonPressed();
-
 }
 
 void ABlasterCharacter::FireButtonPressed()
