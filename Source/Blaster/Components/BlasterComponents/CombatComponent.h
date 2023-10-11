@@ -52,8 +52,8 @@ public:
 	* HUD
 	*/
 	void UpdateCarriedAmmo();
-	void UpdatePrimaryWeaponIcon();
-	void UpdateSecondaryWeaponIcon();
+	void UpdatePrimaryWeaponIcon(float Opacity = 1.f);
+	void UpdateSecondaryWeaponIcon(float Opacity = 0.5f);
 	void UpdateWeaponAmmo();
 
 	/*

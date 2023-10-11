@@ -25,7 +25,7 @@ public:
 	void SetHUDCarriedAmmo(int32 Ammo);
 	void SetHUDWeaponAmmo(int32 Ammo);
 	void SetHUDGrenades(int32 Grenades);
-	void SetHUDEquippedWeaponIcon(UTexture2D* WeaponIcon, bool IsSecondary = false);
+	void SetHUDEquippedWeaponIcon(float Opacity,  bool IsSecondary = false, UTexture2D * WeaponIcon = nullptr );
 	void SetHUDRoundProgressBars();
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDShield(float Shield, float MaxShield);

@@ -354,23 +354,23 @@ void UCombatComponent::OnRep_SecondaryWeapon()
 	}
 }
 
-void UCombatComponent::UpdatePrimaryWeaponIcon()
+void UCombatComponent::UpdatePrimaryWeaponIcon(float Opacity)
 {
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller && EquippedWeapon && EquippedWeapon->WeaponIcon)
 	{
 		//Set the equipped weapon icon above ammo
-		Controller->SetHUDEquippedWeaponIcon(EquippedWeapon->WeaponIcon);
+		Controller->SetHUDEquippedWeaponIcon(Opacity,false, EquippedWeapon->WeaponIcon);
 	}
 }
 
-void UCombatComponent::UpdateSecondaryWeaponIcon()
+void UCombatComponent::UpdateSecondaryWeaponIcon(float Opacity)
 {
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller && SecondaryWeapon && SecondaryWeapon->WeaponIcon)
 	{
 		//Set the equipped weapon icon above ammo
-		Controller->SetHUDEquippedWeaponIcon(SecondaryWeapon->WeaponIcon, true);
+		Controller->SetHUDEquippedWeaponIcon(Opacity, true, SecondaryWeapon->WeaponIcon);
 	}
 }
 

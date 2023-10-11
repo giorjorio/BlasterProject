@@ -111,6 +111,12 @@ protected:
 
 	void RotateInPlace(float DeltaTime);
 	
+	/*
+	* Weapon
+	*/
+	void DropOrDestroyWeapon(AWeapon* Weapon);
+	void DropOrDestroyWeapons();
+
 
 	/*
 	* Input Actions
