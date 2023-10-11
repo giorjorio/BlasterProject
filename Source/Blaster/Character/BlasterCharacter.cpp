@@ -409,10 +409,18 @@ void ABlasterCharacter::Elim()
 		if (Combat->EquippedWeapon->bDestroyWeapon)
 		{
 			Combat->EquippedWeapon->Destroy();
+			if (Combat->SecondaryWeapon)
+			{
+				Combat->SecondaryWeapon->Dropped();
+			}
 		}
 		else
 		{
 			Combat->EquippedWeapon->Dropped();
+			if(Combat->SecondaryWeapon)
+			{
+				Combat->SecondaryWeapon->Dropped();
+			}
 		}
 	}
 	MulticastElim();
@@ -745,6 +753,15 @@ void ABlasterCharacter::ServerEquipButtonPressed_Implementation()
 	}
 }
 
+void ABlasterCharacter::ServerSwapWeaponsPressed_Implementation()
+{
+	if (Combat && Combat->ShouldSwapWeapons())
+	{
+		Combat->SwapWeapons();
+	}
+}
+
+
 /*
 * Getters
 */
@@ -821,19 +838,21 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Look);
 
-		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Equip);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ABlasterCharacter::AimButtonPressed);
+		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ABlasterCharacter::AimButtonReleased);
 
 		EnhancedInputComponent->BindAction(CrouchHoldAction, ETriggerEvent::Started, this, &ABlasterCharacter::CrouchButtonPressed);
 		EnhancedInputComponent->BindAction(CrouchHoldAction, ETriggerEvent::Completed, this, &ABlasterCharacter::CrouchButtonReleased);
 		EnhancedInputComponent->BindAction(CrouchPressedAction, ETriggerEvent::Started, this, &ABlasterCharacter::CrouchButtonPressed);
 
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &ABlasterCharacter::AimButtonPressed);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &ABlasterCharacter::AimButtonReleased);
+		EnhancedInputComponent->BindAction(EquipAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::Equip);
 
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Started, this, &ABlasterCharacter::FireButtonPressed);
 		EnhancedInputComponent->BindAction(FireAction, ETriggerEvent::Completed, this, &ABlasterCharacter::FireButtonReleased);
 
 		EnhancedInputComponent->BindAction(ReloadAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::ReloadButtonPressed);
+
+		EnhancedInputComponent->BindAction(SwapWeaponsAction, ETriggerEvent::Started, this, &ABlasterCharacter::SwapWeaponsPressed);
 
 		EnhancedInputComponent->BindAction(ThrowGrenadeAction, ETriggerEvent::Triggered, this, &ABlasterCharacter::ThrowGrenadeButtonPressed);
 	}
@@ -888,10 +907,9 @@ void ABlasterCharacter::Equip()
 {
 	if (bDisableCharacterGameplay) { return; }
 
-	if (Combat)
-	{
-		ServerEquipButtonPressed();
-	}
+
+	ServerEquipButtonPressed();
+
 }
 
 void ABlasterCharacter::FireButtonPressed()
@@ -977,6 +995,11 @@ void ABlasterCharacter::ReloadButtonPressed()
 	{
 		Combat->Reload();
 	}
+}
+
+void ABlasterCharacter::SwapWeaponsPressed()
+{
+	ServerSwapWeaponsPressed();
 }
 
 void ABlasterCharacter::ThrowGrenadeButtonPressed()

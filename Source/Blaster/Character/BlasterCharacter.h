@@ -117,6 +117,8 @@ protected:
 	*/
 	void AimButtonPressed();
 	void AimButtonReleased();
+	void ChoosePrimaryWeaponPressed();
+	void ChooseSecondaryWeaponPressed();
 	void CrouchButtonPressed();
 	void CrouchButtonReleased();
 	void Equip();
@@ -126,6 +128,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Move(const FInputActionValue& Value);
 	void ReloadButtonPressed();
+	void SwapWeaponsPressed();
 	void ThrowGrenadeButtonPressed();
 
 private:
@@ -134,6 +137,9 @@ private:
 	*/
 	UFUNCTION(Server, Reliable)
 	void ServerEquipButtonPressed();
+
+	UFUNCTION(Server, Reliable)
+	void ServerSwapWeaponsPressed();
 
 	/*
 	* AimOffset
@@ -372,6 +378,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ReloadAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* SwapWeaponsAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	UInputAction* ThrowGrenadeAction;

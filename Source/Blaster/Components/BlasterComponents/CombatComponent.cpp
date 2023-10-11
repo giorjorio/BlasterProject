@@ -104,7 +104,7 @@ void UCombatComponent::InterptFOV(float DeltaTime)
 
 void UCombatComponent::SetAiming(bool bIsAiming)
 {
-	if (Character == nullptr || EquippedWeapon == nullptr) { return; }
+	if (Character == nullptr || EquippedWeapon == nullptr || CombatState == ECombatState::ECS_Reloading) { return; }
 
 	bAiming = bIsAiming;
 	ServerSetAiming(bIsAiming);
@@ -297,7 +297,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 
 void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
 {
-	if (WeaponToEquip == nullptr) { return; }
+	if (WeaponToEquip == nullptr || Character == nullptr) { return; }
 
 	DropEquippedWeapon();
 	EquippedWeapon = WeaponToEquip;
@@ -312,12 +312,11 @@ void UCombatComponent::EquipPrimaryWeapon(AWeapon* WeaponToEquip)
 	UpdatePrimaryWeaponIcon();
 	PlayEquipWeaponSound(WeaponToEquip);
 	ReloadEmptyWeapon();
-	EquippedWeapon->EnableCustomDepth(false);
 }
 
 void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
 {
-	if (WeaponToEquip == nullptr) { return; }
+	if (WeaponToEquip == nullptr || Character == nullptr) { return; }
 
 	SecondaryWeapon = WeaponToEquip;
 	SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
@@ -325,12 +324,6 @@ void UCombatComponent::EquipSecondaryWeapon(AWeapon* WeaponToEquip)
 	SecondaryWeapon->SetOwner(Character);
 	UpdateSecondaryWeaponIcon();
 	PlayEquipWeaponSound(WeaponToEquip);
-
-	if (SecondaryWeapon->GetWeaponMesh())
-	{
-		SecondaryWeapon->GetWeaponMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
-		SecondaryWeapon->GetWeaponMesh()->MarkRenderStateDirty();
-	}
 }
 
 void UCombatComponent::OnRep_EquippedWeapon()
@@ -346,26 +339,18 @@ void UCombatComponent::OnRep_EquippedWeapon()
 
 		UpdatePrimaryWeaponIcon();
 		PlayEquipWeaponSound(EquippedWeapon);
-		EquippedWeapon->EnableCustomDepth(false);
+		EquippedWeapon->SetHUDAmmo();
 	}
 }
 
 void UCombatComponent::OnRep_SecondaryWeapon()
 {
-	if (SecondaryWeapon && Character)
+	if (SecondaryWeapon)
 	{
 		SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
-
 		AttachActorToBackpack(SecondaryWeapon);
-
 		UpdateSecondaryWeaponIcon();
 		PlayEquipWeaponSound(EquippedWeapon);
-
-		if (SecondaryWeapon->GetWeaponMesh())
-		{
-			SecondaryWeapon->GetWeaponMesh()->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
-			SecondaryWeapon->GetWeaponMesh()->MarkRenderStateDirty();
-		}
 	}
 }
 
@@ -479,6 +464,30 @@ void UCombatComponent::ReloadEmptyWeapon()
 	{
 		Reload();
 	}
+}
+
+bool UCombatComponent::ShouldSwapWeapons()
+{
+	return (EquippedWeapon != nullptr && SecondaryWeapon != nullptr);
+}
+
+void UCombatComponent::SwapWeapons()
+{
+	AWeapon* TempWeapon = EquippedWeapon;
+	EquippedWeapon = SecondaryWeapon;
+	SecondaryWeapon = TempWeapon;
+
+	EquippedWeapon->SetWeaponState(EWeaponState::EWS_Equipped);
+	AttachActorToRightHand(EquippedWeapon);
+	EquippedWeapon->SetHUDAmmo();
+	UpdateCarriedAmmo();
+	UpdatePrimaryWeaponIcon();
+	PlayEquipWeaponSound(EquippedWeapon);
+
+	SecondaryWeapon->SetWeaponState(EWeaponState::EWS_EquippedSecondary);
+	AttachActorToBackpack(SecondaryWeapon);
+	UpdateSecondaryWeaponIcon();
+
 }
 
 void UCombatComponent::UpdateCarriedAmmo()
@@ -789,6 +798,7 @@ void UCombatComponent::ServerReload_Implementation()
 {
 	if (Character == nullptr || EquippedWeapon == nullptr) { return; }
 
+	SetAiming(false);
 	CombatState = ECombatState::ECS_Reloading;
 	HandleReload();
 

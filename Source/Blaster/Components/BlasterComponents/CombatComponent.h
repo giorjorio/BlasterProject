@@ -137,6 +137,7 @@ protected:
 
 	void PlayEquipWeaponSound(AWeapon* WeaponToEquip);
 	void ReloadEmptyWeapon();
+	void SwapWeapons();
 	
 
 	/*
@@ -333,4 +334,5 @@ private:
 
 public:
 	FORCEINLINE int32 GetGrenades() const { return Grenades; }
+	bool ShouldSwapWeapons();
 };
