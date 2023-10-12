@@ -12,6 +12,7 @@
 class UImage;
 class UProgressBar;
 class UTextBlock;
+class UWidgetAnimation;
 
 
 UCLASS()
@@ -44,12 +45,6 @@ public:
 	/*
 	* Health
 	*/
-	/*UPROPERTY(meta = (BindWidget))
-	UProgressBar* HealthBar;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* HealthText;*/
-
 	UPROPERTY(meta = (BindWidget))
 	URoundProgressBarWidget* RoundHealthBar;
 
@@ -64,6 +59,15 @@ public:
 	*/
 	UPROPERTY(meta = (BindWidget))
 	UTextBlock* MatchCountdownText;
+
+	/*
+	* Player's connection
+	*/
+	UPROPERTY(meta = (BindWidget))
+	UImage* HighPingImage;
+
+	UPROPERTY(meta = (BindWidgetAnim), Transient)
+	UWidgetAnimation* HighPingAnimation;
 	
 	/*
 	* Score
@@ -76,12 +80,6 @@ public:
 
 	/*
 	* Shield
-	*/
-	/*UPROPERTY(meta = (BindWidget))
-	UProgressBar* ShieldBar;
-
-	UPROPERTY(meta = (BindWidget))
-	UTextBlock* ShieldText;
 	*/
 	UPROPERTY(meta = (BindWidget))
 	URoundProgressBarWidget* RoundShieldBar;

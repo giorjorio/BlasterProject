@@ -67,7 +67,7 @@ protected:
 	void OnBlasterGameModeBeginPlay();
 
 	/*
-	* Sync time between client and server
+	* Client server sync
 	*/
 
 	// Requests the current server time, passing in the client's time when the request was sent
@@ -84,6 +84,7 @@ protected:
 	float TimeSyncFrequency = 5.f; // How often client should sync up with server
 
 	float TimeSyncRunningTime = 0.f; // How much time passed since the last sync
+
 	void CheckTimeSync(float DeltaTime); // Checking how much time passed since the last sync
 
 	UFUNCTION(Server, Reliable)
@@ -91,6 +92,28 @@ protected:
 
 	UFUNCTION(Client, Reliable)
 	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown);
+
+	/*
+	* Ping warning
+	*/ 
+	UPROPERTY(EditAnywhere)
+	float CheckPingFrequency = 20.f;
+
+	UPROPERTY(EditAnywhere)
+	float HighPingDuration = 5.f;
+
+	float HighPingRunningTime = 0.f;
+
+	UPROPERTY(EditAnywhere)
+	float HighPingThreshold = 50.f;
+
+	UPROPERTY(EditAnywhere)
+	float PingAnimationRunningTime = 0.f;
+	
+	void CheckPing(float DeltaTime);
+	void HighPingWarning();
+	void StopHighPingWarning();
+
 
 private:
 	UPROPERTY()

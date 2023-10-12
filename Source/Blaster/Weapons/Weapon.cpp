@@ -58,13 +58,12 @@ void AWeapon::BeginPlay()
 	Super::BeginPlay();
 
 
-	if (HasAuthority())
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-		AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
-		AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereBeginOverlap);
-		AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AWeapon::OnSphereEndOverlap);
-	}
+
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	AreaSphere->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	AreaSphere->OnComponentBeginOverlap.AddDynamic(this, &AWeapon::OnSphereBeginOverlap);
+	AreaSphere->OnComponentEndOverlap.AddDynamic(this, &AWeapon::OnSphereEndOverlap);
+
 	if (PickupWidget)
 	{
 		PickupWidget->SetVisibility(false);
@@ -260,8 +259,6 @@ void AWeapon::Fire(const FVector& HitTarget)
 		if (AmmoEjectSocket)
 		{
 			const FTransform SocketTransform = AmmoEjectSocket->GetSocketTransform(WeaponMesh);
-			//const FRotator RandRotator = UKismetMathLibrary::RandomRotator();
-			//const FRotator LepredRot = UKismetMathLibrary::RLerp(SocketTransform.GetRotation().Rotator(), RandRotator, 35.f, true);
 			UWorld* World = GetWorld();
 			if (World)
 			{
@@ -273,7 +270,10 @@ void AWeapon::Fire(const FVector& HitTarget)
 			}
 		}
 	}
-	SpendRound();
+	if(HasAuthority())
+	{
+		SpendRound();
+	}
 }
 
 void AWeapon::Dropped()

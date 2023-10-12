@@ -88,8 +88,6 @@ public:
 	void ServerLaunchGrenade(const FVector_NetQuantize& Target);
 
 
-	
-
 protected:
 	/*
 	* Essentials
@@ -112,6 +110,7 @@ protected:
 	* Firing Weapon
 	*/
 	void Fire();
+	void LocalFire(const FVector_NetQuantize& TraceHitTarget);
 
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastFire(const FVector_NetQuantize& TraceHitTarget);
