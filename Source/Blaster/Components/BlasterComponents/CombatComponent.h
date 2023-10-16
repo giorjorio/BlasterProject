@@ -64,6 +64,8 @@ public:
 	/*
 	* Reloading
 	*/
+	bool bLocallyReloading = false;
+
 	UFUNCTION(BlueprintCallable)
 	void FinishReloading();
 

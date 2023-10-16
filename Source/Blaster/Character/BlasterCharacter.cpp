@@ -787,6 +787,11 @@ bool ABlasterCharacter::bIsAiming()
 	return (Combat && Combat->bAiming);
 }
 
+bool ABlasterCharacter::bIsLocallyReloading()
+{
+	return (Combat && Combat->bLocallyReloading);
+}
+
 bool ABlasterCharacter::bIsWeaponEquipped()
 {
 	return (Combat && Combat->EquippedWeapon);

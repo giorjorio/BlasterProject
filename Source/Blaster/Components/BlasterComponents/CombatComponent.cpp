@@ -264,7 +264,7 @@ void UCombatComponent::OnRep_CombatState()
 	switch (CombatState)
 	{
 	case ECombatState::ECS_Reloading:
-		HandleReload();
+		if (Character && !Character->IsLocallyControlled()) { HandleReload(); }
 		break;
 	case ECombatState::ECS_Unoccupied:
 		if (bFireButtonPressed)
@@ -522,8 +522,10 @@ void UCombatComponent::UpdateCarriedAmmo()
 */
 bool UCombatComponent::CanFire()
 {
-	if (EquippedWeapon == nullptr) return false;
+	if (EquippedWeapon == nullptr) { return false; }
+	if (bLocallyReloading) { return false; }
 	if (!EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Reloading && EquippedWeapon->GetWeaponType() == EWeaponType::EWT_Shotgun) { return true; }
+
 	return !EquippedWeapon->IsEmpty() && bCanFire && CombatState == ECombatState::ECS_Unoccupied;
 }
 
@@ -860,14 +862,15 @@ void UCombatComponent::InitializeCarriedAmmo()
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
 	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, MaxGrenades);
-
 }
 
 void UCombatComponent::Reload()
 {
-	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull())
+	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull() && !bLocallyReloading)
 	{
 		ServerReload();
+		HandleReload();
+		bLocallyReloading = true;
 	}
 }
 
@@ -877,13 +880,22 @@ void UCombatComponent::ServerReload_Implementation()
 
 	SetAiming(false);
 	CombatState = ECombatState::ECS_Reloading;
-	HandleReload();
+	if (!Character->IsLocallyControlled()) { HandleReload(); }
 
+}
+
+void UCombatComponent::HandleReload()
+{
+	if (Character)
+	{
+		Character->PlayReloadMontage();
+	}
 }
 
 void UCombatComponent::FinishReloading()
 {
 	if (Character == nullptr) { return; }
+	bLocallyReloading = false;
 	if (Character->HasAuthority())
 	{
 		CombatState = ECombatState::ECS_Unoccupied;
@@ -893,11 +905,6 @@ void UCombatComponent::FinishReloading()
 	{
 		Fire();
 	}
-}
-
-void UCombatComponent::HandleReload()
-{
-	Character->PlayReloadMontage();
 }
 
 void UCombatComponent::ShotgunShellReload()

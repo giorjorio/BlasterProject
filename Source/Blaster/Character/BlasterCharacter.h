@@ -319,6 +319,7 @@ public:
 	*/
 	bool bIsWeaponEquipped();
 	bool bIsAiming();
+	bool bIsLocallyReloading();
 	FORCEINLINE bool GetDisableCharacterGameplay() const { return bDisableCharacterGameplay; }
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
 	FORCEINLINE bool IsHPFull() const { return Health == MaxHealth; }
