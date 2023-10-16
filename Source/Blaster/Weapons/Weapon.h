@@ -49,11 +49,19 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void OnRep_Owner() override;
-	void SetHUDAmmo();
+	
+	/*
+	* Weapon functionality
+	*/
 	void ShowPickupWidget(bool bShowWidget);
 	virtual void Fire(const FVector& HitTarget);
 	void Dropped();
+
+	/*
+	* Ammo
+	*/
 	void AddAmmo(int32 AmmoToAdd);
+	void SetHUDAmmo();
 	
 	UPROPERTY(EditAnywhere)
 	EFireType FireType;
@@ -153,8 +161,6 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-
-
 private:
 	/*
 	* Other classes
@@ -177,17 +183,24 @@ private:
 	/*
 	* Ammo
 	*/
-	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo)
+	UPROPERTY(EditAnywhere)
 	int32 Ammo;
-
-	UFUNCTION()
-	void OnRep_Ammo();
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ACasing> CasingClass;
 
 	UPROPERTY(EditAnywhere)
 	int32 MagCapacity;
+
+	// The number of unprocessed server requests for Ammo
+	//Incremented in SpendRound, decremented in ClienUpdateAmmo
+	int32 Sequence = 0;
+
+	UFUNCTION(Client, Reliable)
+	void ClientUpdateAmmo(int32 ServerAmmo);
+	
+	UFUNCTION(Client, Reliable)
+	void ClientAddAmmo(int32 AmmoToAdd);
 
 	void SpendRound();
 
