@@ -19,6 +19,7 @@ class ABlasterPlayerState;
 class AController;
 class AWeapon;
 class UAnimMontage;
+class UBoxComponent;
 class UBuffComponent;
 class UCameraComponent;
 class UCombatComponent;
@@ -45,6 +46,64 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void PostInitializeComponents() override;
 	virtual void Tick(float DeltaTime) override;
+
+	/*
+	* Hit boxes used for server-side rewind 
+	*/
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HeadBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* PelvisBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Spine02Box;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Spine03Box;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* UpperArmLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* UpperArmRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* LowerArmLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* LowerArmRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HandLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HandRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BackpackBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BlanketBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* ThighLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* ThighRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CalfLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CalfRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* FootLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* FootRightBox;
+
 
 	/*
 	* HUD
