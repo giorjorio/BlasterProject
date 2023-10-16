@@ -15,7 +15,7 @@ class BLASTER_API UBuffComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	friend class ABlasterCharacter;
+	friend ABlasterCharacter;
 	UBuffComponent();
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 

@@ -28,7 +28,7 @@ public:
 	/*
 	* Essentials
 	*/
-	friend class ABlasterCharacter;
+	friend ABlasterCharacter;
 	UCombatComponent();
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;

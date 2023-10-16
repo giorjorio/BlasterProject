@@ -26,6 +26,7 @@ class UCombatComponent;
 class UInputAction;
 class UInputComponent;
 class UInputMappingContext;
+class ULagCompensationComponent;
 class USoundCue;
 class USpringArmComponent;
 class UWidgetComponent;
@@ -48,62 +49,10 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/*
-	* Hit boxes used for server-side rewind 
+	* Hit boxes used for server-side rewind
 	*/
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* HeadBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* PelvisBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* Spine02Box;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* Spine03Box;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* UpperArmLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* UpperArmRightBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* LowerArmLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* LowerArmRightBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* HandLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* HandRightBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* BackpackBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* BlanketBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* ThighLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* ThighRightBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* CalfLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* CalfRightBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* FootLeftBox;
-
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* FootRightBox;
-
+	UPROPERTY()
+	TMap<FName, UBoxComponent*> HitCollisionBoxes;
 
 	/*
 	* HUD
@@ -169,6 +118,63 @@ protected:
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
 
 	void RotateInPlace(float DeltaTime);
+
+	/*
+	* Hit boxes used for server-side rewind
+	*/
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HeadBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* PelvisBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Spine02Box;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* Spine03Box;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* UpperArmLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* UpperArmRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* LowerArmLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* LowerArmRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HandLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* HandRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BackpackBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BlanketBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* ThighLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* ThighRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CalfLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CalfRightBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* FootLeftBox;
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* FootRightBox;
 	
 	/*
 	* Weapon
@@ -262,6 +268,27 @@ private:
 	void HideCharacterMesh(bool bHide);
 
 	/*
+	* Components or Classes
+	*/
+	UPROPERTY()
+	ABlasterPlayerController* BlasterPlayerController;
+
+	UPROPERTY()
+	ABlasterPlayerState* BlasterPlayerState;
+
+	UPROPERTY(VisibleAnywhere)
+	UBuffComponent* Buff;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UCombatComponent* Combat;
+
+	UPROPERTY(VisibleAnywhere)
+	ULagCompensationComponent* LagCompensation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UWidgetComponent* OverheadWidget;
+
+	/*
 	* Default Weapon
 	*/
 	UPROPERTY(EditAnywhere)
@@ -332,23 +359,7 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
 
-	/*
-	* Project Components or Classes
-	*/
-	UPROPERTY()
-	ABlasterPlayerController* BlasterPlayerController;
-
-	UPROPERTY()
-	ABlasterPlayerState* BlasterPlayerState;
-
-	UPROPERTY(VisibleAnywhere)
-	UBuffComponent* Buff;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UCombatComponent* Combat;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	UWidgetComponent* OverheadWidget;
+	
 
 	/*
 	* Shield
