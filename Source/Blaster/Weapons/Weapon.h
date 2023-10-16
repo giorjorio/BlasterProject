@@ -19,6 +19,15 @@ enum class EWeaponState : uint8
 	EWS_MAX UMETA(DisplayName = "DefaultMAX")
 };
 
+UENUM(BlueprintType)
+enum class EFireType : uint8
+{
+	EFT_HitScan UMETA(DisplayName = "Hit Scan Weapon"),
+	EFT_Projectile UMETA(DisplayName = "Projectile Weapon"),
+	EFT_Shotgun UMETA(DisplayName = "Shotgun Weapon"),
+	EFT_MAX UMETA(DisplayName = "DefaultMAX")
+};
+
 class ABlasterCharacter;
 class ABlasterPlayerController;
 class ACasing;
@@ -45,10 +54,15 @@ public:
 	virtual void Fire(const FVector& HitTarget);
 	void Dropped();
 	void AddAmmo(int32 AmmoToAdd);
+	
+	UPROPERTY(EditAnywhere)
+	EFireType FireType;
+
+	FVector TraceEndWithScatter(const FVector& HitTarget);
+
 	/*
 	* Textures for the weapon crosshairs
 	*/
-
 	UPROPERTY(EditAnywhere, Category = "Crosshairs")
 	UTexture2D* CrosshairsCenter;
 
@@ -66,6 +80,12 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Image")
 	UTexture2D* WeaponIcon;
+
+	/*
+	* Trace end with scatter
+	*/
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	bool bUseScatter = false;
 
 	/*
 	* Zoomed FOV while aiming
@@ -100,6 +120,15 @@ protected:
 	virtual void BeginPlay() override;
 
 	/*
+	* Trace end with scatter
+	*/
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	float DistanceToSphere = 800.f;
+
+	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
+	float SphereRadius = 75.f;
+
+	/*
 	* Weapon State 
 	*/
 	virtual void OnWeaponStateSet();
@@ -124,47 +153,68 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-private:
 
+
+private:
+	/*
+	* Other classes
+	*/
+	UPROPERTY()
+	ABlasterCharacter* BlasterOwnerCharacter;
+
+	UPROPERTY()
+	ABlasterPlayerController* BlasterOwnerController;
+
+	/*
+	* Main components
+	*/
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
 	USkeletalMeshComponent* WeaponMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
 	USphereComponent* AreaSphere;
 
-	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
-	EWeaponState WeaponState;
-
-	UFUNCTION()
-	void OnRep_WeaponState();
-
-	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
-	UWidgetComponent* PickupWidget;
-
-	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
-	UAnimationAsset* FireAnimation;
-
-	UPROPERTY(EditAnywhere)
-	TSubclassOf<ACasing> CasingClass;
-
+	/*
+	* Ammo
+	*/
 	UPROPERTY(EditAnywhere, ReplicatedUsing = OnRep_Ammo)
 	int32 Ammo;
 
 	UFUNCTION()
 	void OnRep_Ammo();
 
-	void SpendRound();
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<ACasing> CasingClass;
 
 	UPROPERTY(EditAnywhere)
 	int32 MagCapacity;
 
-	UPROPERTY()
-	ABlasterCharacter* BlasterOwnerCharacter;
-	UPROPERTY()
-	ABlasterPlayerController* BlasterOwnerController;
+	void SpendRound();
+
+	/*
+	* Animation
+	*/
+	UPROPERTY(EditAnywhere, Category = "WeaponProperties")
+	UAnimationAsset* FireAnimation;
+
+	/*
+	* Weapon PickupWidget
+	*/
+	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
+	UWidgetComponent* PickupWidget;
+
+	/*
+	* Weapon State and type
+	*/
+	UPROPERTY(ReplicatedUsing = OnRep_WeaponState, VisibleAnywhere, Category = "Weapon Properties")
+	EWeaponState WeaponState;
+
+	UFUNCTION()
+	void OnRep_WeaponState();
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
+
 
 public:	
 
