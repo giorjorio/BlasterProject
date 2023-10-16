@@ -128,8 +128,6 @@ protected:
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastShotgunFire(const TArray<FVector_NetQuantize>& TraceHitTargets);
 
-	
-
 	/*
 	* Equip Weapon
 	*/
@@ -150,7 +148,6 @@ protected:
 	void ReloadEmptyWeapon();
 	void SwapWeapons();
 	
-
 	/*
 	* Reloading
 	*/
@@ -174,8 +171,6 @@ protected:
 
 	void ShowAttachedGrenade(bool bShowGrenade);
 
-
-
 private:
 	/*
 	* Project Component or Classes
@@ -198,8 +193,13 @@ private:
 	/*
 	* Aiming and FOV
 	*/
-	UPROPERTY(Replicated)
-	bool bAiming;
+	UPROPERTY(ReplicatedUsing = OnRep_Aiming)
+	bool bAiming = false;
+
+	UFUNCTION()
+	void OnRep_Aiming();
+
+	bool bAimButtonPressed = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	float AimWalkSpeed;
