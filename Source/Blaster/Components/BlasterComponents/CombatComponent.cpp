@@ -44,10 +44,10 @@ void UCombatComponent::BeginPlay()
 			DefaultFOV = Character->GetFollowCamera()->FieldOfView;
 			CurrentFOV = DefaultFOV;
 		}
-		//if (Character->HasAuthority())
-		//{
-		//	InitializeCarriedAmmo();
-		//}
+		if (Character->HasAuthority())
+		{
+			InitializeCarriedAmmo();
+		}
 	}
 	UpdateGrenades();
 
@@ -69,7 +69,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 	
-	if(Character&&Character->IsLocallyControlled())
+	if (Character && Character->IsLocallyControlled())
 	{
 		SetHUDCrosshairs(DeltaTime);
 
@@ -79,6 +79,7 @@ void UCombatComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 
 		InterptFOV(DeltaTime);
 	}
+
 }
 
 /*
@@ -264,18 +265,15 @@ void UCombatComponent::OnRep_CombatState()
 	switch (CombatState)
 	{
 	case ECombatState::ECS_Reloading:
-		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_Reloading"));
 		if (Character && !Character->IsLocallyControlled()) { HandleReload(); }
 		break;
 	case ECombatState::ECS_Unoccupied:
-		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_Unoccupied"));
 		if (bFireButtonPressed)
 		{
 			Fire();
 		}
 		break;
 	case ECombatState::ECS_ThrowingGrenade:
-		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_ThrowingGrenade"));
 		if (Character && !Character->IsLocallyControlled())
 		{
 			Character->PlayThrowGrenadeMontage();
@@ -709,7 +707,6 @@ void UCombatComponent::ThrowGrenade()
 	}
 	else if (Character && Character->HasAuthority())
 	{
-
 		if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 		{
 			CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxCarriedAmmoMap[EWeaponType::EWT_Grenade]);
@@ -731,10 +728,8 @@ void UCombatComponent::ServerThrowGrenade_Implementation()
 	}
 	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Client throw grenade"));
 		CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxCarriedAmmoMap[EWeaponType::EWT_Grenade]);
 		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
-		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
 	}
 	UpdateGrenades();
 }
@@ -794,17 +789,12 @@ void UCombatComponent::UpdateGrenades()
 	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 	{
 		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
-		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
-
 	}
 
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
 	if (Controller)
 	{
-
 		Controller->SetHUDGrenades(Grenades);
-		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
-
 	}
 }
 
@@ -853,26 +843,26 @@ int32 UCombatComponent::AmountToReload()
 	return 0;
 }
 
-//void UCombatComponent::InitializeCarriedAmmo()
-//{
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, StartingRocketAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, StartingPistolAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, StartingSMGAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, StartingShotgunAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
-//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, StartingGrenades);
-//
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, MaxARAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, MaxRocketAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, MaxPistolAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, MaxSMGAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, MaxShotgunAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
-//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, MaxGrenades);
-//}
+void UCombatComponent::InitializeCarriedAmmo()
+{
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, StartingRocketAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, StartingPistolAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, StartingSMGAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, StartingShotgunAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
+	CarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, StartingGrenades);
+
+	/*MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, MaxARAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, MaxRocketAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, MaxPistolAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, MaxSMGAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, MaxShotgunAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
+	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, 4);*/
+}
 
 void UCombatComponent::Reload()
 {
@@ -899,14 +889,14 @@ void UCombatComponent::HandleReload()
 	if (Character)
 	{
 		Character->PlayReloadMontage();
-	}
 
-	UBlasterAnimInstance* AnimInstance = Cast<UBlasterAnimInstance>(Character->GetMesh()->GetAnimInstance());
-	if (AnimInstance)
-	{
-		FOnMontageEnded BlendOutDelegate;
-		BlendOutDelegate.BindUObject(AnimInstance, &UBlasterAnimInstance::OnReloadFailedToBlendOut);
-		AnimInstance->Montage_SetBlendingOutDelegate(BlendOutDelegate, Character->GetReloadMontage());
+		UBlasterAnimInstance* AnimInstance = Cast<UBlasterAnimInstance>(Character->GetMesh()->GetAnimInstance());
+		if (AnimInstance)
+		{
+			FOnMontageEnded BlendOutDelegate;
+			BlendOutDelegate.BindUObject(AnimInstance, &UBlasterAnimInstance::OnReloadFailedToBlendOut);
+			AnimInstance->Montage_SetBlendingOutDelegate(BlendOutDelegate, Character->GetReloadMontage());
+		}
 	}
 }
 

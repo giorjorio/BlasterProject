@@ -232,11 +232,52 @@ private:
 	UFUNCTION()
 	void OnRep_CarriedAmmo();
 
-	UPROPERTY(EditAnywhere)
 	TMap<EWeaponType, int32> CarriedAmmoMap;
 
 	UPROPERTY(EditAnywhere)
 	TMap<EWeaponType, int32> MaxCarriedAmmoMap;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingARAmmo = 60;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingGrenadeLauncherAmmo = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingPistolAmmo = 24;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingRocketAmmo = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingShotgunAmmo = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingSMGAmmo = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingSniperAmmo = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxARAmmo = 300;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxGrenadeLauncherAmmo = 30;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxPistolAmmo = 120;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxRocketAmmo = 10;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxShotgunAmmo = 40;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxSMGAmmo = 200;
+
+	UPROPERTY(EditAnywhere)
+	int32 MaxSniperAmmo = 30;
 
 	void InitializeCarriedAmmo();
 	void UpdateAmmoValues();
@@ -267,6 +308,9 @@ private:
 	*/
 	UPROPERTY(ReplicatedUsing = OnRep_Grenades)
 	int32 Grenades;
+
+	UPROPERTY(EditAnywhere)
+	int32 StartingGrenades = 2;
 
 	UFUNCTION()
 	void OnRep_Grenades();
