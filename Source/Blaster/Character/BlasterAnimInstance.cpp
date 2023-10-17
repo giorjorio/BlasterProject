@@ -3,10 +3,11 @@
 
 #include "BlasterAnimInstance.h"
 
+#include "BlasterCharacter.h"
 #include "Blaster/BlasterTypes/CombatState.h"
+#include "Blaster/Components/BlasterComponents/CombatComponent.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/Weapons/Weapon.h"
-#include "BlasterCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -28,13 +29,6 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 		BlasterCharacter = Cast<ABlasterCharacter>(TryGetPawnOwner());
 	}
 	if (BlasterCharacter == nullptr) { return; }
-	
-	/*if (BlasterController == nullptr)
-	{
-		BlasterController = Cast<ABlasterPlayerController>(BlasterCharacter->Controller);
-	}
-	if (BlasterController == nullptr) { return; }*/
-	
 
 	FVector Velocity = BlasterCharacter->GetVelocity();
 	Velocity.Z = 0.f;
@@ -98,4 +92,13 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	}
 	bUseAimOffsets = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->GetDisableCharacterGameplay();
 	bTransformRightHand = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->GetDisableCharacterGameplay();
+}
+
+void UBlasterAnimInstance::OnReloadFailedToBlendOut(UAnimMontage* AnimMontage, bool bInterrupted)
+{
+	if (bInterrupted)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("OnReloadFailedToBlendOut"));
+		BlasterCharacter->GetCombat()->FinishReloading();
+	}
 }

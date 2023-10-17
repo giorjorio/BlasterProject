@@ -19,8 +19,6 @@ void ABlasterPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Warning, TEXT("ABlasterPlayerController::BeginPlay()"));
-
 	SetBlasterHUD();
 
 	if(HasAuthority())
@@ -383,7 +381,6 @@ void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("bHUDValid else"));
 		bInitializeWeaponAmmo = true;
 		HUDWeaponAmmo = Ammo;
 	}
@@ -546,8 +543,6 @@ void ABlasterPlayerController::PollInit()
 			CharacterOverlay = BlasterHUD->CharacterOverlay;
 			if (CharacterOverlay)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("PollInit"));
-
 				if (bInitializeWeaponAmmo) SetHUDWeaponAmmo(HUDWeaponAmmo);
 			}
 		}
@@ -651,7 +646,6 @@ void ABlasterPlayerController::HandleCountdown()
 
 		if (bHUDValid)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("bHUDValid"));
 			if (!BlasterHUD->Announcement->IsInViewport())
 			{
 				BlasterHUD->Announcement->AddToViewport();

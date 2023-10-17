@@ -7,12 +7,9 @@
 #include "Animation/AnimInstance.h"
 #include "Blaster/BlasterTypes/TurningInPlace.h"
 
-
 #include "BlasterAnimInstance.generated.h"
 
-/**
- * 
- */
+
 class ABlasterCharacter;
 class ABlasterPlayerController;
 
@@ -26,6 +23,10 @@ public:
 	virtual void NativeInitializeAnimation() override;
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 	
+	UFUNCTION()
+	void OnReloadFailedToBlendOut(UAnimMontage* AnimMontage, bool bInterrupted);
+
+
 private:
 
 	UPROPERTY(BlueprintReadOnly, Category = Character, meta = (AllowPrivateAccess = "true"))

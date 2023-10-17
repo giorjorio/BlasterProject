@@ -33,7 +33,6 @@
 
 ABlasterCharacter::ABlasterCharacter()
 {
-	UE_LOG(LogTemp, Warning, TEXT(" ABlasterCharacter::ABlasterCharacter()"));
 
 	PrimaryActorTick.bCanEverTick = true;
 	SpawnCollisionHandlingMethod = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
@@ -193,15 +192,6 @@ void ABlasterCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	if(HasAuthority())
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ServerABlasterCharacter::BeginPlay()"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("ClientABlasterCharacter::BeginPlay()"));
-	}
-
 	if (!HasAuthority())
 	{
 		AddInputMappinContextToPlayer();
@@ -287,7 +277,7 @@ void ABlasterCharacter::Tick(float DeltaTime)
 }
 
 /*
-* AimOffset
+* AimOffset and Animation
 */
 void ABlasterCharacter::AimOffset(float DeltaTime)
 {
@@ -699,13 +689,9 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 
 void ABlasterCharacter::UpdateHUDHealth()
 {
-	UE_LOG(LogTemp, Warning, TEXT("UpdateHUDHealthBefore"));
-
 	BlasterPlayerController = BlasterPlayerController == nullptr ? Cast<ABlasterPlayerController>(GetController()) : BlasterPlayerController;
 	if (BlasterPlayerController)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("UpdateHUDHealthAfter"));
-
 		BlasterPlayerController->SetHUDHealth(Health, MaxHealth);
 	}
 }
@@ -883,6 +869,9 @@ void ABlasterCharacter::ServerSwapWeaponsPressed_Implementation()
 		Combat->SwapWeapons();
 	}
 }
+
+
+
 
 
 /*

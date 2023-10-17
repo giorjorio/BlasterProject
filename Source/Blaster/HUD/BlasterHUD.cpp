@@ -10,7 +10,6 @@
 void ABlasterHUD::BeginPlay()
 {
 	Super::BeginPlay();
-	UE_LOG(LogTemp, Warning, TEXT(" ABlasterHUD::BeginPlay()"));
 
 	APlayerController* PlayerController = GetOwningPlayerController();
 	if (PlayerController && CharacterOverlayClass)
@@ -23,7 +22,6 @@ void ABlasterHUD::AddCharacterOverlay()
 {
 	if (CharacterOverlay)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AddCharacterOverlay()"));
 		CharacterOverlay->AddToViewport();
 	}
 	

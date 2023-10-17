@@ -264,15 +264,18 @@ void UCombatComponent::OnRep_CombatState()
 	switch (CombatState)
 	{
 	case ECombatState::ECS_Reloading:
+		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_Reloading"));
 		if (Character && !Character->IsLocallyControlled()) { HandleReload(); }
 		break;
 	case ECombatState::ECS_Unoccupied:
+		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_Unoccupied"));
 		if (bFireButtonPressed)
 		{
 			Fire();
 		}
 		break;
 	case ECombatState::ECS_ThrowingGrenade:
+		UE_LOG(LogTemp, Warning, TEXT("ECombatState::ECS_ThrowingGrenade"));
 		if (Character && !Character->IsLocallyControlled())
 		{
 			Character->PlayThrowGrenadeMontage();
@@ -868,6 +871,7 @@ void UCombatComponent::Reload()
 {
 	if (CarriedAmmo > 0 && CombatState == ECombatState::ECS_Unoccupied && EquippedWeapon && !EquippedWeapon->IsFull() && !bLocallyReloading)
 	{
+		SetAiming(false);
 		ServerReload();
 		HandleReload();
 		bLocallyReloading = true;
@@ -878,7 +882,6 @@ void UCombatComponent::ServerReload_Implementation()
 {
 	if (Character == nullptr || EquippedWeapon == nullptr) { return; }
 
-	SetAiming(false);
 	CombatState = ECombatState::ECS_Reloading;
 	if (!Character->IsLocallyControlled()) { HandleReload(); }
 
@@ -890,7 +893,16 @@ void UCombatComponent::HandleReload()
 	{
 		Character->PlayReloadMontage();
 	}
+
+	UBlasterAnimInstance* AnimInstance = Cast<UBlasterAnimInstance>(Character->GetMesh()->GetAnimInstance());
+	if (AnimInstance)
+	{
+		FOnMontageEnded BlendOutDelegate;
+		BlendOutDelegate.BindUObject(AnimInstance, &UBlasterAnimInstance::OnReloadFailedToBlendOut);
+		AnimInstance->Montage_SetBlendingOutDelegate(BlendOutDelegate, Character->GetReloadMontage());
+	}
 }
+
 
 void UCombatComponent::FinishReloading()
 {

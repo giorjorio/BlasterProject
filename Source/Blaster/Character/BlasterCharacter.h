@@ -188,8 +188,6 @@ protected:
 	*/
 	void AimButtonPressed();
 	void AimButtonReleased();
-	void ChoosePrimaryWeaponPressed();
-	void ChooseSecondaryWeaponPressed();
 	void CrouchButtonPressed();
 	void CrouchButtonReleased();
 	void Equip();
