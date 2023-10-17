@@ -2,8 +2,10 @@
 #include "LagCompensationComponent.h"
 
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/Weapons/Weapon.h"
 #include "Components/BoxComponent.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 
 ULagCompensationComponent::ULagCompensationComponent()
@@ -24,10 +26,29 @@ void ULagCompensationComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 	UpdateFrameHistory();
 
+
 }
+
+void ULagCompensationComponent::ServerScoreRequest_Implementation(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation, float HitTime, AWeapon* DamageCauser)
+{
+	FServerSideRewindResult Confirm = ServerSideRewind(HitCharacter, TraceStart, HitLocation, HitTime);
+
+	if (Character && Character->Controller && HitCharacter && DamageCauser && Confirm.bHitConfirmed)
+	{
+		UGameplayStatics::ApplyDamage(
+			HitCharacter,
+			DamageCauser->GetDamage(),
+			Character->Controller,
+			DamageCauser,
+			UDamageType::StaticClass()
+		);
+	}
+}
+
 
 void ULagCompensationComponent::UpdateFrameHistory()
 {
+	if (Character == nullptr || !Character->HasAuthority()) { return; }
 	if (FrameHistory.Num() <= 1)
 	{
 		FFramePackage ThisFrame;
@@ -46,7 +67,7 @@ void ULagCompensationComponent::UpdateFrameHistory()
 		SaveFramePackage(ThisFrame);
 		FrameHistory.AddHead(ThisFrame);
 
-		ShowFramePackage(ThisFrame, FColor::Cyan);
+		//ShowFramePackage(ThisFrame, FColor::Cyan);
 	}
 }
 
@@ -72,7 +93,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 	if (OldestHistoryTime > HitTime)
 	{
 		//too far back - too laggy to do SSR
-		return;
+		return FServerSideRewindResult();
 	}
 	if (OldestHistoryTime == HitTime)
 	{

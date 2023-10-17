@@ -49,7 +49,7 @@ public:
 	void HandleCountdown();
 
 
-
+	float SingleTripTime = 0.f;
 
 	UPROPERTY(Replicated)
 	bool bDisableGameplay = false;

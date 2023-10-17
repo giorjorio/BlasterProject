@@ -128,6 +128,21 @@ protected:
 	virtual void BeginPlay() override;
 
 	/*
+	* Other classes
+	*/
+	UPROPERTY()
+	ABlasterCharacter* BlasterOwnerCharacter;
+
+	UPROPERTY()
+	ABlasterPlayerController* BlasterOwnerController;
+
+	/*
+	* Damage
+	*/
+	UPROPERTY(EditAnywhere)
+	float Damage = 15.f;
+
+	/*
 	* Trace end with scatter
 	*/
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
@@ -161,15 +176,11 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-private:
-	/*
-	* Other classes
-	*/
-	UPROPERTY()
-	ABlasterCharacter* BlasterOwnerCharacter;
+	UPROPERTY(EditAnywhere)
+	bool bUseServerSideRewind = false;
 
-	UPROPERTY()
-	ABlasterPlayerController* BlasterOwnerController;
+private:
+
 
 	/*
 	* Main components
@@ -234,6 +245,7 @@ public:
 	void SetWeaponState(EWeaponState State);
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+	FORCEINLINE float GetDamage() const { return Damage; }
 	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
 	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 	bool IsFull();
