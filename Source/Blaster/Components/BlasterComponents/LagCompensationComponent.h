@@ -36,7 +36,6 @@ struct FFramePackage
 	TMap<FName, FBoxInformation> HitBoxInfo;
 	
 };
-
 USTRUCT(BlueprintType)
 struct FServerSideRewindResult
 {
@@ -47,6 +46,20 @@ struct FServerSideRewindResult
 
 	UPROPERTY()
 	bool bHeadShot;
+
+};
+
+USTRUCT(BlueprintType)
+struct FShotgunServerSideRewindResult
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	TMap<ABlasterCharacter*, uint32> Headshots;
+
+	UPROPERTY()
+	TMap<ABlasterCharacter*, uint32> BodyShots;
+
 
 };
 
@@ -69,12 +82,17 @@ protected:
 	virtual void BeginPlay() override;
 	void SaveFramePackage(FFramePackage& Package);
 	void UpdateFrameHistory();
+	FFramePackage GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime);
 	FFramePackage InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime);
 	FServerSideRewindResult ConfirmHit(const FFramePackage& Package, ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation);
 	void CacheBoxPositions(ABlasterCharacter* HitCharacter, FFramePackage& OutFramePackage);
 	void MoveBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
 	void ResetHitBoxes(ABlasterCharacter* HitCharacter, const FFramePackage& Package);
 	void EnableCharacterMeshCollision(ABlasterCharacter* HitCharacter, ECollisionEnabled::Type CollisionEnabled);
+
+	/*
+	* Shotgun
+	*/
 private:
 
 	UPROPERTY()

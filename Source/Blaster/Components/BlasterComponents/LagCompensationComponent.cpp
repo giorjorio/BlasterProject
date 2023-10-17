@@ -45,7 +45,6 @@ void ULagCompensationComponent::ServerScoreRequest_Implementation(ABlasterCharac
 	}
 }
 
-
 void ULagCompensationComponent::UpdateFrameHistory()
 {
 	if (Character == nullptr || !Character->HasAuthority()) { return; }
@@ -70,8 +69,15 @@ void ULagCompensationComponent::UpdateFrameHistory()
 		//ShowFramePackage(ThisFrame, FColor::Cyan);
 	}
 }
-
+//HitScan
 FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterCharacter* HitCharacter, const FVector_NetQuantize& TraceStart, const FVector_NetQuantize& HitLocation, float HitTime)
+{
+	FFramePackage FrameToCheck = GetFrameToCheck(HitCharacter, HitTime);
+
+	return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+}
+
+FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
 {
 	bool bReturn =
 		HitCharacter == nullptr ||
@@ -79,7 +85,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 		HitCharacter->GetLagCompensation()->FrameHistory.GetHead() == nullptr ||
 		HitCharacter->GetLagCompensation()->FrameHistory.GetTail() == nullptr;
 
-	if (bReturn) { return FServerSideRewindResult(); }
+	if (bReturn) { return FFramePackage(); }
 
 	//Frame package that we check to verify a hit
 	FFramePackage FrameToCheck;
@@ -93,19 +99,19 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 	if (OldestHistoryTime > HitTime)
 	{
 		//too far back - too laggy to do SSR
-		return FServerSideRewindResult();
+		return FFramePackage();
 	}
 	if (OldestHistoryTime == HitTime)
 	{
 		FrameToCheck = History.GetTail()->GetValue();
 		bShouldInterpolate = false;
-		return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+		return FrameToCheck;
 	}
 	if (NewestHistoryTime <= HitTime)
 	{
 		FrameToCheck = History.GetHead()->GetValue();
 		bShouldInterpolate = false;
-		return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+		return FrameToCheck;
 	}
 
 	TDoubleLinkedList<FFramePackage>::TDoubleLinkedListNode* Younger = History.GetHead();
@@ -131,8 +137,7 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 		//Interpolate between Younger and Older
 		FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
 	}
-
-	return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
+	return FrameToCheck;
 }
 
 FFramePackage ULagCompensationComponent::InterpBetweenFrames(const FFramePackage& OlderFrame, const FFramePackage& YoungerFrame, float HitTime)

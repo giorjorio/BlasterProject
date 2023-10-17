@@ -44,10 +44,10 @@ void UCombatComponent::BeginPlay()
 			DefaultFOV = Character->GetFollowCamera()->FieldOfView;
 			CurrentFOV = DefaultFOV;
 		}
-		if (Character->HasAuthority())
-		{
-			InitializeCarriedAmmo();
-		}
+		//if (Character->HasAuthority())
+		//{
+		//	InitializeCarriedAmmo();
+		//}
 	}
 	UpdateGrenades();
 
@@ -709,9 +709,10 @@ void UCombatComponent::ThrowGrenade()
 	}
 	else if (Character && Character->HasAuthority())
 	{
+
 		if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 		{
-			CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxGrenades);
+			CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxCarriedAmmoMap[EWeaponType::EWT_Grenade]);
 			Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
 		}
 		UpdateGrenades();
@@ -730,8 +731,10 @@ void UCombatComponent::ServerThrowGrenade_Implementation()
 	}
 	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 	{
-		CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxGrenades);
+		UE_LOG(LogTemp, Warning, TEXT("Client throw grenade"));
+		CarriedAmmoMap[EWeaponType::EWT_Grenade] = FMath::Clamp(CarriedAmmoMap[EWeaponType::EWT_Grenade] - 1, 0, MaxCarriedAmmoMap[EWeaponType::EWT_Grenade]);
 		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
+		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
 	}
 	UpdateGrenades();
 }
@@ -791,6 +794,8 @@ void UCombatComponent::UpdateGrenades()
 	if (CarriedAmmoMap.Contains(EWeaponType::EWT_Grenade))
 	{
 		Grenades = CarriedAmmoMap[EWeaponType::EWT_Grenade];
+		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
+
 	}
 
 	Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(Character->Controller) : Controller;
@@ -798,6 +803,8 @@ void UCombatComponent::UpdateGrenades()
 	{
 
 		Controller->SetHUDGrenades(Grenades);
+		UE_LOG(LogTemp, Warning, TEXT("Grenades: %i"), Grenades);
+
 	}
 }
 
@@ -846,26 +853,26 @@ int32 UCombatComponent::AmountToReload()
 	return 0;
 }
 
-void UCombatComponent::InitializeCarriedAmmo()
-{
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, StartingRocketAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, StartingPistolAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, StartingSMGAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, StartingShotgunAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
-	CarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, StartingGrenades);
-
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, MaxARAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, MaxRocketAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, MaxPistolAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, MaxSMGAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, MaxShotgunAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
-	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, MaxGrenades);
-}
+//void UCombatComponent::InitializeCarriedAmmo()
+//{
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, StartingARAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, StartingRocketAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, StartingPistolAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, StartingSMGAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, StartingShotgunAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, StartingSniperAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, StartingGrenadeLauncherAmmo);
+//	CarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, StartingGrenades);
+//
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_AssaultRifle, MaxARAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_RocketLauncher, MaxRocketAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Pistol, MaxPistolAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SubmachineGun, MaxSMGAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Shotgun, MaxShotgunAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_SniperRifle, MaxSniperAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_GrenadeLauncher, MaxGrenadeLauncherAmmo);
+//	MaxCarriedAmmoMap.Emplace(EWeaponType::EWT_Grenade, MaxGrenades);
+//}
 
 void UCombatComponent::Reload()
 {
