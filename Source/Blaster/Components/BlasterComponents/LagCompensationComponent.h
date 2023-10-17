@@ -33,7 +33,11 @@ struct FFramePackage
 	UPROPERTY()
 	float Time;
 
+	UPROPERTY()
 	TMap<FName, FBoxInformation> HitBoxInfo;
+	
+	UPROPERTY()
+	ABlasterCharacter* Character;
 	
 };
 USTRUCT(BlueprintType)
@@ -59,8 +63,6 @@ struct FShotgunServerSideRewindResult
 
 	UPROPERTY()
 	TMap<ABlasterCharacter*, uint32> BodyShots;
-
-
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -93,6 +95,9 @@ protected:
 	/*
 	* Shotgun
 	*/
+	FShotgunServerSideRewindResult ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters, const FVector_NetQuantize& TraceStart, const TArray <FVector_NetQuantize>& HitLocations, float HitTime);
+
+	FShotgunServerSideRewindResult ShotgunConfirmHit(const TArray<FFramePackage>& FramePackages, const FVector_NetQuantize& TraceStart, const TArray <FVector_NetQuantize>& HitLocations);
 private:
 
 	UPROPERTY()

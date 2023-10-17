@@ -77,6 +77,27 @@ FServerSideRewindResult ULagCompensationComponent::ServerSideRewind(ABlasterChar
 	return ConfirmHit(FrameToCheck, HitCharacter, TraceStart, HitLocation);
 }
 
+/*
+* Shotgun
+*/
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunServerSideRewind(const TArray<ABlasterCharacter*>& HitCharacters, const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations, float HitTime)
+{
+	TArray<FFramePackage> FramesToCheck;
+	for (ABlasterCharacter* HitCharacter : HitCharacters)
+	{
+		FramesToCheck.Add(GetFrameToCheck(HitCharacter, HitTime));
+	}
+
+	return FShotgunServerSideRewindResult();
+}
+
+FShotgunServerSideRewindResult ULagCompensationComponent::ShotgunConfirmHit(const TArray<FFramePackage>& FramePackages, const FVector_NetQuantize& TraceStart, const TArray<FVector_NetQuantize>& HitLocations)
+{
+	return FShotgunServerSideRewindResult();
+}
+
+
+/////////////
 FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitCharacter, float HitTime)
 {
 	bool bReturn =
@@ -288,12 +309,15 @@ void ULagCompensationComponent::EnableCharacterMeshCollision(ABlasterCharacter* 
 	}
 }
 
+
+
 void ULagCompensationComponent::SaveFramePackage(FFramePackage& Package)
 {
 	Character = Character == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : Character;
 	if (Character)
 	{
 		Package.Time = GetWorld()->GetTimeSeconds();
+		Package.Character = Character;
 		for (auto& BoxPair : Character->HitCollisionBoxes)
 		{
 			FBoxInformation BoxInformation;
