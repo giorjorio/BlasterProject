@@ -14,11 +14,10 @@ void UTeleportComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//if(GetOwner()->HasAuthority())
-	//{
-		OnComponentBeginOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapBegin);
-		OnComponentEndOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapEnd);
-	//}
+
+	OnComponentBeginOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapBegin);
+	OnComponentEndOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapEnd);
+
 }
 
 void UTeleportComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -36,11 +35,11 @@ void UTeleportComponent::Teleportation(ABlasterCharacter* BlasterCharacter)
 			BlasterCharacter->SetActorRotation(Destination->GetActorRotation() + AdjustRotation);
 			
 			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
-			if (Controller)
+			if (Controller && BlasterCharacter->IsLocallyControlled())
 			{
 				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
 			}
-			Controller = nullptr;
+			//Controller = nullptr;
 		}
 		else
 		{
@@ -48,11 +47,11 @@ void UTeleportComponent::Teleportation(ABlasterCharacter* BlasterCharacter)
 			BlasterCharacter->SetActorRotation(DestinationRotation);
 			
 			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
-			if (Controller)
+			if (Controller && BlasterCharacter->IsLocallyControlled())
 			{
 				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
 			}
-			Controller = nullptr;
+			//Controller = nullptr;
 		}
 	}
 }
