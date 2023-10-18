@@ -86,94 +86,86 @@ ABlasterCharacter::ABlasterCharacter()
 	*/
 	HeadBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HeadBox"));
 	HeadBox->SetupAttachment(GetMesh(), FName("head"));
-	HeadBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("HeadBox"), HeadBox);
 
 	PelvisBox = CreateDefaultSubobject<UBoxComponent>(TEXT("PelvisBox"));
 	PelvisBox->SetupAttachment(GetMesh(), FName("pelvis"));
-	PelvisBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("PelvisBox"), PelvisBox);
 
 	Spine02Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Spine02Box"));
 	Spine02Box->SetupAttachment(GetMesh(), FName("spine_02"));
-	Spine02Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("Spine02Box"), Spine02Box);
 
 	Spine03Box = CreateDefaultSubobject<UBoxComponent>(TEXT("Spine03Box"));
 	Spine03Box->SetupAttachment(GetMesh(), FName("spine_03"));
-	Spine03Box->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("Spine03Box"), Spine03Box);
 
 	UpperArmLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("UpperArmLeftBox"));
 	UpperArmLeftBox->SetupAttachment(GetMesh(), FName("upperarm_l"));
-	UpperArmLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("UpperArmLeftBox"), UpperArmLeftBox);
 
 	UpperArmRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("UpperArmRightBox"));
 	UpperArmRightBox->SetupAttachment(GetMesh(), FName("upperarm_r"));
-	UpperArmRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("UpperArmRightBox"), UpperArmRightBox);
 
 	LowerArmLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LowerArmLeftBox"));
 	LowerArmLeftBox->SetupAttachment(GetMesh(), FName("lowerarm_l"));
-	LowerArmLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("LowerArmLeftBox"), LowerArmLeftBox);
 
 	LowerArmRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("LowerArmRightBox"));
 	LowerArmRightBox->SetupAttachment(GetMesh(), FName("lowerarm_r"));
-	LowerArmRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("LowerArmRightBox"), LowerArmRightBox);
 
 	HandLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HandLeftBox"));
 	HandLeftBox->SetupAttachment(GetMesh(), FName("hand_l"));
-	HandLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("HandLeftBox"), HandLeftBox);
 
 	HandRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("HandRightBox"));
 	HandRightBox->SetupAttachment(GetMesh(), FName("hand_r"));
-	HandRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("HandRightBox"), HandRightBox);
 
 	BackpackBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BackpackBox"));
 	BackpackBox->SetupAttachment(GetMesh(), FName("backpack"));
-	BackpackBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("BackpackBox"), BackpackBox);
 
 	BlanketBox = CreateDefaultSubobject<UBoxComponent>(TEXT("BlanketBox"));
 	BlanketBox->SetupAttachment(GetMesh(), FName("backpack"));
-	BlanketBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("BlanketBox"), BlanketBox);
 
 	ThighLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ThighLeftBox"));
 	ThighLeftBox->SetupAttachment(GetMesh(), FName("thigh_l"));
-	ThighLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("ThighLeftBox"), ThighLeftBox);
 
 	ThighRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("ThighRightBox"));
 	ThighRightBox->SetupAttachment(GetMesh(), FName("thigh_r"));
-	ThighRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("ThighRightBox"), ThighRightBox);
 
 	CalfLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CalfLeftBox"));
 	CalfLeftBox->SetupAttachment(GetMesh(), FName("calf_l"));
-	CalfLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("CalfLeftBox"), CalfLeftBox);
 
 	CalfRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CalfRightBox"));
 	CalfRightBox->SetupAttachment(GetMesh(), FName("calf_r"));
-	CalfRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("CalfRightBox"), CalfRightBox);
 
 	FootLeftBox = CreateDefaultSubobject<UBoxComponent>(TEXT("FootLeftBox"));
 	FootLeftBox->SetupAttachment(GetMesh(), FName("foot_l"));
-	FootLeftBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("FootLeftBox"), FootLeftBox);
 
 	FootRightBox = CreateDefaultSubobject<UBoxComponent>(TEXT("FootRightBox"));
 	FootRightBox->SetupAttachment(GetMesh(), FName("foot_r"));
-	FootRightBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	HitCollisionBoxes.Add(FName("FootRightBox"), FootRightBox);
 
+	for (auto Box : HitCollisionBoxes)
+	{
+		if(Box.Value)
+		{
+			Box.Value->SetCollisionObjectType(ECC_HitBox);
+			Box.Value->SetCollisionResponseToAllChannels(ECR_Ignore);
+			Box.Value->SetCollisionResponseToChannel(ECC_HitBox, ECR_Block);
+			Box.Value->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		}
+	}
 
 }
 
