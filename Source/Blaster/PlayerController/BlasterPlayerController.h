@@ -12,7 +12,7 @@ class ABlasterGameMode;
 class ABlasterHUD;
 class UCharacterOverlay;
 
-
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighPingDelegate, bool, bPingTooHigh);
 
 UCLASS()
 class BLASTER_API ABlasterPlayerController : public APlayerController
@@ -53,6 +53,8 @@ public:
 
 	UPROPERTY(Replicated)
 	bool bDisableGameplay = false;
+
+	FHighPingDelegate HighPingDelegate;
 
 protected:
 
@@ -113,6 +115,9 @@ protected:
 	void CheckPing(float DeltaTime);
 	void HighPingWarning();
 	void StopHighPingWarning();
+
+	UFUNCTION(Server, Reliable)
+	void ServerReportPingStatus(bool bHighPing);
 
 
 private:

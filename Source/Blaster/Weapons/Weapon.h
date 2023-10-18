@@ -143,6 +143,17 @@ protected:
 	float Damage = 15.f;
 
 	/*
+	* Ping
+	*/
+	UFUNCTION()
+	void OnPingTooHigh(bool bPingTooHigh);
+
+	void Pollinit();
+
+	bool HasSetController = false;
+
+
+	/*
 	* Trace end with scatter
 	*/
 	UPROPERTY(EditAnywhere, Category = "Weapon Scatter")
@@ -176,8 +187,11 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(Replicated, EditAnywhere)
 	bool bUseServerSideRewind = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bUseServerSideRewindDefault = false;
 
 private:
 
