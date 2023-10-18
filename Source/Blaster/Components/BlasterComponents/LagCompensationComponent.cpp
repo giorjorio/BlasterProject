@@ -319,12 +319,14 @@ FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitC
 	{
 		FrameToCheck = History.GetTail()->GetValue();
 		bShouldInterpolate = false;
+		FrameToCheck.Character = HitCharacter;
 		return FrameToCheck;
 	}
 	if (NewestHistoryTime <= HitTime)
 	{
 		FrameToCheck = History.GetHead()->GetValue();
 		bShouldInterpolate = false;
+		FrameToCheck.Character = HitCharacter;
 		return FrameToCheck;
 	}
 
@@ -351,6 +353,7 @@ FFramePackage ULagCompensationComponent::GetFrameToCheck(ABlasterCharacter* HitC
 		//Interpolate between Younger and Older
 		FrameToCheck = InterpBetweenFrames(Older->GetValue(), Younger->GetValue(), HitTime);
 	}
+	FrameToCheck.Character = HitCharacter;
 	return FrameToCheck;
 }
 
