@@ -3,8 +3,8 @@
 
 #include "HitScanWeapon.h"
 
-#include "Blaster/Components/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/Components/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "DrawDebugHelpers.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -34,7 +34,8 @@ void AHitScanWeapon::Fire(const FVector& HitTarget)
 		ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(FireHit.GetActor());
 		if (BlasterCharacter && InstigatorController)
 		{
-			if(HasAuthority() && !bUseServerSideRewind)
+			bool bCauseAuthDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
+			if(HasAuthority() && bCauseAuthDamage)
 			{
 				UGameplayStatics::ApplyDamage(
 					BlasterCharacter,

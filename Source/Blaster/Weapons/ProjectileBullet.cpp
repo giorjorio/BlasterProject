@@ -3,12 +3,11 @@
 
 #include "ProjectileBullet.h"
 
+#include "Blaster/Character/BlasterCharacter.h"
+#include "Blaster/Components/BlasterComponents/LagCompensationComponent.h"
+#include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-
-#include "GameFramework/Character.h"
-
-
 
 AProjectileBullet::AProjectileBullet()
 {  
@@ -41,7 +40,7 @@ void AProjectileBullet::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FPredictProjectilePathParams PathParams;
+	/*FPredictProjectilePathParams PathParams;
 
 	PathParams.ActorsToIgnore.Add(this);
 	PathParams.bTraceWithChannel = true;
@@ -57,20 +56,44 @@ void AProjectileBullet::BeginPlay()
 
 	FPredictProjectilePathResult PathResult;
 
-	UGameplayStatics::PredictProjectilePath(this, PathParams, PathResult);
+	UGameplayStatics::PredictProjectilePath(this, PathParams, PathResult);*/
 }
 
 void AProjectileBullet::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
 	
-	if (ACharacter* OwnerCharacter = Cast<ACharacter>(GetOwner()))
+	if (ABlasterCharacter* OwnerCharacter = Cast<ABlasterCharacter>(GetOwner()))
 	{
-		if (AController* OwnerController = OwnerCharacter->Controller)
+		if (ABlasterPlayerController* OwnerController = Cast<ABlasterPlayerController>(OwnerCharacter->Controller))
 		{
-			UGameplayStatics::ApplyDamage(OtherActor, Damage, OwnerController, this, UDamageType::StaticClass());
+			if (OwnerCharacter->HasAuthority() && !bUseServerSideRewind)
+			{
+				UGameplayStatics::ApplyDamage(
+					OtherActor, 
+					Damage, 
+					OwnerController,
+					this, 
+					UDamageType::StaticClass());
+
+				Super::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+				return;
+			}
+
+			ABlasterCharacter* HitCharacter = Cast<ABlasterCharacter>(OtherActor);
+			if (bUseServerSideRewind && OwnerCharacter->GetLagCompensation() && OwnerCharacter->IsLocallyControlled() && HitCharacter)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("client lagcomp locallycon hitchar"));
+
+				OwnerCharacter->GetLagCompensation()->ProjectileServerScoreRequest(
+					HitCharacter,
+					TraceStart,
+					InitialVelocity,
+					OwnerController->GetServerTime() - OwnerController->SingleTripTime
+				);
+			}
 		}
 	}
-
 	Super::OnHit(HitComp, OtherActor, OtherComp, NormalImpulse, Hit);
+
 }
 

@@ -30,7 +30,9 @@ public:
 	FVector_NetQuantize100 InitialVelocity;
 
 	UPROPERTY(EditAnywhere)
-	float InitialSpeed = 15000;
+	float InitialSpeed = 0;
+
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -46,10 +48,11 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ProjectileMesh;
-	
+
+
 	UPROPERTY(VisibleAnywhere)
 	UProjectileMovementComponent* ProjectileMovementComponent;
-
+	
 	UPROPERTY(EditAnywhere)
 	UParticleSystem* ImpactParticles;
 
