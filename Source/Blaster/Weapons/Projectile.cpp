@@ -94,6 +94,7 @@ void AProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimi
 	Destroy();
 }
 
+
 void AProjectile::SpawnTrailSystem()
 {
 	if (TrailSystem)
@@ -133,4 +134,9 @@ void AProjectile::ExplodeDamage(float MinimumDamage, float DamageInnerRadius, fl
 			);
 		}
 	}
+}
+
+void AProjectile::SetDamage(float NewDamage)
+{
+	Damage = NewDamage;
 }
