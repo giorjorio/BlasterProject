@@ -70,10 +70,11 @@ public:
 	/*
 	* Montages
 	*/
+	void PlayElimMontage();
 	void PlayFireMontage(bool bAiming);
 	void PlayHitReactMontage();
 	void PlayReloadMontage();
-	void PlayElimMontage();
+	void PlaySwapMontage();
 	void PlayThrowGrenadeMontage();
 
 	/*
@@ -90,7 +91,7 @@ public:
 
 	virtual void OnRep_ReplicatedMovement() override;
 	
-	
+	bool bFinishedSwapping = false;
 
 protected:
 	/*
@@ -246,6 +247,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* ReloadMontage;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	UAnimMontage* SwapMontage;
 
 	UPROPERTY(EditAnywhere, Category = Combat)
 	UAnimMontage* ThrowGrenadeMontage;

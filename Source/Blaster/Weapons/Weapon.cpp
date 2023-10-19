@@ -184,7 +184,6 @@ void AWeapon::OnPingTooHigh(bool bPingTooHigh)
 	bUseServerSideRewind = !bPingTooHigh;
 }
 
-
 void AWeapon::OnRep_Owner()
 {
 	Super::OnRep_Owner();
@@ -258,6 +257,7 @@ void AWeapon::OnEquipped()
 		if (BlasterOwnerController && HasAuthority() && !BlasterOwnerController->HighPingDelegate.IsBound() && !BlasterOwnerCharacter->IsLocallyControlled())
 		{
 			BlasterOwnerController->HighPingDelegate.AddDynamic(this, &AWeapon::OnPingTooHigh);
+			HasSetController = true;
 		}
 	}
 }
@@ -275,7 +275,6 @@ void AWeapon::OnEquippedSecondary()
 		WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
 		WeaponMesh->MarkRenderStateDirty();
 	}
-	EnableCustomDepth(true);
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
 	{
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
