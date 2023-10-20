@@ -3,6 +3,7 @@
 
 #include "Menu.h"
 #include "Components/Button.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
 #include "OnlineSubsystem.h"
@@ -60,6 +61,10 @@ bool UMenu::Initialize()
 	if (JoinButton)
 	{
 		JoinButton->OnClicked.AddDynamic(this, &ThisClass::JoinButtonClicked);
+	}
+	if (ExitButton)
+	{
+		ExitButton->OnClicked.AddDynamic(this, &ThisClass::ExitButtonClicked);
 	}
 
 	return true;
@@ -196,6 +201,13 @@ void UMenu::JoinButtonClicked()
 	{
 		MultiplayerSessionsSubsystem->FindSessions(10000);
 	}
+}
+
+void UMenu::ExitButtonClicked()
+{
+	ExitButton->SetIsEnabled(false);
+
+	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
 }
 
 void UMenu::MenuTearDown()

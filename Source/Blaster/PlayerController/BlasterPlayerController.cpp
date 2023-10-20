@@ -7,10 +7,13 @@
 #include "Blaster/HUD/Announcement.h"
 #include "Blaster/HUD/BlasterHUD.h"
 #include "Blaster/HUD/CharacterOverlay.h"
+#include "Blaster/HUD/ReturnToMainMenu.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 #include "Components/TextBlock.h"
+#include "EnhancedInputComponent.h"
+#include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 
@@ -265,6 +268,7 @@ void ABlasterPlayerController::SetHUDHealth(float Health, float MaxHealth)
 			BlasterHUD->AddCharacterOverlay();
 		}
 		BlasterHUD->CharacterOverlay->RoundHealthBar->SetPercentage(HealthPercent);
+		
 	}
 	//if (bHUDValid)
 	//{
@@ -288,8 +292,6 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 
 	bool bHUDValid = BlasterHUD &&
 		BlasterHUD->CharacterOverlay &&
-		//BlasterHUD->CharacterOverlay->ShieldBar &&
-		//BlasterHUD->CharacterOverlay->ShieldText &&
 		BlasterHUD->CharacterOverlay->RoundShieldBar;
 
 	if (bHUDValid)
@@ -299,7 +301,7 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 		//FString ShieldText = FString::Printf(TEXT("%d/%d"), FMath::CeilToInt(Shield), FMath::CeilToInt(MaxShield));
 		//BlasterHUD->CharacterOverlay->ShieldText->SetText(FText::FromString(ShieldText));
 		BlasterHUD->CharacterOverlay->RoundShieldBar->SetPercentage(ShieldPercent);
-
+		
 	}
 }
 
@@ -704,6 +706,42 @@ void ABlasterPlayerController::HandleCountdown()
 		bDisableGameplay = true;
 		BlasterCharacter->bDisableCharacterGameplay = true;
 		BlasterCharacter->GetCombat()->FireButtonPressed(false);
+	}
+}
+
+
+void ABlasterPlayerController::ShowReturnToMainMenu()
+{
+	if (ReturnToMainMenuWidget == nullptr) { return; }
+	if (ReturnToMainMenu == nullptr)
+	{
+		ReturnToMainMenu = CreateWidget<UReturnToMainMenu>(this, ReturnToMainMenuWidget);
+	}
+	if (ReturnToMainMenu)
+	{
+		bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
+		if (bReturnToMainMenuOpen)
+		{
+			ReturnToMainMenu->MenuSetup();
+		}
+		else
+		{
+			ReturnToMainMenu->MenuTearDown();
+		}
+	}
+}
+
+/*
+* Input
+*/
+void ABlasterPlayerController::SetupInputComponent()
+{
+	Super::SetupInputComponent();
+
+	if (InputComponent == nullptr) return;
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent))
+	{
+		EnhancedInputComponent->BindAction(EscapeAction, ETriggerEvent::Completed, this, &ABlasterPlayerController::ShowReturnToMainMenu);
 	}
 }
 

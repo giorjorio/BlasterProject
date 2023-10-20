@@ -11,6 +11,11 @@
 class ABlasterGameMode;
 class ABlasterHUD;
 class UCharacterOverlay;
+class UInputAction;
+class UInputComponent;
+class UReturnToMainMenu;
+class UUserWidget;
+
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FHighPingDelegate, bool, bPingTooHigh);
 
@@ -57,8 +62,8 @@ public:
 	FHighPingDelegate HighPingDelegate;
 
 protected:
-
 	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 	void SetHUDTime();
 	void PollInit();
 
@@ -71,7 +76,6 @@ protected:
 	/*
 	* Client server sync
 	*/
-
 	// Requests the current server time, passing in the client's time when the request was sent
 	UFUNCTION(Server, Reliable)
 	void ServerRequestServerTime(float TimeOfClientRequest);
@@ -94,6 +98,11 @@ protected:
 
 	UFUNCTION(Client, Reliable)
 	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown);
+
+	/*
+	* HUD
+	*/
+	void ShowReturnToMainMenu();
 
 	/*
 	* Ping warning
@@ -127,7 +136,6 @@ private:
 	UPROPERTY()
 	ABlasterGameMode* BlasterGameMode;
 
-
 	void InitializeHUD();
 
 	/*
@@ -149,14 +157,29 @@ private:
 	UPROPERTY()
 	UCharacterOverlay* CharacterOverlay;
 
-
 	/*
 	* Pollinit variables
 	*/
 	float HUDWeaponAmmo;
 	bool bInitializeWeaponAmmo = false;
 
+	/*
+	* Return to main menu
+	*/
+	UPROPERTY(EditAnywhere, Category = HUD)
+	TSubclassOf<UUserWidget> ReturnToMainMenuWidget;
+
+	UPROPERTY()
+	UReturnToMainMenu* ReturnToMainMenu;
+
+	bool bReturnToMainMenuOpen = false;
+
 public:
 	FORCEINLINE bool GetDisabledGameplay() const { return bDisableGameplay; }
+
+
+private:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	UInputAction* EscapeAction;
 
 };
