@@ -8,6 +8,7 @@
 
 class ABlasterCharacter;
 class ABlasterPlayerController;
+class ABlasterPlayerState;
 class ACharacter;
 
 // Custom delegate to inform when BlasterGameMode's BeginPlay() happened
@@ -30,6 +31,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController);
 	virtual void RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController);
+	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
 
 	//
 	// Custom delegate for the BlasterGameMode class

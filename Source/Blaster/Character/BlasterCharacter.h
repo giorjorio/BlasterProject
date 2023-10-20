@@ -31,6 +31,7 @@ class USoundCue;
 class USpringArmComponent;
 class UWidgetComponent;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLeftGame);
 
 UCLASS()
 class BLASTER_API ABlasterCharacter : public ACharacter, public IInteractWithCrosshairsInterface
@@ -57,15 +58,23 @@ public:
 	/*
 	* HUD
 	*/
+	void CreateRoundProgressBars();
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void ShowSniperScopeWidget(bool bShowScope);
-
-	void UpdateHUDAmmo();
+	
 	void SpawnDefaultWeapon();
-
+	void UpdateHUDAmmo();
 	void UpdateHUDHealth(); //Health
 	void UpdateHUDShield(); //Shield
-	void CreateRoundProgressBars();
+
+	/*
+	* Leaving the game
+	*/
+	UFUNCTION(Server, Reliable)
+	void ServerLeaveGame();
+
+	FOnLeftGame OnLeftGame;
 
 	/*
 	* Montages
@@ -84,10 +93,10 @@ public:
 	bool bDisableCharacterGameplay = false;
 
 	virtual void Destroyed() override;
-	void Elim();
+	void Elim(bool bPlayerLeftGame);
 
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastElim();
+	void MulticastElim(bool bPlayerLeftGame);
 
 	virtual void OnRep_ReplicatedMovement() override;
 	
@@ -182,7 +191,6 @@ protected:
 	*/
 	void DropOrDestroyWeapon(AWeapon* Weapon);
 	void DropOrDestroyWeapons();
-
 
 	/*
 	* Input Actions
@@ -361,7 +369,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
 
-	
+	/*
+	* Leaving the game
+	*/
+	bool bLeftGame = false;
 
 	/*
 	* Shield
