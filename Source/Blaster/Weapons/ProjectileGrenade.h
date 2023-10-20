@@ -39,6 +39,9 @@ private:
 	USoundCue* BounceSound;
 
 	UPROPERTY(EditAnywhere)
+	float BaseDamage = 20.f;
+
+	UPROPERTY(EditAnywhere)
 	float MinimumDamage = 10.f;
 
 	UPROPERTY(EditAnywhere)

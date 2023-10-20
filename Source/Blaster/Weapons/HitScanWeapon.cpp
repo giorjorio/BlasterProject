@@ -6,7 +6,6 @@
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/Components/BlasterComponents/LagCompensationComponent.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
-#include "DrawDebugHelpers.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GamePlayStatics.h"
 #include "particles/ParticleSystemComponent.h"
@@ -116,7 +115,6 @@ void AHitScanWeapon::WeaponTraceHit(const FVector& TraceStart, const FVector& Hi
 		{
 			BeamEnd = OutHit.ImpactPoint;
 		}
-		DrawDebugSphere(GetWorld(), BeamEnd, 16.f, 12, FColor::Orange, true);
 
 		if (BeamParticles)
 		{

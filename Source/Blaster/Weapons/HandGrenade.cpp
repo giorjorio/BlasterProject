@@ -66,7 +66,7 @@ void AHandGrenade::OnBounce(const FHitResult& ImpactResult, const FVector& Impac
 
 void AHandGrenade::Destroyed()
 {
-	ExplodeDamage(MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
+	ExplodeDamage(BaseDamage, MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
 
 	Super::Destroyed();
 }

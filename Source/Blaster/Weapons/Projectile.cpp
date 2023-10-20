@@ -112,7 +112,7 @@ void AProjectile::SpawnTrailSystem()
 	}
 }
 
-void AProjectile::ExplodeDamage(float MinimumDamage, float DamageInnerRadius, float DamageOuterRadius, float DamageFalloff)
+void AProjectile::ExplodeDamage(float BaseDamage, float MinimumDamage, float DamageInnerRadius, float DamageOuterRadius, float DamageFalloff)
 {
 	APawn* FiringPawn = GetInstigator();
 	if (FiringPawn && HasAuthority())
@@ -122,7 +122,7 @@ void AProjectile::ExplodeDamage(float MinimumDamage, float DamageInnerRadius, fl
 		{
 			UGameplayStatics::ApplyRadialDamageWithFalloff(
 				this, // World context object
-				Damage, // Base damage
+				BaseDamage, // Base damage
 				MinimumDamage, // Minimum damage
 				GetActorLocation(), // Origin (Center of the area)
 				DamageInnerRadius, // Damage inner raduis

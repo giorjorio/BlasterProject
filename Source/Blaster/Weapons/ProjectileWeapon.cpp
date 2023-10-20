@@ -31,14 +31,12 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 			{
 				if (InstigatorPawn->IsLocallyControlled()) // server, host - uses replicated projectile
 				{
-					UE_LOG(LogTemp, Warning, TEXT("server, host - uses replicated projectile"));
 					SpawnedProjectile= World->SpawnActor<AProjectile>(ServerSideRewindProjectileClass, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 					SpawnedProjectile->bUseServerSideRewind = false;
 					SpawnedProjectile->SetDamage(Damage);
 				}
 				else // server, not locally controlled - spawn non-replicated projectile, SSR
 				{
-					UE_LOG(LogTemp, Warning, TEXT("server, not locally controlled - spawn non-replicated projectile, no SSR"));
 					SpawnedProjectile = World->SpawnActor<AProjectile>(ServerSideRewindProjectileClass, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 					SpawnedProjectile->bUseServerSideRewind = true;
 				}
@@ -47,7 +45,6 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 			{
 				if (InstigatorPawn->IsLocallyControlled()) // client, locally controlled - spawn non-replicated projectile, use SSR
 				{
-					UE_LOG(LogTemp, Warning, TEXT("client, locally controlled - spawn non-replicated projectile, use SSR"));
 
 					SpawnedProjectile = World->SpawnActor<AProjectile>(ServerSideRewindProjectileClass, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 					SpawnedProjectile->bUseServerSideRewind = true;
@@ -57,8 +54,6 @@ void AProjectileWeapon::Fire(const FVector& HitTarget)
 				}
 				else // client, not locally controlled - spawn non-replicated projecctile, no SSR
 				{
-					UE_LOG(LogTemp, Warning, TEXT("client, not locally controlled - spawn non-replicated projecctile, no SSR"));
-
 					SpawnedProjectile = World->SpawnActor<AProjectile>(ServerSideRewindProjectileClass, SocketTransform.GetLocation(), TargetRotation, SpawnParams);
 					SpawnedProjectile->bUseServerSideRewind = false;
 				}

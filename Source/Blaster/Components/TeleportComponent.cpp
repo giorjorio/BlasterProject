@@ -34,24 +34,21 @@ void UTeleportComponent::Teleportation(ABlasterCharacter* BlasterCharacter)
 			BlasterCharacter->SetActorLocation(Destination->GetActorLocation() + AdjustDestination);
 			BlasterCharacter->SetActorRotation(Destination->GetActorRotation() + AdjustRotation);
 			
-			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
+			Controller = Cast<ABlasterPlayerController>(BlasterCharacter->GetController());
 			if (Controller && BlasterCharacter->IsLocallyControlled())
 			{
 				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
 			}
-			//Controller = nullptr;
 		}
 		else
 		{
 			BlasterCharacter->SetActorLocation(DestinationLocation);
 			BlasterCharacter->SetActorRotation(DestinationRotation);
-			
-			Controller = Controller == nullptr ? Cast<ABlasterPlayerController>(BlasterCharacter->GetController()) : Controller;
+			Controller = Cast<ABlasterPlayerController>(BlasterCharacter->GetController());
 			if (Controller && BlasterCharacter->IsLocallyControlled())
 			{
 				Controller->SetControlRotation(BlasterCharacter->GetActorRotation());
 			}
-			//Controller = nullptr;
 		}
 	}
 }

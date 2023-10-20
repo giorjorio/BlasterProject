@@ -70,7 +70,7 @@ void AProjectileGrenade::OnProjectileStop(const FHitResult& ImpactResult)
 
 void AProjectileGrenade::Destroyed()
 {
-	ExplodeDamage(MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
+	ExplodeDamage(BaseDamage, MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
 
 	Super::Destroyed();
 }

@@ -27,6 +27,8 @@ class UInputAction;
 class UInputComponent;
 class UInputMappingContext;
 class ULagCompensationComponent;
+class UNiagaraSystem;
+class UNiagaraComponent;
 class USoundCue;
 class USpringArmComponent;
 class UWidgetComponent;
@@ -67,6 +69,15 @@ public:
 	void UpdateHUDAmmo();
 	void UpdateHUDHealth(); //Health
 	void UpdateHUDShield(); //Shield
+
+	/*
+	* Leadership
+	*/
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastGainedTheLead();
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLostTheLead();
 
 	/*
 	* Leaving the game
@@ -368,6 +379,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxHealth = 100.f;
+
+	/*
+	* Leadership effects
+	*/
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* CrownSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* CrownComponent;
 
 	/*
 	* Leaving the game

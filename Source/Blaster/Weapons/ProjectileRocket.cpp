@@ -82,7 +82,7 @@ void AProjectileRocket::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, 
 	{
 		return;
 	}
-	ExplodeDamage(MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
+	ExplodeDamage(BaseDamage, MinimumDamage, DamageInnerRadius, DamageOuterRadius, DamageFalloff);
 
 	StartDestroyTimer();
 
