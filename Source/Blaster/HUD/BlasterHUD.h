@@ -32,8 +32,6 @@ public:
 	
 };
 
-
-
 UCLASS()
 class BLASTER_API ABlasterHUD : public AHUD
 {
@@ -62,7 +60,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	
-
 private:
 	FHUDPackage HUDPackage;
 
@@ -76,6 +73,15 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Announcements")
 	TSubclassOf<UElimAnnouncement> ElimAnnouncementClass;
+	
+	UPROPERTY(EditAnywhere, Category = "Announcements")
+	float ElimMsgTime = 1.5f;
+
+	UFUNCTION()
+	void ElimAnnouncementTimerFinished(UElimAnnouncement* MsgToRemove);
+
+	UPROPERTY()
+	TArray<UElimAnnouncement*> ElimMessages;
 
 public:
 	FORCEINLINE void SetHUDPackage(const FHUDPackage& Package) { HUDPackage = Package; }
