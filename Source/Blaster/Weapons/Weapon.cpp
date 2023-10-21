@@ -251,10 +251,12 @@ void AWeapon::OnEquipped()
 	}
 
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
-	if (BlasterOwnerCharacter && bUseServerSideRewind)
+	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("OnEquippedbUseServerSideRewindDefault"));
+
 		BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(BlasterOwnerCharacter->Controller) : BlasterOwnerController;
-		if (BlasterOwnerController && HasAuthority() && !BlasterOwnerController->HighPingDelegate.IsBound() && !BlasterOwnerCharacter->IsLocallyControlled())
+		if (BlasterOwnerController && HasAuthority() && !BlasterOwnerController->HighPingDelegate.IsBound())
 		{
 			BlasterOwnerController->HighPingDelegate.AddDynamic(this, &AWeapon::OnPingTooHigh);
 			HasSetController = true;
@@ -283,15 +285,17 @@ void AWeapon::OnEquippedSecondary()
 	}
 
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
-	if (BlasterOwnerCharacter && bUseServerSideRewind)
+	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault )
 	{
+	
+		UE_LOG(LogTemp, Warning, TEXT("OnEquippedSecondarybUseServerSideRewindDefault"));
+
 		BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(BlasterOwnerCharacter->Controller) : BlasterOwnerController;
-		if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound() && !BlasterOwnerCharacter->IsLocallyControlled())
+		if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound())
 		{
 			BlasterOwnerController->HighPingDelegate.RemoveDynamic(this, &AWeapon::OnPingTooHigh);
 		}
 	}
-
 }
 
 void AWeapon::OnDropped()
@@ -312,10 +316,10 @@ void AWeapon::OnDropped()
 	EnableCustomDepth(true);
 
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
-	if (BlasterOwnerCharacter && bUseServerSideRewindDefault)
+	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault)
 	{
 		BlasterOwnerController = BlasterOwnerController == nullptr ? Cast<ABlasterPlayerController>(BlasterOwnerCharacter->Controller) : BlasterOwnerController;
-		if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound() && !BlasterOwnerCharacter->IsLocallyControlled())
+		if (BlasterOwnerController && HasAuthority() && BlasterOwnerController->HighPingDelegate.IsBound())
 		{
 			BlasterOwnerController->HighPingDelegate.RemoveDynamic(this, &AWeapon::OnPingTooHigh);
 		}

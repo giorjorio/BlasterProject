@@ -265,7 +265,6 @@ void ABlasterCharacter::PollInit()
 				MulticastGainedTheLead();
 			}
 		}
-		
 	}
 }
 

@@ -1004,8 +1004,6 @@ void UCombatComponent::FinishSwapAttachWeapons()
 	UpdateCarriedAmmo();
 	UpdatePrimaryWeaponIcon();
 	PlayEquipWeaponSound(EquippedWeapon);
-
-
 }
 
 bool UCombatComponent::ShouldSwapWeapons()

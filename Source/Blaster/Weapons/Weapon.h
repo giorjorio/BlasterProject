@@ -123,6 +123,15 @@ public:
 		 
 	bool bDestroyWeapon = false;
 
+	/*
+	* Server Side Rewind
+	*/
+	UPROPERTY(Replicated, EditAnywhere)
+	bool bUseServerSideRewind = false;
+
+	UPROPERTY(EditAnywhere)
+	bool bUseServerSideRewindDefault = false;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -141,6 +150,9 @@ protected:
 	*/
 	UPROPERTY(EditAnywhere)
 	float Damage = 15.f;
+
+	UPROPERTY(EditAnywhere)
+	float HeadShotDamage = 15.f;
 
 	/*
 	* Ping
@@ -187,11 +199,7 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-	UPROPERTY(Replicated, EditAnywhere)
-	bool bUseServerSideRewind = false;
-
-	UPROPERTY(EditAnywhere)
-	bool bUseServerSideRewindDefault = false;
+	
 
 private:
 
@@ -255,17 +263,19 @@ private:
 
 
 public:	
-
-	void SetWeaponState(EWeaponState State);
-	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
-	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
-	FORCEINLINE float GetDamage() const { return Damage; }
-	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
-	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 	bool IsFull();
 	bool IsEmpty();
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
-	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
+	FORCEINLINE float GetDamage() const { return Damage; }
+	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }
+	FORCEINLINE float GetZoomedFOV() const { return ZoomedFOV; }
+	FORCEINLINE float GetZoomInterpSpeed() const { return ZoomInterpSpeed; }
 	FORCEINLINE int32 GetAmmo() const { return Ammo; }
+	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
+	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
+	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+	void SetWeaponState(EWeaponState State);
+
+	
 
 };
