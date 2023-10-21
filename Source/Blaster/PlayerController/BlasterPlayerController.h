@@ -25,41 +25,56 @@ class BLASTER_API ABlasterPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	void SetHUDAnnouncementCountdown(float CountdownTime);
-	void SetHUDMatchCountdown(float CountdownTime);
-	void SetHUDCarriedAmmo(int32 Ammo);
-	void SetHUDWeaponAmmo(int32 Ammo);
-	void SetHUDGrenades(int32 Grenades);
-	void SetHUDEquippedWeaponIcon(float Opacity,  bool IsSecondary = false, UTexture2D * WeaponIcon = nullptr );
-	void SetHUDRoundProgressBars();
-	void SetHUDHealth(float Health, float MaxHealth);
-	void SetHUDShield(float Shield, float MaxShield);
-	void SetHUDScore(float Score);
-	void SetHUDDefeats(int32 Defeats);
-
-	void SetBlasterHUD();
-
-	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
-	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
-	
 	virtual void OnPossess(APawn* InPawn) override;
 	virtual void Tick(float DeltaTime) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	
+	UPROPERTY(Replicated)
+	bool bDisableGameplay = false;
+
+	/*
+	* ElimAnnouncement
+	*/
+	void BroadcastElim(APlayerState* Attacker, APlayerState* Victim);
+
+	/*
+	* Match countdown
+	*/
+	void OnMatchStateSet(FName State);
+	void HandleMatchHasStarted();
+	void HandleCountdown();
+	
+	/*
+	* Setting and Updating the HUD
+	*/
+	void SetBlasterHUD();
+	void SetHUDAnnouncementCountdown(float CountdownTime);
+	void SetHUDCarriedAmmo(int32 Ammo);
+	void SetHUDEquippedWeaponIcon(float Opacity, bool IsSecondary = false, UTexture2D* WeaponIcon = nullptr);
+	void SetHUDGrenades(int32 Grenades);
+	void SetHUDHealth(float Health, float MaxHealth);
+	void SetHUDShield(float Shield, float MaxShield); void SetHUDMatchCountdown(float CountdownTime);
+	void SetHUDRoundProgressBars();
+	void SetHUDScore(float Score);
+	void SetHUDDefeats(int32 Defeats);
+	void SetHUDWeaponAmmo(int32 Ammo);
+	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
+	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
+
+	/*
+	* Sync the time
+	*/
+	float SingleTripTime = 0.f;
+
 
 	virtual float GetServerTime(); // Synced with server world clock
 	virtual void ReceivedPlayer() override; // Sync with server clock as soon as possible
 
-	void OnMatchStateSet(FName State);
-	void HandleMatchHasStarted();
-	void HandleCountdown();
-
-
-	float SingleTripTime = 0.f;
-
-	UPROPERTY(Replicated)
-	bool bDisableGameplay = false;
-
+	/*
+	* Ping warning
+	*/
 	FHighPingDelegate HighPingDelegate;
+
 
 protected:
 	virtual void BeginPlay() override;
@@ -76,6 +91,15 @@ protected:
 	/*
 	* Client server sync
 	*/
+	float ClientServerDelta = 0.f; // Difference between client and server time
+
+	UPROPERTY(EditAnywhere, Category = Time)
+	float TimeSyncFrequency = 5.f; // How often client should sync up with server
+	
+	float TimeSyncRunningTime = 0.f; // How much time passed since the last sync
+
+	void CheckTimeSync(float DeltaTime); // Checking how much time passed since the last sync
+
 	// Requests the current server time, passing in the client's time when the request was sent
 	UFUNCTION(Server, Reliable)
 	void ServerRequestServerTime(float TimeOfClientRequest);
@@ -84,20 +108,17 @@ protected:
 	UFUNCTION(Client, Reliable)
 	void ClientReportServerTime(float TimeOfClientRequest, float TimeServerReceivedClientRequest);
 
-	float ClientServerDelta = 0.f; // Difference between client and server time
-
-	UPROPERTY(EditAnywhere, Category = Time)
-	float TimeSyncFrequency = 5.f; // How often client should sync up with server
-
-	float TimeSyncRunningTime = 0.f; // How much time passed since the last sync
-
-	void CheckTimeSync(float DeltaTime); // Checking how much time passed since the last sync
-
 	UFUNCTION(Server, Reliable)
 	void ServerCheckMatchState();
 
 	UFUNCTION(Client, Reliable)
 	void ClientJoinMidGame(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown);
+
+	/*
+	* ElimAnnouncement
+	*/
+	UFUNCTION(Client, Reliable)
+	void ClientElimAnnouncement(APlayerState* Attacker, APlayerState* Victim);
 
 	/*
 	* HUD
