@@ -46,6 +46,9 @@ protected:
 
 	float Damage = 20.f;
 
+	UPROPERTY(EditAnywhere)
+	float HeadShotDamage = 60.f;
+
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ProjectileMesh;
 
@@ -82,5 +85,6 @@ private:
 
 public:	
 	void SetDamage(float NewDamage);
+	void SetHeadShotDamage(float NewDamage);
 
 };

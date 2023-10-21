@@ -108,6 +108,7 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 				bool bCauseAuthDamage = !bUseServerSideRewind || OwnerPawn->IsLocallyControlled();
 				if (HasAuthority() && bCauseAuthDamage)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("!bUseServerSideRewind FIRE"));
 					UGameplayStatics::ApplyDamage(
 						DamagePair.Key, // Character that was hit
 						DamagePair.Value , // Damage calculated in the two for loops above
@@ -119,7 +120,7 @@ void AShotgun::FireShotgun(const TArray<FVector_NetQuantize>& HitTargets)
 			}
 		}
 
-		if (!HasAuthority() && bUseServerSideRewind)
+		if (!HasAuthority() && bUseServerSideRewind && bUseServerSideRewindDefault)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("bUseServerSideRewind FIRE"));
 			BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(OwnerPawn) : BlasterOwnerCharacter;

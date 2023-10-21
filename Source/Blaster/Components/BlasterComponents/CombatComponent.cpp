@@ -661,10 +661,10 @@ void UCombatComponent::ShotgunLocalFire(const TArray<FVector_NetQuantize>& Trace
 
 	if (CombatState == ECombatState::ECS_Reloading || CombatState == ECombatState::ECS_Unoccupied)
 	{
+		bLocallyReloading = false;
 		Character->PlayFireMontage(bAiming);
 		Shotgun->FireShotgun(TraceHitTargets);
 		CombatState = ECombatState::ECS_Unoccupied;
-		bLocallyReloading = false;
 	}
 }
 
@@ -942,8 +942,12 @@ void UCombatComponent::HandleReload()
 		if (AnimInstance)
 		{
 			FOnMontageEnded BlendOutDelegate;
-			BlendOutDelegate.BindUObject(AnimInstance, &UBlasterAnimInstance::OnReloadFailedToBlendOut);
-			AnimInstance->Montage_SetBlendingOutDelegate(BlendOutDelegate, Character->GetReloadMontage());
+			if(EquippedWeapon->GetWeaponType() != EWeaponType::EWT_Shotgun)
+			{
+				BlendOutDelegate.BindUObject(AnimInstance, &UBlasterAnimInstance::OnReloadFailedToBlendOut);
+				AnimInstance->Montage_SetBlendingOutDelegate(BlendOutDelegate, Character->GetReloadMontage());
+			}
+			
 		}
 	}
 }

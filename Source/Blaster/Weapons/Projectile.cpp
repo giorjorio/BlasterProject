@@ -141,3 +141,8 @@ void AProjectile::SetDamage(float NewDamage)
 {
 	Damage = NewDamage;
 }
+
+void AProjectile::SetHeadShotDamage(float NewDamage)
+{
+	HeadShotDamage = NewDamage;
+}
