@@ -25,10 +25,8 @@ void ATeamsGameMode::PostLogin(APlayerController* NewPlayer)
 				BlasterGameState->BlueTeam.AddUnique(BlasterPlayerState);
 				BlasterPlayerState->SetTeam(ETeam::ET_BlueTeam);
 			}
-		}
-			
+		}	
 	}
-
 }
 
 void ATeamsGameMode::Logout(AController* Exiting)
@@ -75,6 +73,4 @@ void ATeamsGameMode::HandleMatchHasStarted()
 			}
 		}
 	}
-
-
 }

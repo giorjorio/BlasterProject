@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 
 #include "Blaster/BlasterTypes/CombatState.h"
+#include "Blaster/BlasterTypes/Team.h"
 #include "Blaster/BlasterTypes/TurningInPlace.h"
 #include "Blaster/Interfaces/InteractWithCrosshairsInterface.h"
 #include "Components/TimelineComponent.h"
@@ -50,6 +51,16 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void PostInitializeComponents() override;
 	virtual void Tick(float DeltaTime) override;
+	virtual void Destroyed() override;
+
+
+	/*
+	* Elim
+	*/
+	void Elim(bool bPlayerLeftGame);
+
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastElim(bool bPlayerLeftGame);
 
 	/*
 	* Hit boxes used for server-side rewind
@@ -98,20 +109,22 @@ public:
 	void PlayThrowGrenadeMontage();
 
 	/*
-	* Other
+	* Movement
 	*/
 	UPROPERTY(Replicated)
 	bool bDisableCharacterGameplay = false;
 
-	virtual void Destroyed() override;
-	void Elim(bool bPlayerLeftGame);
-
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastElim(bool bPlayerLeftGame);
-
 	virtual void OnRep_ReplicatedMovement() override;
 	
+	/*
+	* Swap weapons
+	*/
 	bool bFinishedSwapping = false;
+
+	/*
+	* Teams
+	*/
+	void SetTeamColor(ETeam Team);
 
 protected:
 	/*
@@ -327,7 +340,7 @@ private:
 	UTimelineComponent* DissolveTimeline;
 
 	// Material instance set on the Blueprint, used with the dynamic material instance
-	UPROPERTY(EditAnywhere, Category = "Elim")
+	UPROPERTY(VisibleAnywhere, Category = "Elim")
 	UMaterialInstance* DissolveMaterialInstance;
 
 	//Dynamic Instance that we can change at runtime
@@ -405,6 +418,24 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Player Stats")
 	float MaxShield = 100.f;
+
+	/*
+	* Team colors
+	*/
+	UPROPERTY(EditAnywhere)
+	UMaterialInstance* OriginalMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Elim")
+	UMaterialInstance* BlueDissolveMatInst;
+	
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* BlueMaterial;
+
+	UPROPERTY(EditAnywhere, Category = "Elim")
+	UMaterialInstance* RedDissolveMatInst;
+
+	UPROPERTY(EditAnywhere, Category = Team)
+	UMaterialInstance* RedMaterial;
 
 	/*
 	* Weapon
