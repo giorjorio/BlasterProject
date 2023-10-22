@@ -14,7 +14,7 @@
 
 #include "BlasterCharacter.generated.h"
 
-
+class ABlasterGameMode;
 class ABlasterPlayerController;
 class ABlasterPlayerState;
 class AController;
@@ -304,6 +304,9 @@ private:
 	/*
 	* Components or Classes
 	*/
+	UPROPERTY()
+	ABlasterGameMode* BlasterGameMode;
+
 	UPROPERTY()
 	ABlasterPlayerController* BlasterPlayerController;
 
