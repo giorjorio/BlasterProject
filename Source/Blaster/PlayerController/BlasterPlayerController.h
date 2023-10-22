@@ -163,6 +163,12 @@ protected:
 	*/
 	UPROPERTY(ReplicatedUsing = OnRep_ShowTeamScores)
 	bool bShowTeamScores = false;
+	
+	UFUNCTION(Server, Reliable)
+	void ServerShowTeamScores();
+
+	UFUNCTION(Client, Reliable)
+	void ClientShowTeamScores(bool bShowTeamScoresHUD);
 
 	UFUNCTION()
 	void OnRep_ShowTeamScores();

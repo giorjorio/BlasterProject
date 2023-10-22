@@ -236,8 +236,13 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 		{
 			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Hidden);
 		}
-
-		if (!HasAuthority()) { return; }
+		if (!HasAuthority())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("ServerShowTeamScores"));
+			ServerShowTeamScores();
+			return;
+		}
+		//if (!HasAuthority()) { return; }
 		if (bTeamsMatch)
 		{
 			InitTeamScores();
@@ -439,9 +444,14 @@ void ABlasterPlayerController::OnRep_MatchState()
 	}
 }
 
-void ABlasterPlayerController::OnRep_ShowTeamScores()
+void ABlasterPlayerController::ServerShowTeamScores_Implementation()
 {
-	if (bShowTeamScores)
+	ClientShowTeamScores(bShowTeamScores);
+}
+
+void ABlasterPlayerController::ClientShowTeamScores_Implementation(bool bShowTeamScoresHUD)
+{
+	if (bShowTeamScoresHUD)
 	{
 		InitTeamScores();
 	}
@@ -449,6 +459,18 @@ void ABlasterPlayerController::OnRep_ShowTeamScores()
 	{
 		HideTeamScores();
 	}
+}
+
+void ABlasterPlayerController::OnRep_ShowTeamScores()
+{
+	/*if (bShowTeamScores)
+	{
+		InitTeamScores();
+	}
+	else
+	{
+		HideTeamScores();
+	}*/
 }
 
 /*
