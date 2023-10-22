@@ -26,13 +26,14 @@ class BLASTER_API ABlasterGameMode : public AGameMode
 	GENERATED_BODY()
 
 public:
-
 	ABlasterGameMode();
 	virtual void Tick(float DeltaTime) override;
 	virtual void PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController);
 	virtual void RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController);
 	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
 	virtual float CalculateDamage(AController* Attacker, AController* Victim, float BaseDamage);
+
+	bool bTeamsMatch = false;
 
 	//
 	// Custom delegate for the BlasterGameMode class

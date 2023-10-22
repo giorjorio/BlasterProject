@@ -40,32 +40,42 @@ public:
 	/*
 	* Match countdown
 	*/
-	void OnMatchStateSet(FName State);
-	void HandleMatchHasStarted();
+	void OnMatchStateSet(FName State, bool bTeamsMatch = false);
+	void HandleMatchHasStarted(bool bTeamsMatch = false);
 	void HandleCountdown();
 	
 	/*
 	* Setting and Updating the HUD
 	*/
 	void SetBlasterHUD();
+	//Announcement
 	void SetHUDAnnouncementCountdown(float CountdownTime);
-	void SetHUDCarriedAmmo(int32 Ammo);
-	void SetHUDEquippedWeaponIcon(float Opacity, bool IsSecondary = false, UTexture2D* WeaponIcon = nullptr);
+	//Buffs
+	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
+	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
+	//Grenades
 	void SetHUDGrenades(int32 Grenades);
+	//Health and Shield
 	void SetHUDHealth(float Health, float MaxHealth);
 	void SetHUDShield(float Shield, float MaxShield); void SetHUDMatchCountdown(float CountdownTime);
 	void SetHUDRoundProgressBars();
+	//Score
 	void SetHUDScore(float Score);
 	void SetHUDDefeats(int32 Defeats);
+	//Teams
+	void HideTeamScores();
+	void InitTeamScores();
+	void SetHUDBlueTeamScore(int32 BlueScore);
+	void SetHUDRedTeamScore(int32 RedScore);
+	//Weapon
+	void SetHUDCarriedAmmo(int32 Ammo);
+	void SetHUDEquippedWeaponIcon(float Opacity, bool IsSecondary = false, UTexture2D* WeaponIcon = nullptr);
 	void SetHUDWeaponAmmo(int32 Ammo);
-	void UpdateSpeedBuffBar(float Timeleft, float BuffTime);
-	void UpdateJumpBuffBar(float TimeLeft, float BuffTime);
-
+	
 	/*
 	* Sync the time
 	*/
 	float SingleTripTime = 0.f;
-
 
 	virtual float GetServerTime(); // Synced with server world clock
 	virtual void ReceivedPlayer() override; // Sync with server clock as soon as possible
@@ -74,7 +84,6 @@ public:
 	* Ping warning
 	*/
 	FHighPingDelegate HighPingDelegate;
-
 
 protected:
 	virtual void BeginPlay() override;
@@ -148,6 +157,15 @@ protected:
 
 	UFUNCTION(Server, Reliable)
 	void ServerReportPingStatus(bool bHighPing);
+
+	/*
+	* Team
+	*/
+	UPROPERTY(ReplicatedUsing = OnRep_ShowTeamScores)
+	bool bShowTeamScores = false;
+
+	UFUNCTION()
+	void OnRep_ShowTeamScores();
 
 
 private:

@@ -90,4 +90,19 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	URoundProgressBarWidget* RoundSpeedBuffBar;
 
+	/*
+	* TeamScore
+	*/
+	UPROPERTY(meta = (BindWidget))
+	UImage* BlueTeamScoreFrame;
+
+	UPROPERTY(meta = (BindWidget))
+	UImage* RedTeamScoreFrame;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* BlueTeamScoreText;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* RedTeamScoreText;
+
 };

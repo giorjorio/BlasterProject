@@ -100,6 +100,7 @@ void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 
 	DOREPLIFETIME(ABlasterPlayerController, MatchState);
 	DOREPLIFETIME(ABlasterPlayerController, bDisableGameplay);
+	DOREPLIFETIME(ABlasterPlayerController, bShowTeamScores);
 }
 
 /*
@@ -216,13 +217,17 @@ void ABlasterPlayerController::ClientElimAnnouncement_Implementation(APlayerStat
 }
 
 /*
-* Match countdown
+* Match info
 */
-void ABlasterPlayerController::HandleMatchHasStarted()
+void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 {
+	if (HasAuthority()) { bShowTeamScores = bTeamsMatch; }
+
 	BlasterHUD = BlasterHUD == nullptr ? Cast < ABlasterHUD>(GetHUD()) : BlasterHUD;
+
 	if (BlasterHUD)
 	{
+		//if (BlasterHUD->CharacterOverlay == nullptr) { BlasterHUD->AddCharacterOverlay(); }
 		if (BlasterHUD->CharacterOverlay && !BlasterHUD->CharacterOverlay->IsInViewport())
 		{
 			BlasterHUD->AddCharacterOverlay();
@@ -230,6 +235,16 @@ void ABlasterPlayerController::HandleMatchHasStarted()
 		if (BlasterHUD->Announcement)
 		{
 			BlasterHUD->Announcement->SetVisibility(ESlateVisibility::Hidden);
+		}
+
+		if (!HasAuthority()) { return; }
+		if (bTeamsMatch)
+		{
+			InitTeamScores();
+		}
+		else
+		{
+			HideTeamScores();
 		}
 	}
 }
@@ -398,13 +413,13 @@ void ABlasterPlayerController::SetHUDTime()
 	CountdownInt = SecondsLeft;
 }
 
-void ABlasterPlayerController::OnMatchStateSet(FName State)
+void ABlasterPlayerController::OnMatchStateSet(FName State, bool bTeamsMatch)
 {
 	MatchState = State;
 
 	if (MatchState == MatchState::InProgress)
 	{
-		HandleMatchHasStarted();
+		HandleMatchHasStarted(bTeamsMatch);
 	}
 	else if (MatchState == MatchState::Cooldown)
 	{
@@ -421,6 +436,18 @@ void ABlasterPlayerController::OnRep_MatchState()
 	else if (MatchState == MatchState::Cooldown)
 	{
 		HandleCountdown();
+	}
+}
+
+void ABlasterPlayerController::OnRep_ShowTeamScores()
+{
+	if (bShowTeamScores)
+	{
+		InitTeamScores();
+	}
+	else
+	{
+		HideTeamScores();
 	}
 }
 
@@ -531,7 +558,59 @@ void ABlasterPlayerController::SetBlasterHUD()
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 }
+//Buffs
+void ABlasterPlayerController::UpdateSpeedBuffBar(float TimeLeft, float BuffTime)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar;
+
+	bool bShow = true;
+	const float BuffPercent1 = TimeLeft / BuffTime;
+
+	if (TimeLeft <= 0.05) { bShow = false; }
+
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar->SetPercentage(BuffPercent1, bShow);
+	}
+}
+
+void ABlasterPlayerController::UpdateJumpBuffBar(float TimeLeft, float BuffTime)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RoundJumpBuffBar;
+
+	bool bShow1 = true;
+	const float BuffPercent2 = TimeLeft / BuffTime;
+
+	if (TimeLeft <= 0.05) { bShow1 = false; }
+
+	if (bHUDValid)
+	{
+		BlasterHUD->CharacterOverlay->RoundJumpBuffBar->SetPercentage(BuffPercent2, bShow1);
+	}
+}
+//Grenades
+void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->GrenadesText;
+
+	if (bHUDValid)
+	{
+		FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
+		BlasterHUD->CharacterOverlay->GrenadesText->SetText(FText::FromString(GrenadesText));
+	}
+}
+//Health and Shield
 void ABlasterPlayerController::SetHUDRoundProgressBars()
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
@@ -600,45 +679,28 @@ void ABlasterPlayerController::SetHUDShield(float Shield, float MaxShield)
 		BlasterHUD->CharacterOverlay->RoundShieldBar->SetPercentage(ShieldPercent);
 	}
 }
-
-void ABlasterPlayerController::UpdateSpeedBuffBar(float TimeLeft, float BuffTime)
+//Menu
+void ABlasterPlayerController::ShowReturnToMainMenu()
 {
-	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
-
-	bool bHUDValid = BlasterHUD &&
-		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar;
-
-	bool bShow = true;
-	const float BuffPercent1 = TimeLeft / BuffTime;
-
-	if (TimeLeft <= 0.05) { bShow = false; }
-
-	if (bHUDValid)
+	if (ReturnToMainMenuWidget == nullptr) { return; }
+	if (ReturnToMainMenu == nullptr)
 	{
-		BlasterHUD->CharacterOverlay->RoundSpeedBuffBar->SetPercentage(BuffPercent1, bShow);
+		ReturnToMainMenu = CreateWidget<UReturnToMainMenu>(this, ReturnToMainMenuWidget);
+	}
+	if (ReturnToMainMenu)
+	{
+		bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
+		if (bReturnToMainMenuOpen)
+		{
+			ReturnToMainMenu->MenuSetup();
+		}
+		else
+		{
+			ReturnToMainMenu->MenuTearDown();
+		}
 	}
 }
-
-void ABlasterPlayerController::UpdateJumpBuffBar(float TimeLeft, float BuffTime)
-{
-	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
-
-	bool bHUDValid = BlasterHUD &&
-		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->RoundJumpBuffBar;
-
-	bool bShow1 = true;
-	const float BuffPercent2 = TimeLeft / BuffTime;
-
-	if (TimeLeft <= 0.05) { bShow1 = false; }
-
-	if (bHUDValid)
-	{
-		BlasterHUD->CharacterOverlay->RoundJumpBuffBar->SetPercentage(BuffPercent2, bShow1);
-	}
-}
-
+//Score
 void ABlasterPlayerController::SetHUDScore(float Score)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
@@ -676,7 +738,84 @@ void ABlasterPlayerController::SetHUDDefeats(int32 Defeats)
 		HUDDefeats = Defeats;
 	}*/
 }
+//Teams
+void ABlasterPlayerController::HideTeamScores()
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
 
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame &&
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText &&
+		BlasterHUD->CharacterOverlay->RedTeamScoreFrame &&
+		BlasterHUD->CharacterOverlay->RedTeamScoreText;
+
+	if (bHUDValid)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("HideTeamScores"));
+
+		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame->SetOpacity(0.f);
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText->SetText(FText());
+
+		BlasterHUD->CharacterOverlay->RedTeamScoreFrame->SetOpacity(0.f);
+		BlasterHUD->CharacterOverlay->RedTeamScoreText->SetText(FText());
+	}
+}
+
+void ABlasterPlayerController::InitTeamScores()
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame &&
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText &&
+		BlasterHUD->CharacterOverlay->RedTeamScoreFrame &&
+		BlasterHUD->CharacterOverlay->RedTeamScoreText;
+
+	if (bHUDValid)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("InitTeamScoresIN"));
+
+		FString Zero("0");
+		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame->SetOpacity(1.f);
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText->SetText(FText::FromString(Zero));
+		BlasterHUD->CharacterOverlay->RedTeamScoreFrame->SetOpacity(1.f);
+		BlasterHUD->CharacterOverlay->RedTeamScoreText->SetText(FText::FromString(Zero));
+	}
+}
+
+void ABlasterPlayerController::SetHUDBlueTeamScore(int32 BlueScore)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText;
+
+	if (bHUDValid)
+	{
+		FString ScoreText = FString::Printf(TEXT("%d"), BlueScore);
+		BlasterHUD->CharacterOverlay->BlueTeamScoreText->SetText(FText::FromString(ScoreText));
+	}
+}
+
+void ABlasterPlayerController::SetHUDRedTeamScore(int32 RedScore)
+{
+	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
+
+	bool bHUDValid = BlasterHUD &&
+		BlasterHUD->CharacterOverlay &&
+		BlasterHUD->CharacterOverlay->RedTeamScoreText;
+
+	if (bHUDValid)
+	{
+		FString ScoreText = FString::Printf(TEXT("%d"), RedScore);
+		BlasterHUD->CharacterOverlay->RedTeamScoreText->SetText(FText::FromString(ScoreText));
+	}
+}
+
+//Weapon
 void ABlasterPlayerController::SetHUDWeaponAmmo(int32 Ammo)
 {
 	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
@@ -730,41 +869,6 @@ void ABlasterPlayerController::SetHUDEquippedWeaponIcon(float Opacity, bool IsSe
 		{
 			BlasterHUD->CharacterOverlay->PrimaryWeaponImage->SetBrushFromTexture(WeaponTexture);
 			BlasterHUD->CharacterOverlay->PrimaryWeaponImage->SetOpacity(Opacity);
-		}
-	}
-}
-
-void ABlasterPlayerController::SetHUDGrenades(int32 Grenades)
-{
-	BlasterHUD = BlasterHUD == nullptr ? Cast<ABlasterHUD>(GetHUD()) : BlasterHUD;
-	bool bHUDValid = BlasterHUD &&
-		BlasterHUD->CharacterOverlay &&
-		BlasterHUD->CharacterOverlay->GrenadesText;
-
-	if (bHUDValid)
-	{
-		FString GrenadesText = FString::Printf(TEXT("%d"), Grenades);
-		BlasterHUD->CharacterOverlay->GrenadesText->SetText(FText::FromString(GrenadesText));
-	}
-}
-
-void ABlasterPlayerController::ShowReturnToMainMenu()
-{
-	if (ReturnToMainMenuWidget == nullptr) { return; }
-	if (ReturnToMainMenu == nullptr)
-	{
-		ReturnToMainMenu = CreateWidget<UReturnToMainMenu>(this, ReturnToMainMenuWidget);
-	}
-	if (ReturnToMainMenu)
-	{
-		bReturnToMainMenuOpen = !bReturnToMainMenuOpen;
-		if (bReturnToMainMenuOpen)
-		{
-			ReturnToMainMenu->MenuSetup();
-		}
-		else
-		{
-			ReturnToMainMenu->MenuTearDown();
 		}
 	}
 }
