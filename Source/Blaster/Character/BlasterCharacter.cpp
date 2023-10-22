@@ -273,7 +273,7 @@ void ABlasterCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	RotateInPlace(DeltaTime);
-	HideCameraIfCharacterClose();
+	HideCharacterIfCameraClose();
 	PollInit();
 }
 
@@ -430,7 +430,7 @@ void ABlasterCharacter::TurnInPlace(float DeltaTime)
 /*
 * Camera
 */
-void ABlasterCharacter::HideCameraIfCharacterClose()
+void ABlasterCharacter::HideCharacterIfCameraClose()
 {
 	if (!IsLocallyControlled()) { return; }
 	if ((FollowCamera->GetComponentLocation() - GetActorLocation()).Size() < CameraThreshold)

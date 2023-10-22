@@ -285,7 +285,7 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* CameraBoom;
 
-	void HideCameraIfCharacterClose();
+	void HideCharacterIfCameraClose();
 	void HideCharacterMesh(bool bHide);
 
 	/*

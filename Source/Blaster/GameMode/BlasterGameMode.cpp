@@ -63,28 +63,6 @@ void ABlasterGameMode::Tick(float DeltaTime)
 	}
 }
 
-void ABlasterGameMode::Logout(AController* Exiting)
-{
-	//if (!bPlayerRequestedLogout)
-	//{
-	//	//ABlasterPlayerController* BlasterPlayerController = Cast<ABlasterPlayerController>(Exiting);
-	//	ABlasterPlayerState* BlasterPlayerState = Cast<ABlasterPlayerState>(Exiting->PlayerState);
-	//	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
-	//	if (BlasterGameState && BlasterGameState->TopScoringPlayers.Contains(BlasterPlayerState))
-	//	{
-	//		BlasterGameState->TopScoringPlayers.Remove(BlasterPlayerState);
-	//	}
-
-	//	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(BlasterPlayerState->GetPawn());
-	//	if (BlasterCharacter)
-	//	{
-	//		BlasterCharacter->Elim(true);
-	//	}
-	//}
-
-	Super::Logout(Exiting);
-}
-
 void ABlasterGameMode::OnMatchStateSet()
 {
 	Super::OnMatchStateSet();
@@ -177,8 +155,6 @@ void ABlasterGameMode::RequestRespawn(ACharacter* ElimmedCharacter, AController*
 void ABlasterGameMode::PlayerLeftGame(ABlasterPlayerState* PlayerLeaving)
 {
 	if (PlayerLeaving == nullptr) { return; }
-
-	bPlayerRequestedLogout = true;
 
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 	if (BlasterGameState && BlasterGameState->TopScoringPlayers.Contains(PlayerLeaving))
