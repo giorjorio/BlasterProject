@@ -32,6 +32,9 @@ public:
 	virtual void PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController);
 	virtual void RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController);
 	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
+	virtual void Logout(AController* Exiting) override;
+
+	bool bPlayerRequestedLogout = false;
 
 	//
 	// Custom delegate for the BlasterGameMode class
