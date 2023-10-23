@@ -53,7 +53,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void Destroyed() override;
 
-
 	/*
 	* Elim
 	*/
@@ -478,6 +477,7 @@ public:
 	FORCEINLINE UStaticMeshComponent* GetAttachedGrenade() const { return AttachedGrenade; }
 	AWeapon* GetEquippedWeapon();
 	ECombatState GetCombatState() const;
+	ETeam GetTeam();
 	FVector GetHitTarget() const;
 
 

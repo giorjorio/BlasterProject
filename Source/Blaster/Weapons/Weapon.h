@@ -2,10 +2,13 @@
 
 #pragma once
 
-#include "WeaponTypes.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "Blaster/BlasterTypes/Team.h"
+#include "WeaponTypes.h"
+
 #include "Weapon.generated.h"
 
 UENUM(BlueprintType)
@@ -254,6 +257,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
+
+	UPROPERTY(EditAnywhere)
+	ETeam Team = ETeam::ET_NoTeam;
 
 
 public:	

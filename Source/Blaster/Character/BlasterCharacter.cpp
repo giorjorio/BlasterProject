@@ -1024,6 +1024,17 @@ FVector ABlasterCharacter::GetHitTarget() const
 	return Combat->HitTarget;
 }
 
+ETeam ABlasterCharacter::GetTeam()
+{
+	BlasterPlayerState = BlasterPlayerState == nullptr ? GetPlayerState<ABlasterPlayerState>() : BlasterPlayerState;
+	if (BlasterPlayerState)
+	{
+		return BlasterPlayerState->GetTeam();
+	}
+	return ETeam::ET_NoTeam;
+}
+
+
 /*
 * Setters
 */

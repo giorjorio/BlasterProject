@@ -102,6 +102,8 @@ void AWeapon::OnSphereBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
 	{
+		if (WeaponType == EWeaponType::EWT_Flag && BlasterCharacter->GetTeam() == Team) { return; }
+		if (BlasterCharacter->IsHoldingTheFlag()) { return; }
 		BlasterCharacter->SetOverlappingWeapon(this);
 	}
 }
@@ -110,6 +112,8 @@ void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 {
 	if (ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(OtherActor))
 	{
+		if (WeaponType == EWeaponType::EWT_Flag && BlasterCharacter->GetTeam() == Team) { return; }
+		if (BlasterCharacter->IsHoldingTheFlag()) { return; }
 		BlasterCharacter->SetOverlappingWeapon(nullptr);
 	}
 }
