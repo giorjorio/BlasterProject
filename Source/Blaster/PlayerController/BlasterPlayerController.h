@@ -10,6 +10,8 @@
 
 class ABlasterGameMode;
 class ABlasterHUD;
+class ABlasterGameState;
+class ABlasterPlayerState;
 class UCharacterOverlay;
 class UInputAction;
 class UInputComponent;
@@ -44,7 +46,10 @@ public:
 	void OnMatchStateSet(FName State, bool bTeamsMatch = false);
 	void HandleMatchHasStarted(bool bTeamsMatch = false);
 	void HandleCountdown();
-	
+	FString GetInfoText(const TArray<ABlasterPlayerState*>& Players);
+	//Teams
+	FString GetTeamsInfoText(ABlasterGameState* BlasterGameState);
+
 	/*
 	* Setting and Updating the HUD
 	*/
