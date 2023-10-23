@@ -133,8 +133,8 @@ protected:
 	*/
 	void AddInputMappinContextToPlayer();
 	virtual void BeginPlay() override;
+	void OnPlayerStateInitialize();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-	//virtual void Restart() override;
 
 	/*
 	* For Animations
@@ -210,6 +210,11 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* FootRightBox;
+
+	/*
+	* SpawnPoint
+	*/
+	void SetSpawnPoint();
 	
 	/*
 	* Weapon
