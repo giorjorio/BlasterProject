@@ -12,6 +12,7 @@
 #include "Blaster/GameState/BlasterGameState.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
 #include "Blaster/PlayerState/BlasterPlayerState.h"
+#include "Blaster/Weapons/Flag.h"
 #include "Blaster/Weapons/Weapon.h"
 #include "Blaster/Weapons/WeaponTypes.h"
 #include "Camera/CameraComponent.h"
@@ -519,6 +520,10 @@ void ABlasterCharacter::DropOrDestroyWeapon(AWeapon* Weapon)
 		else
 		{
 			Weapon->Dropped();
+		}
+		if (Combat->TheFlag)
+		{
+			Combat->TheFlag->Dropped();
 		}
 	}
 }

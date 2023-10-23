@@ -12,11 +12,11 @@
 
 #define TRACE_LENGTH 80000.f
 
-
-class AWeapon;
+class AFlag;
 class ABlasterCharacter;
 class ABlasterPlayerController;
 class ABlasterHUD;
+class AWeapon;
 class AProjectile;
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -317,6 +317,12 @@ private:
 	/*
 	* Flag
 	*/
+	UPROPERTY(ReplicatedUsing = OnRep_TheFlag)
+	AFlag* TheFlag = nullptr;
+
+	UFUNCTION()
+	void OnRep_TheFlag();
+
 	UPROPERTY(ReplicatedUsing = OnRep_HoldingTheFlag)
 	bool bHoldingTheFlag = false;
 

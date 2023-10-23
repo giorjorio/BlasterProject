@@ -5,6 +5,7 @@
 #include "Blaster/Character/BlasterAnimInstance.h"
 #include "Blaster/Character/BlasterCharacter.h"
 #include "Blaster/PlayerController/BlasterPlayerController.h"
+#include "Blaster/Weapons/Flag.h"
 #include "Blaster/Weapons/Projectile.h"
 #include "Blaster/Weapons/Shotgun.h"
 #include "Blaster/Weapons/Weapon.h"
@@ -63,6 +64,7 @@ void UCombatComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Out
 	DOREPLIFETIME_CONDITION(UCombatComponent, CarriedAmmo, COND_OwnerOnly);
 	DOREPLIFETIME(UCombatComponent, CombatState);
 	DOREPLIFETIME_CONDITION(UCombatComponent, Grenades, COND_OwnerOnly);
+	DOREPLIFETIME(UCombatComponent, TheFlag);
 	DOREPLIFETIME(UCombatComponent, bHoldingTheFlag);
 }
 
@@ -406,11 +408,13 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 	
 	if (WeaponToEquip->GetWeaponType() == EWeaponType::EWT_Flag)
 	{
+		TheFlag = Cast<AFlag>(WeaponToEquip);
 		Character->Crouch();
 		bHoldingTheFlag = true;
-		AttachFlagToLeftHand(WeaponToEquip);
-		WeaponToEquip->SetWeaponState(EWeaponState::EWS_Equipped);
-		WeaponToEquip->SetOwner(Character);
+		TheFlag->ResetFlag();
+		TheFlag->SetWeaponState(EWeaponState::EWS_Equipped);
+		AttachFlagToLeftHand(TheFlag);
+		TheFlag->SetOwner(Character);
 	}
 	else
 	{
@@ -755,6 +759,15 @@ void UCombatComponent::AttachFlagToLeftHand(AWeapon* Flag)
 	if (HandSocket)
 	{
 		HandSocket->AttachActor(Flag, Character->GetMesh());
+	}
+
+}
+
+void UCombatComponent::OnRep_TheFlag()
+{
+	if (TheFlag != nullptr)
+	{
+		TheFlag->ResetFlag();
 	}
 }
 

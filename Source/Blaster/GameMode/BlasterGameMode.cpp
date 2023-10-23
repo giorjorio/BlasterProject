@@ -179,15 +179,12 @@ void ABlasterGameMode::PlayerLeftGame(ABlasterPlayerState* PlayerLeaving)
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 	if (BlasterGameState && BlasterGameState->TopScoringPlayers.Contains(PlayerLeaving))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerLeftGame"));
-
 		BlasterGameState->TopScoringPlayers.Remove(PlayerLeaving);
 	}
 
 	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(PlayerLeaving->GetPawn());
 	if (BlasterCharacter)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PlayerLeftGame"));
 		BlasterCharacter->Elim(true);
 	}
 }

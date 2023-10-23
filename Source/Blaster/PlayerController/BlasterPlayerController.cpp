@@ -109,7 +109,6 @@ void ABlasterPlayerController::PawnLeavingGame()
 	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
 	if (BlasterCharacter && !BlasterCharacter->bLeftGame)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("PawnLeavingGame"));
 		BlasterCharacter->Elim(true);
 	}
 
@@ -160,8 +159,6 @@ void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName StateOfMat
 	CooldownTime = Cooldown;
 	LevelStartingTime = StartingTime;
 	MatchState = StateOfMatch;
-
-	UE_LOG(LogTemp, Warning, TEXT("bShowTeam %s"), bShowTeam ? TEXT("true") : TEXT("false"));
 
 	OnMatchStateSet(MatchState, bShowTeam);
 
@@ -241,7 +238,6 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 	if (HasAuthority()) 
 	{
 		bShowTeamScores = bTeamsMatch; 
-		UE_LOG(LogTemp, Warning, TEXT("bShowTeamScores %s"), bShowTeamScores ? TEXT("true") : TEXT("false"));
 	}
 
 	BlasterHUD = BlasterHUD == nullptr ? Cast < ABlasterHUD>(GetHUD()) : BlasterHUD;
@@ -259,7 +255,6 @@ void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 		}
 		if (!HasAuthority())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("ServerShowTeamScores"));
 			ServerShowTeamScores();
 			return;
 		}
@@ -515,14 +510,11 @@ void ABlasterPlayerController::OnRep_MatchState()
 
 void ABlasterPlayerController::ServerShowTeamScores_Implementation()
 {
-	UE_LOG(LogTemp, Warning, TEXT("bShowTeamScores %s"), bShowTeamScores ? TEXT("true") : TEXT("false"));
 	ClientShowTeamScores(bShowTeamScores);
 }
 
 void ABlasterPlayerController::ClientShowTeamScores_Implementation(bool bShowTeamScoresHUD)
 {
-	UE_LOG(LogTemp, Warning, TEXT("bShowTeamScoresHUD %s"), bShowTeamScoresHUD ? TEXT("true") : TEXT("false"));
-
 	if (bShowTeamScoresHUD)
 	{
 		InitTeamScores();
