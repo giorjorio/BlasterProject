@@ -7,8 +7,10 @@
 #include "Interfaces/OnlineSessionInterface.h"
 #include "Menu.generated.h"
 
+class UCheckBox;
 class UButton;
 class UMultiplayerSessionsSubsystem;
+class UEditableTextBox;
 
 UCLASS()
 class MULTIPLAYERSESSIONS_API UMenu : public UUserWidget
@@ -16,7 +18,7 @@ class MULTIPLAYERSESSIONS_API UMenu : public UUserWidget
 	GENERATED_BODY()
 public:
 	UFUNCTION(BlueprintCallable)
-	void MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("FreeForAll")), FString LobbyPath = FString(TEXT("/Game/ThirdPersonCPP/Maps/Lobby")));
+	void MenuSetup(int32 NumberOfPublicConnections = 4, FString TypeOfMatch = FString(TEXT("DeathMatch")), FString LobbyPath = FString(TEXT("/Game/Maps/Lobby")));
 
 protected:
 
@@ -39,6 +41,14 @@ protected:
 	void OnStartSession(bool bWasSuccessful);
 
 private:
+	UPROPERTY(meta = (BindWidget))
+	UCheckBox* DeathMatchCheckbox;
+
+	UPROPERTY(meta = (BindWidget))
+	UCheckBox* TeamDeathMatchCheckbox;
+
+	UPROPERTY(meta = (BindWidget))
+	UCheckBox* CaptureTheFlagCheckbox;
 
 	UPROPERTY(meta = (BindWidget))
 	UButton* HostButton;
@@ -49,6 +59,9 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	UButton* ExitButton;
 
+	UPROPERTY(meta = (BindWidget))
+	UEditableTextBox* NumberOfPlayersTextBox;
+
 	UFUNCTION()
 	void HostButtonClicked();
 
@@ -58,12 +71,28 @@ private:
 	UFUNCTION()
 	void ExitButtonClicked();
 
+	UFUNCTION()
+	void OnCheckedDeathMatchCheckbox(bool bIsChecked);
+
+	UFUNCTION()
+	void OnCheckedTeamDeathMatchCheckbox(bool bIsChecked);
+
+	UFUNCTION()
+	void OnCheckedCaptureTheFlagCheckbox(bool bIsChecked);
+
+	UFUNCTION()
+	void OnTextChangesNumberOfPlayersTextBox(const FText& Text);
+
 	void MenuTearDown();
 
 	// The subsystem designed to handle all online session functionality
 	UMultiplayerSessionsSubsystem* MultiplayerSessionsSubsystem;
 
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	int32 NumPublicConnections{4};
-	FString MatchType{TEXT("FreeForAll")};
+
+	UPROPERTY(BlueprintReadWrite, meta =(AllowPrivateAccess = "true"))
+	FString MatchType{TEXT("DeathMatch")};
+
 	FString PathToLobby{TEXT("")};
 };

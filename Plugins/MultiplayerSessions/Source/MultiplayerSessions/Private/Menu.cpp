@@ -3,6 +3,8 @@
 
 #include "Menu.h"
 #include "Components/Button.h"
+#include "Components/CheckBox.h"
+#include "Components/EditableTextBox.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "MultiplayerSessionsSubsystem.h"
 #include "OnlineSessionSettings.h"
@@ -66,6 +68,23 @@ bool UMenu::Initialize()
 	{
 		ExitButton->OnClicked.AddDynamic(this, &ThisClass::ExitButtonClicked);
 	}
+	if (DeathMatchCheckbox)
+	{
+		DeathMatchCheckbox->OnCheckStateChanged.AddDynamic(this, &ThisClass::OnCheckedDeathMatchCheckbox);
+	}
+	if (TeamDeathMatchCheckbox)
+	{
+		TeamDeathMatchCheckbox->OnCheckStateChanged.AddDynamic(this, &ThisClass::OnCheckedTeamDeathMatchCheckbox);
+	}
+	if (CaptureTheFlagCheckbox)
+	{
+		CaptureTheFlagCheckbox->OnCheckStateChanged.AddDynamic(this, &ThisClass::OnCheckedCaptureTheFlagCheckbox);
+	}
+	if (NumberOfPlayersTextBox)
+	{
+		NumberOfPlayersTextBox->OnTextChanged.AddDynamic(this, &ThisClass::OnTextChangesNumberOfPlayersTextBox);
+	}
+
 
 	return true;
 }
@@ -151,6 +170,9 @@ void UMenu::OnFindSessions(const TArray<FOnlineSessionSearchResult>& SessionResu
 	}
 	HostButton->SetIsEnabled(true);
 	JoinButton->SetIsEnabled(true);
+	DeathMatchCheckbox->SetIsEnabled(true);
+	TeamDeathMatchCheckbox->SetIsEnabled(true);
+	CaptureTheFlagCheckbox->SetIsEnabled(true);
 }
 
 void UMenu::OnJoinSession(EOnJoinSessionCompleteResult::Type Result)
@@ -185,6 +207,9 @@ void UMenu::HostButtonClicked()
 {
 	HostButton->SetIsEnabled(false);
 	JoinButton->SetIsEnabled(false);
+	DeathMatchCheckbox->SetIsEnabled(false);
+	TeamDeathMatchCheckbox->SetIsEnabled(false);
+	CaptureTheFlagCheckbox->SetIsEnabled(false);
 
 	if (MultiplayerSessionsSubsystem)
 	{
@@ -196,6 +221,11 @@ void UMenu::JoinButtonClicked()
 {
 	HostButton->SetIsEnabled(false);
 	JoinButton->SetIsEnabled(false);
+	DeathMatchCheckbox->SetIsEnabled(false);
+	TeamDeathMatchCheckbox->SetIsEnabled(false);
+	CaptureTheFlagCheckbox->SetIsEnabled(false);
+
+
 
 	if (MultiplayerSessionsSubsystem)
 	{
@@ -208,6 +238,54 @@ void UMenu::ExitButtonClicked()
 	ExitButton->SetIsEnabled(false);
 
 	UKismetSystemLibrary::QuitGame(this, nullptr, EQuitPreference::Quit, false);
+}
+
+void UMenu::OnCheckedDeathMatchCheckbox(bool bIsChecked)
+{
+	if (TeamDeathMatchCheckbox)
+	{
+		TeamDeathMatchCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+	if (CaptureTheFlagCheckbox)
+	{
+		CaptureTheFlagCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+
+	MatchType = FString(TEXT("DeathMatch"));
+}
+
+void UMenu::OnCheckedTeamDeathMatchCheckbox(bool bIsChecked)
+{
+	if (DeathMatchCheckbox)
+	{
+		DeathMatchCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+	if (CaptureTheFlagCheckbox)
+	{
+		CaptureTheFlagCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+	MatchType = FString(TEXT("TeamDeathMatch"));
+
+}
+
+void UMenu::OnCheckedCaptureTheFlagCheckbox(bool bIsChecked)
+{
+	if (DeathMatchCheckbox)
+	{
+		DeathMatchCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+	if (TeamDeathMatchCheckbox)
+	{
+		TeamDeathMatchCheckbox->SetCheckedState(ECheckBoxState::Unchecked);
+	}
+	MatchType = FString(TEXT("CaptureTheFlag"));
+}
+
+void UMenu::OnTextChangesNumberOfPlayersTextBox(const FText& Text)
+{
+	FString Num = Text.ToString();
+	NumPublicConnections = FCString::Atoi(*Num);
+	UE_LOG(LogTemp, Warning, TEXT("%d"), NumPublicConnections);
 }
 
 void UMenu::MenuTearDown()
