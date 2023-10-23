@@ -155,6 +155,11 @@ protected:
 	void PlayEquipWeaponSound(AWeapon* WeaponToEquip);
 	void ReloadEmptyWeapon();
 	void SwapWeapons();
+
+	/*
+	* Flag
+	*/
+	void AttachFlagToLeftHand(AWeapon* Flag);
 	
 	/*
 	* Reloading
@@ -310,9 +315,13 @@ private:
 	void FireTimerFinished();
 
 	/*
-	* Flags
+	* Flag
 	*/
+	UPROPERTY(ReplicatedUsing = OnRep_HoldingTheFlag)
 	bool bHoldingTheFlag = false;
+
+	UFUNCTION()
+	void OnRep_HoldingTheFlag();
 
 	/*
 	* Grenades

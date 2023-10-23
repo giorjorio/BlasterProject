@@ -344,6 +344,14 @@ void ABlasterCharacter::OnRep_ReplicatedMovement()
 
 void ABlasterCharacter::RotateInPlace(float DeltaTime)
 {
+	if (IsHoldingTheFlag())
+	{
+		bUseControllerRotationYaw = false;
+		GetCharacterMovement()->bOrientRotationToMovement = true;
+		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
+		return;
+	}
+
 	if (bDisableCharacterGameplay)
 	{
 		bUseControllerRotationYaw = false;
@@ -1072,7 +1080,7 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 
 void ABlasterCharacter::AimButtonPressed()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (Combat && Combat->EquippedWeapon)
 	{	
@@ -1082,7 +1090,7 @@ void ABlasterCharacter::AimButtonPressed()
 
 void ABlasterCharacter::AimButtonReleased()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (Combat && Combat->EquippedWeapon)
 	{
@@ -1092,7 +1100,7 @@ void ABlasterCharacter::AimButtonReleased()
 
 void ABlasterCharacter::CrouchButtonPressed()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (bIsCrouched)
 	{
@@ -1106,7 +1114,7 @@ void ABlasterCharacter::CrouchButtonPressed()
 
 void ABlasterCharacter::CrouchButtonReleased()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (bIsCrouched)
 	{
@@ -1116,7 +1124,7 @@ void ABlasterCharacter::CrouchButtonReleased()
 
 void ABlasterCharacter::Equip()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if(Combat && Combat->CombatState == ECombatState::ECS_Unoccupied)
 	{
@@ -1126,7 +1134,7 @@ void ABlasterCharacter::Equip()
 
 void ABlasterCharacter::FireButtonPressed()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (Combat)
 	{
@@ -1136,7 +1144,7 @@ void ABlasterCharacter::FireButtonPressed()
 
 void ABlasterCharacter::FireButtonReleased()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (Combat)
 	{
@@ -1146,7 +1154,7 @@ void ABlasterCharacter::FireButtonReleased()
 
 void ABlasterCharacter::Jump()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (bIsCrouched)
 	{
@@ -1201,7 +1209,7 @@ void ABlasterCharacter::Move(const FInputActionValue& Value)
 
 void ABlasterCharacter::ReloadButtonPressed()
 {
-	if (bDisableCharacterGameplay) { return; }
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
 
 	if (Combat)
 	{
@@ -1211,6 +1219,8 @@ void ABlasterCharacter::ReloadButtonPressed()
 
 void ABlasterCharacter::SwapWeaponsPressed()
 {
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
+
 	ServerSwapWeaponsPressed();
 	if (Combat && Combat->ShouldSwapWeapons() && !HasAuthority() && Combat->CombatState == ECombatState::ECS_Unoccupied)
 	{
@@ -1222,6 +1232,8 @@ void ABlasterCharacter::SwapWeaponsPressed()
 
 void ABlasterCharacter::ThrowGrenadeButtonPressed()
 {
+	if (bDisableCharacterGameplay || IsHoldingTheFlag()) { return; }
+
 	if (Combat)
 	{
 		Combat->ThrowGrenade();
