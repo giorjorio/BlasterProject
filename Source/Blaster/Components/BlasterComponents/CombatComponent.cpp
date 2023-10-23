@@ -411,7 +411,7 @@ void UCombatComponent::EquipWeapon(AWeapon* WeaponToEquip)
 		TheFlag = Cast<AFlag>(WeaponToEquip);
 		Character->Crouch();
 		bHoldingTheFlag = true;
-		TheFlag->ResetFlag();
+		TheFlag->ResetFlagProperties();
 		TheFlag->SetWeaponState(EWeaponState::EWS_Equipped);
 		AttachFlagToLeftHand(TheFlag);
 		TheFlag->SetOwner(Character);
@@ -767,7 +767,7 @@ void UCombatComponent::OnRep_TheFlag()
 {
 	if (TheFlag != nullptr)
 	{
-		TheFlag->ResetFlag();
+		TheFlag->ResetFlagProperties();
 	}
 }
 

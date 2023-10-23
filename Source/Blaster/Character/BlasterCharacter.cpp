@@ -358,7 +358,11 @@ void ABlasterCharacter::RotateInPlace(float DeltaTime)
 		TurningInPlace = ETurningInPlace::ETIP_NotTurning;
 		return;
 	}
-
+	if(Combat&& Combat->EquippedWeapon)
+	{
+		GetCharacterMovement()->bOrientRotationToMovement = false;
+		bUseControllerRotationYaw = false;
+	}
 	if (bDisableCharacterGameplay)
 	{
 		bUseControllerRotationYaw = false;
@@ -1076,6 +1080,13 @@ ETeam ABlasterCharacter::GetTeam()
 void ABlasterCharacter::SetDisableCharacterGameplay(bool DisableGameplay)
 {
 	bDisableCharacterGameplay = DisableGameplay;
+}
+
+void ABlasterCharacter::SetHoldingTheFlag(bool bHolding)
+{
+	if (Combat == nullptr) { return; }
+
+	Combat->bHoldingTheFlag = bHolding;
 }
 
 void ABlasterCharacter::SetOverlappingWeapon(AWeapon* Weapon)

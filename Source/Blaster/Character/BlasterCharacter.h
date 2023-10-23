@@ -491,8 +491,9 @@ public:
 	*/
 	FORCEINLINE void SetHealth(float HealthAmount) { Health = HealthAmount; }
 	FORCEINLINE void SetShield(float ShieldAmount) { Shield = ShieldAmount; }
-	void SetOverlappingWeapon(AWeapon* Weapon);
 	void SetDisableCharacterGameplay(bool DisableGameplay);
+	void SetHoldingTheFlag(bool bHolding);
+	void SetOverlappingWeapon(AWeapon* Weapon);
 
 private:
 

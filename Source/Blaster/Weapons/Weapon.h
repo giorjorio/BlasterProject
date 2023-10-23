@@ -179,6 +179,7 @@ protected:
 	* Weapon State 
 	*/
 	virtual void OnWeaponStateSet();
+	virtual void OnInitial();
 	virtual void OnEquipped();
 	virtual void OnDropped();
 	virtual void OnEquippedSecondary();
@@ -265,6 +266,7 @@ private:
 public:	
 	bool IsFull();
 	bool IsEmpty();
+	FORCEINLINE ETeam GetTeam() const { return Team; }
 	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 	FORCEINLINE float GetDamage() const { return Damage; }
 	FORCEINLINE float GetHeadShotDamage() const { return HeadShotDamage; }

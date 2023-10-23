@@ -222,6 +222,7 @@ void AWeapon::OnWeaponStateSet()
 	switch (WeaponState)
 	{
 	case EWeaponState::EWS_Initial:
+		OnInitial();
 		break;
 	case EWeaponState::EWS_Equipped:
 		OnEquipped();
@@ -237,6 +238,11 @@ void AWeapon::OnWeaponStateSet()
 	default:
 		break;
 	}
+}
+
+void AWeapon::OnInitial()
+{
+
 }
 
 void AWeapon::OnEquipped()
