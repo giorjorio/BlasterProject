@@ -36,13 +36,14 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 
 	bIsInAir = BlasterCharacter->GetCharacterMovement()->IsFalling();
 	bIsAccelerating = BlasterCharacter->GetCharacterMovement()->GetCurrentAcceleration().Size() > 0.f ? true : false;
-	bWeaponEquipped = BlasterCharacter->bIsWeaponEquipped();
+	bWeaponEquipped = BlasterCharacter->IsWeaponEquipped();
 	EquippedWeapon = BlasterCharacter->GetEquippedWeapon();
 	bIsCrouched = BlasterCharacter->bIsCrouched;
-	bAiming = BlasterCharacter->bIsAiming();
+	bAiming = BlasterCharacter->IsAiming();
 	TurningInPlace = BlasterCharacter->GetTurningInPlace();
 	bRotateRootBone = BlasterCharacter->ShouldRotateRootBone();
 	bElimmed = BlasterCharacter->IsElimmed();
+	bHoldingTheFlag = BlasterCharacter->IsHoldingTheFlag();
 
 	//Offset Yaw for Strafing
 	FRotator AimRotation = BlasterCharacter->GetBaseAimRotation();
@@ -89,7 +90,7 @@ void UBlasterAnimInstance::NativeUpdateAnimation(float DeltaTime)
 	bool bFABRIKOverride = BlasterCharacter->IsLocallyControlled() && BlasterCharacter->GetCombatState() != ECombatState::ECS_ThrowingGrenade && BlasterCharacter->GetCombatState() != ECombatState::ECS_SwappingWeapons && BlasterCharacter->bFinishedSwapping;
 	if (bFABRIKOverride)
 	{
-		bUseFABRIK = !BlasterCharacter->bIsLocallyReloading();
+		bUseFABRIK = !BlasterCharacter->IsLocallyReloading();
 	}
 	bUseAimOffsets = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->GetDisableCharacterGameplay();
 	bTransformRightHand = BlasterCharacter->GetCombatState() == ECombatState::ECS_Unoccupied && !BlasterCharacter->GetDisableCharacterGameplay();

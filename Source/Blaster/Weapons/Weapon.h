@@ -133,7 +133,6 @@ public:
 	bool bUseServerSideRewindDefault = false;
 
 protected:
-
 	virtual void BeginPlay() override;
 
 	/*
@@ -163,7 +162,6 @@ protected:
 	void Pollinit();
 
 	bool HasSetController = false;
-
 
 	/*
 	* Trace end with scatter
@@ -199,11 +197,7 @@ protected:
 		int32 OtherBodyIndex
 	);
 
-	
-
 private:
-
-
 	/*
 	* Main components
 	*/
@@ -274,6 +268,7 @@ public:
 	FORCEINLINE int32 GetMagCapacity() const { return MagCapacity; }
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
+	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
 	void SetWeaponState(EWeaponState State);
 
 	

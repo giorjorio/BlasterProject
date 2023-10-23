@@ -453,11 +453,12 @@ public:
 	/*
 	* Getters
 	*/
-	bool bIsWeaponEquipped();
-	bool bIsAiming();
-	bool bIsLocallyReloading();
+	bool IsWeaponEquipped();
+	bool IsAiming();
+	bool IsLocallyReloading();
 	FORCEINLINE bool GetDisableCharacterGameplay() const { return bDisableCharacterGameplay; }
 	FORCEINLINE bool IsElimmed() const { return bElimmed; }
+	FORCEINLINE bool IsHoldingTheFlag() const;
 	FORCEINLINE bool IsHPFull() const { return Health == MaxHealth; }
 	FORCEINLINE bool IsShieldFull() const { return Shield == MaxShield; }
 	FORCEINLINE bool ShouldRotateRootBone() const { return bRotateRootBone; }

@@ -310,6 +310,11 @@ private:
 	void FireTimerFinished();
 
 	/*
+	* Flags
+	*/
+	bool bHoldingTheFlag = false;
+
+	/*
 	* Grenades
 	*/
 	UPROPERTY(ReplicatedUsing = OnRep_Grenades)

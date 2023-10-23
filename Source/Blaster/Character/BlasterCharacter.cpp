@@ -964,17 +964,22 @@ void ABlasterCharacter::ServerSwapWeaponsPressed_Implementation()
 /*
 * Getters
 */
-bool ABlasterCharacter::bIsAiming()
+bool ABlasterCharacter::IsAiming()
 {
 	return (Combat && Combat->bAiming);
 }
 
-bool ABlasterCharacter::bIsLocallyReloading()
+bool ABlasterCharacter::IsHoldingTheFlag() const
+{
+	return (Combat && Combat->bHoldingTheFlag);
+}
+
+bool ABlasterCharacter::IsLocallyReloading()
 {
 	return (Combat && Combat->bLocallyReloading);
 }
 
-bool ABlasterCharacter::bIsWeaponEquipped()
+bool ABlasterCharacter::IsWeaponEquipped()
 {
 	return (Combat && Combat->EquippedWeapon);
 }
