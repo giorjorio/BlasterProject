@@ -93,6 +93,8 @@ public:
 	/*
 	* Leaving the game
 	*/
+	bool bLeftGame = false;
+
 	UFUNCTION(Server, Reliable)
 	void ServerLeaveGame();
 
@@ -405,10 +407,7 @@ private:
 	UPROPERTY()
 	UNiagaraComponent* CrownComponent;
 
-	/*
-	* Leaving the game
-	*/
-	bool bLeftGame = false;
+	
 
 	/*
 	* Shield

@@ -103,6 +103,18 @@ void ABlasterPlayerController::GetLifetimeReplicatedProps(TArray<FLifetimeProper
 	DOREPLIFETIME(ABlasterPlayerController, bShowTeamScores);
 }
 
+void ABlasterPlayerController::PawnLeavingGame()
+{
+	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(GetPawn());
+	if (BlasterCharacter && !BlasterCharacter->bLeftGame)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("PawnLeavingGame"));
+		BlasterCharacter->Elim(true);
+	}
+
+	Super::PawnLeavingGame();
+}
+
 /*
 * Callback for the custom delegate on the BlasterGameMode
 */
@@ -135,18 +147,22 @@ void ABlasterPlayerController::ServerCheckMatchState_Implementation()
 		CooldownTime = BlasterGameMode->CooldownTime;
 		LevelStartingTime = BlasterGameMode->LevelStartingTime;
 		MatchState = BlasterGameMode->GetMatchState();
-		ClientJoinMidGame(MatchState, WarmupTime, MatchTime, LevelStartingTime, CooldownTime);
+		bShowTeamScores = BlasterGameMode->bTeamsMatch;
+		ClientJoinMidGame(MatchState, WarmupTime, MatchTime, LevelStartingTime, CooldownTime, bShowTeamScores);
 	}
 }
 
-void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown)
+void ABlasterPlayerController::ClientJoinMidGame_Implementation(FName StateOfMatch, float Warmup, float Match, float StartingTime, float Cooldown, bool bShowTeam)
 {
 	WarmupTime = Warmup;
 	MatchTime = Match;
 	CooldownTime = Cooldown;
 	LevelStartingTime = StartingTime;
 	MatchState = StateOfMatch;
-	OnMatchStateSet(MatchState);
+
+	UE_LOG(LogTemp, Warning, TEXT("bShowTeam %s"), bShowTeam ? TEXT("true") : TEXT("false"));
+
+	OnMatchStateSet(MatchState, bShowTeam);
 
 	if (BlasterHUD && MatchState == MatchState::WaitingToStart)
 	{
@@ -221,7 +237,11 @@ void ABlasterPlayerController::ClientElimAnnouncement_Implementation(APlayerStat
 */
 void ABlasterPlayerController::HandleMatchHasStarted(bool bTeamsMatch)
 {
-	if (HasAuthority()) { bShowTeamScores = bTeamsMatch; }
+	if (HasAuthority()) 
+	{
+		bShowTeamScores = bTeamsMatch; 
+		UE_LOG(LogTemp, Warning, TEXT("bShowTeamScores %s"), bShowTeamScores ? TEXT("true") : TEXT("false"));
+	}
 
 	BlasterHUD = BlasterHUD == nullptr ? Cast < ABlasterHUD>(GetHUD()) : BlasterHUD;
 
@@ -446,11 +466,14 @@ void ABlasterPlayerController::OnRep_MatchState()
 
 void ABlasterPlayerController::ServerShowTeamScores_Implementation()
 {
+	UE_LOG(LogTemp, Warning, TEXT("bShowTeamScores %s"), bShowTeamScores ? TEXT("true") : TEXT("false"));
 	ClientShowTeamScores(bShowTeamScores);
 }
 
 void ABlasterPlayerController::ClientShowTeamScores_Implementation(bool bShowTeamScoresHUD)
 {
+	UE_LOG(LogTemp, Warning, TEXT("bShowTeamScoresHUD %s"), bShowTeamScoresHUD ? TEXT("true") : TEXT("false"));
+
 	if (bShowTeamScoresHUD)
 	{
 		InitTeamScores();
@@ -774,8 +797,6 @@ void ABlasterPlayerController::HideTeamScores()
 
 	if (bHUDValid)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("HideTeamScores"));
-
 		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame->SetOpacity(0.f);
 		BlasterHUD->CharacterOverlay->BlueTeamScoreText->SetText(FText());
 
@@ -797,8 +818,6 @@ void ABlasterPlayerController::InitTeamScores()
 
 	if (bHUDValid)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("InitTeamScoresIN"));
-
 		FString Zero("0");
 		BlasterHUD->CharacterOverlay->BlueTeamScoreFrame->SetOpacity(1.f);
 		BlasterHUD->CharacterOverlay->BlueTeamScoreText->SetText(FText::FromString(Zero));

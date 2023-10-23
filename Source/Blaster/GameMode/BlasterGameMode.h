@@ -32,6 +32,7 @@ public:
 	virtual void RequestRespawn(ACharacter* ElimmedCharacter, AController* ElimmedController);
 	void PlayerLeftGame(ABlasterPlayerState* PlayerLeaving);
 	virtual float CalculateDamage(AController* Attacker, AController* Victim, float BaseDamage);
+	virtual void Logout(AController* Exiting) override;
 
 	bool bTeamsMatch = false;
 

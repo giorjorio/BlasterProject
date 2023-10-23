@@ -82,6 +82,21 @@ float ABlasterGameMode::CalculateDamage(AController* Attacker, AController* Vict
 	return BaseDamage;
 }
 
+void ABlasterGameMode::Logout(AController* Exiting)
+{
+	if (Exiting == nullptr) { return; }
+
+	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
+	ABlasterPlayerState* BlasterPlayerState = Cast<ABlasterPlayerState>(Exiting->PlayerState);
+	if (BlasterGameState && BlasterGameState->TopScoringPlayers.Contains(BlasterPlayerState))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Logout"));
+		BlasterGameState->TopScoringPlayers.Remove(BlasterPlayerState);
+	}
+
+	Super::Logout(Exiting);
+}
+
 void ABlasterGameMode::PlayerEliminated(ABlasterCharacter* ElimmedCharacter, ABlasterPlayerController* VictimController, ABlasterPlayerController* AttackerController)
 {
 	ABlasterPlayerState* AttackerPlayerState = AttackerController ? Cast<ABlasterPlayerState>(AttackerController->PlayerState) : nullptr;
@@ -164,12 +179,15 @@ void ABlasterGameMode::PlayerLeftGame(ABlasterPlayerState* PlayerLeaving)
 	ABlasterGameState* BlasterGameState = GetGameState<ABlasterGameState>();
 	if (BlasterGameState && BlasterGameState->TopScoringPlayers.Contains(PlayerLeaving))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerLeftGame"));
+
 		BlasterGameState->TopScoringPlayers.Remove(PlayerLeaving);
 	}
 
 	ABlasterCharacter* BlasterCharacter = Cast<ABlasterCharacter>(PlayerLeaving->GetPawn());
 	if (BlasterCharacter)
 	{
+		UE_LOG(LogTemp, Warning, TEXT("PlayerLeftGame"));
 		BlasterCharacter->Elim(true);
 	}
 }
