@@ -72,7 +72,6 @@ void AProjectileRocket::BeginPlay()
 			false
 		);
 	}
-
 	
 }
 
