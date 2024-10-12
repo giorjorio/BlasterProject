@@ -30,13 +30,19 @@ protected:
 	UFUNCTION()
 	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
 
-	UFUNCTION()
-	void OnProjectileStop(const FHitResult& ImpactResult);
+	/*UFUNCTION()
+	void OnProjectileStop(const FHitResult& ImpactResult);*/
 
 private:
 
 	UPROPERTY(EditAnywhere)
 	USoundCue* BounceSound;
+
+	UPROPERTY(EditAnywhere)
+	int32 Bounces = 0;
+
+	UPROPERTY(EditAnywhere)
+	int32 LastBounce = 2;
 
 	UPROPERTY(EditAnywhere)
 	float BaseDamage = 20.f;
