@@ -14,7 +14,6 @@ void UTeleportComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-
 	OnComponentBeginOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapBegin);
 	OnComponentEndOverlap.AddDynamic(this, &UTeleportComponent::OnOverlapEnd);
 

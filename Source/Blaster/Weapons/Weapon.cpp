@@ -14,6 +14,8 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Net/UnrealNetwork.h"
+#include "NiagaraComponent.h"
+#include "NiagaraFunctionLibrary.h"
 
 
 // Sets default values
@@ -319,6 +321,7 @@ void AWeapon::OnDropped()
 	WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
 	WeaponMesh->MarkRenderStateDirty();
 	EnableCustomDepth(true);
+	SpawnPickupBeam();
 
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
 	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault)
@@ -336,6 +339,32 @@ void AWeapon::ShowPickupWidget(bool bShowWidget)
 	if (PickupWidget)
 	{
 		PickupWidget->SetVisibility(bShowWidget);
+	}
+}
+
+FVector AWeapon::GetCenterLocation()
+{
+	if (WeaponMesh == nullptr) { return FVector(); }
+
+	CenterLocation = WeaponMesh->GetSocketLocation(FName("CenterSocket"));
+
+	return CenterLocation;
+
+}
+
+void AWeapon::SpawnPickupBeam()
+{
+	if (PickupBeamSystem)
+	{
+		PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			PickupBeamSystem,
+			GetRootComponent(),
+			FName(),
+			GetCenterLocation() + FVector(0.f, 0.f, 30.f),
+			FRotator(0.f),
+			EAttachLocation::KeepWorldPosition,
+			false
+		);
 	}
 }
 

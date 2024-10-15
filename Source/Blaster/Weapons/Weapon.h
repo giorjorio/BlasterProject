@@ -35,6 +35,8 @@ class ABlasterCharacter;
 class ABlasterPlayerController;
 class ACasing;
 class UAnimationAsset;
+class UNiagaraComponent;
+class UNiagaraSystem;
 class USoundCue;
 class USphereComponent;
 class UTexture2D;
@@ -242,6 +244,19 @@ private:
 	UAnimationAsset* FireAnimation;
 
 	/*
+	* Weapon PickupBeam
+	*/
+	void SpawnPickupBeam();
+
+	FVector CenterLocation;
+
+	UPROPERTY(EditAnywhere)
+	UNiagaraSystem* PickupBeamSystem;
+
+	UPROPERTY()
+	UNiagaraComponent* PickupBeamSystemComponent;
+
+	/*
 	* Weapon PickupWidget
 	*/
 	UPROPERTY(VisibleAnywhere, Category = "Weapon Properties")
@@ -277,6 +292,7 @@ public:
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
+	FVector GetCenterLocation();
 	void SetWeaponState(EWeaponState State);
 
 	
