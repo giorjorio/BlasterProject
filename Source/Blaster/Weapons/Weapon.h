@@ -247,8 +247,11 @@ private:
 	* Weapon PickupBeam
 	*/
 	void SpawnPickupBeam();
+	void DestroyPickupBeam();
 
 	FVector CenterLocation;
+
+	FTimerHandle SpawnBeamTimer;
 
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* PickupBeamSystem;
