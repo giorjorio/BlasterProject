@@ -48,7 +48,7 @@ void AProjectileGrenade::BeginPlay()
 	//StartDestroyTimer();
 
 	ProjectileMovementComponent->OnProjectileBounce.AddDynamic(this, &AProjectileGrenade::OnBounce);
-	//ProjectileMovementComponent->OnProjectileStop.AddDynamic(this, &AProjectileGrenade::OnProjectileStop);
+	ProjectileMovementComponent->OnProjectileStop.AddDynamic(this, &AProjectileGrenade::OnProjectileStop);
 }
 
 void AProjectileGrenade::OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity)
@@ -69,10 +69,10 @@ void AProjectileGrenade::OnBounce(const FHitResult& ImpactResult, const FVector&
 	}
 }
 
-//void AProjectileGrenade::OnProjectileStop(const FHitResult& ImpactResult)
-//{
-//	Destroy();
-//}
+void AProjectileGrenade::OnProjectileStop(const FHitResult& ImpactResult)
+{
+	Destroy();
+}
 
 void AProjectileGrenade::Destroyed()
 {

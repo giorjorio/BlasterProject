@@ -30,8 +30,8 @@ protected:
 	UFUNCTION()
 	void OnBounce(const FHitResult& ImpactResult, const FVector& ImpactVelocity);
 
-	/*UFUNCTION()
-	void OnProjectileStop(const FHitResult& ImpactResult);*/
+	UFUNCTION()
+	void OnProjectileStop(const FHitResult& ImpactResult);
 
 private:
 

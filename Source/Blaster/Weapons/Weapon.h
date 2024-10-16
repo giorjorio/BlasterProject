@@ -277,6 +277,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	EWeaponType WeaponType;
 
+	int32 GetCustomDepthValueForWeaponType(EWeaponType ThisWeaponType);
+
 	UPROPERTY(EditAnywhere)
 	ETeam Team = ETeam::ET_NoTeam;
 

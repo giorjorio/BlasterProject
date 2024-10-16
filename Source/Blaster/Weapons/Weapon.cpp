@@ -33,7 +33,7 @@ AWeapon::AWeapon()
 	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	
-	WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	WeaponMesh->SetCustomDepthStencilValue(GetCustomDepthValueForWeaponType(WeaponType));
 	WeaponMesh->MarkRenderStateDirty();
 	EnableCustomDepth(true);
 
@@ -254,7 +254,16 @@ void AWeapon::OnEquipped()
 	WeaponMesh->SetSimulatePhysics(false);
 	WeaponMesh->SetEnableGravity(false);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	DestroyPickupBeam();
+
+	if (GetWorldTimerManager().IsTimerActive(SpawnBeamTimer))
+	{
+		GetWorldTimerManager().ClearTimer(SpawnBeamTimer);
+	}
+	else
+	{
+		DestroyPickupBeam();
+	}
+
 	EnableCustomDepth(false);
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
 	{
@@ -273,6 +282,8 @@ void AWeapon::OnEquipped()
 			HasSetController = true;
 		}
 	}
+
+	
 }
 
 void AWeapon::OnEquippedSecondary()
@@ -319,7 +330,7 @@ void AWeapon::OnDropped()
 	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 	WeaponMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 
-	WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_BLUE);
+	WeaponMesh->SetCustomDepthStencilValue(GetCustomDepthValueForWeaponType(WeaponType));
 	WeaponMesh->MarkRenderStateDirty();
 	EnableCustomDepth(true);
 
@@ -366,8 +377,8 @@ void AWeapon::SpawnPickupBeam()
 		PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
 			PickupBeamSystem,
-			GetCenterLocation() + FVector(0.f, 0.f, 100.f),
-			FRotator(0.f),
+			GetCenterLocation() + FVector(0.f, 0.f, 0.f),
+			FRotator(0.f, 0.f, 180.f),
 			FVector(1.f),
 			false
 		);
@@ -420,6 +431,30 @@ void AWeapon::Dropped()
 	BlasterOwnerController = nullptr;
 }
 
+
+int32 AWeapon::GetCustomDepthValueForWeaponType(EWeaponType ThisWeaponType)
+{
+	switch (ThisWeaponType)
+	{
+	case EWeaponType::EWT_AssaultRifle:
+		return CUSTOM_DEPTH_BLUE;
+	case EWeaponType::EWT_RocketLauncher:
+		return CUSTOM_DEPTH_RED;
+	case EWeaponType::EWT_Pistol:
+		return CUSTOM_DEPTH_YELLOW;
+	case EWeaponType::EWT_SubmachineGun:
+		return CUSTOM_DEPTH_GREEN;
+	case EWeaponType::EWT_Shotgun:
+		return CUSTOM_DEPTH_ORANGE;
+	case EWeaponType::EWT_SniperRifle:
+		return CUSTOM_DEPTH_PINK;
+	case EWeaponType::EWT_GrenadeLauncher:
+		return CUSTOM_DEPTH_PURPLE;
+	default:
+		return -1;
+	}
+
+}
 
 bool AWeapon::IsFull()
 {
