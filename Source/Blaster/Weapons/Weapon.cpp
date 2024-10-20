@@ -264,6 +264,8 @@ void AWeapon::OnEquipped()
 		DestroyPickupBeam();
 	}
 
+	//DestroyPickupBeam();
+
 	EnableCustomDepth(false);
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
 	{
@@ -306,6 +308,17 @@ void AWeapon::OnEquippedSecondary()
 		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	}
 
+	if (GetWorldTimerManager().IsTimerActive(SpawnBeamTimer))
+	{
+		GetWorldTimerManager().ClearTimer(SpawnBeamTimer);
+	}
+	else
+	{
+		DestroyPickupBeam();
+	}
+
+	//DestroyPickupBeam();
+
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
 	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault )
 	{
@@ -333,6 +346,9 @@ void AWeapon::OnDropped()
 	WeaponMesh->SetCustomDepthStencilValue(GetCustomDepthValueForWeaponType(WeaponType));
 	WeaponMesh->MarkRenderStateDirty();
 	EnableCustomDepth(true);
+
+
+	//SpawnPickupBeam();
 
 	GetWorldTimerManager().SetTimer(
 		SpawnBeamTimer,
@@ -374,14 +390,26 @@ void AWeapon::SpawnPickupBeam()
 {
 	if (PickupBeamSystem)
 	{
-		PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+		/*PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
 			this,
 			PickupBeamSystem,
-			GetCenterLocation() + FVector(0.f, 0.f, 0.f),
+			GetCenterLocation(),
 			FRotator(0.f, 0.f, 180.f),
 			FVector(1.f),
 			false
-		);
+		);*/
+		/*PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
+			PickupBeamSystem,
+			GetRootComponent(),
+			FName(),
+			GetCenterLocation(),
+			FRotator(0.f, 0.f, 180.f),
+			EAttachLocation::KeepWorldPosition,
+			false
+		);*/
+		//PickupBeamSystemComponent->SetUsingAbsoluteRotation(true);
+
+
 	}
 }
 
