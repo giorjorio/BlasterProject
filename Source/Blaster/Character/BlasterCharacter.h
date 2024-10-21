@@ -127,6 +127,12 @@ public:
 	*/
 	void SetTeamColor(ETeam Team);
 
+	/*
+	* PassiveHealing
+	*/
+	FTimerHandle PassiveHealingTimer;
+
+
 protected:
 	/*
 	* Essentials
@@ -146,6 +152,9 @@ protected:
 	/*
 	* Gameplay Mechanics
 	*/
+
+	void PassiveHealing();
+
 	// Poll for any relevant classes and initialize our HUD
 	void PollInit();
 
@@ -153,6 +162,7 @@ protected:
 	void ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser);
 
 	void RotateInPlace(float DeltaTime);
+
 
 	/*
 	* Hit boxes used for server-side rewind
@@ -411,7 +421,6 @@ private:
 	UPROPERTY()
 	UNiagaraComponent* CrownComponent;
 
-	
 
 	/*
 	* Shield

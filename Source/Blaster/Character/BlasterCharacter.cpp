@@ -682,6 +682,11 @@ void ABlasterCharacter::OnRep_Health(float LastHealth)
 
 void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatorController, AActor* DamageCauser)
 {
+	if (GetWorldTimerManager().IsTimerActive(PassiveHealingTimer))
+	{
+		GetWorldTimerManager().ClearTimer(PassiveHealingTimer);
+	}
+
 	BlasterGameMode = BlasterGameMode == nullptr ? GetWorld()->GetAuthGameMode<ABlasterGameMode>() : BlasterGameMode;
 	if (bElimmed || BlasterGameMode == nullptr) { return; }
 	Damage = BlasterGameMode->CalculateDamage(InstigatorController, Controller, Damage);
@@ -707,6 +712,15 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 	UpdateHUDShield();
 	PlayHitReactMontage();
 
+	if (Health < 20.f)
+	{
+		GetWorldTimerManager().SetTimer(
+			PassiveHealingTimer,
+			this,
+			&ABlasterCharacter::PassiveHealing,
+			5.f);
+	}
+
 	if (Health == 0.f)
 	{
 		if (BlasterGameMode)
@@ -715,6 +729,15 @@ void ABlasterCharacter::ReceiveDamage(AActor* DamagedActor, float Damage, const 
 			ABlasterPlayerController* AttackerController = Cast<ABlasterPlayerController>(InstigatorController);
 			BlasterGameMode->PlayerEliminated(this, BlasterPlayerController, AttackerController);
 		}
+	}
+}
+
+void ABlasterCharacter::PassiveHealing()
+{
+	if (Buff)
+	{
+		float AmountToHeal = 20.f - Health;
+		Buff->Heal(AmountToHeal, 5.f);
 	}
 }
 

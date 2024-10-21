@@ -13,6 +13,10 @@ void AHealthPickup::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AA
 		UBuffComponent* Buff = BlasterCharacter->GetBuff();
 		if (Buff)
 		{
+			if (GetWorldTimerManager().IsTimerActive(BlasterCharacter->PassiveHealingTimer))
+			{
+				GetWorldTimerManager().ClearTimer(BlasterCharacter->PassiveHealingTimer);
+			}
 			if (!Buff->Heal(HealAmount, HealingTime)) { return; }
 		}
 	}
