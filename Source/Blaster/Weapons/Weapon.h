@@ -256,7 +256,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	UNiagaraSystem* PickupBeamSystem;
 
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UNiagaraComponent* PickupBeamSystemComponent;
 
 	/*

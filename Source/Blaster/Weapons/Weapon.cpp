@@ -45,6 +45,11 @@ AWeapon::AWeapon()
 	PickupWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("PickUpWidget"));
 	PickupWidget->SetupAttachment(RootComponent);
 
+	PickupBeamSystemComponent = CreateDefaultSubobject<UNiagaraComponent>(TEXT("PickupBeam"));
+	PickupBeamSystemComponent->SetupAttachment(RootComponent);
+	PickupBeamSystemComponent->SetUsingAbsoluteRotation(true);
+	PickupBeamSystemComponent->SetVisibility(false);
+
 }
 
 void AWeapon::EnableCustomDepth(bool bEnable)
@@ -244,7 +249,6 @@ void AWeapon::OnWeaponStateSet()
 
 void AWeapon::OnInitial()
 {
-
 }
 
 void AWeapon::OnEquipped()
@@ -255,16 +259,7 @@ void AWeapon::OnEquipped()
 	WeaponMesh->SetEnableGravity(false);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	if (GetWorldTimerManager().IsTimerActive(SpawnBeamTimer))
-	{
-		GetWorldTimerManager().ClearTimer(SpawnBeamTimer);
-	}
-	else
-	{
-		DestroyPickupBeam();
-	}
-
-	//DestroyPickupBeam();
+	PickupBeamSystemComponent->SetVisibility(false);
 
 	EnableCustomDepth(false);
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
@@ -291,6 +286,8 @@ void AWeapon::OnEquipped()
 void AWeapon::OnEquippedSecondary()
 {
 	ShowPickupWidget(false);
+
+	PickupBeamSystemComponent->SetVisibility(false);
 
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	if (WeaponMesh)
@@ -347,6 +344,7 @@ void AWeapon::OnDropped()
 	WeaponMesh->MarkRenderStateDirty();
 	EnableCustomDepth(true);
 
+	PickupBeamSystemComponent->SetVisibility(true);
 
 	//SpawnPickupBeam();
 
