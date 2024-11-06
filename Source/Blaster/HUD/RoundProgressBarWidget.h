@@ -8,6 +8,7 @@
 
 class UCanvasPanelSlot;
 class UImage;
+class UTextBlock;
 class UTexture2D;
 
 UCLASS()
@@ -40,6 +41,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	UMaterialInstanceDynamic* RoundProgressBar_Dynamic_MI;
+
+	UPROPERTY(meta = (BindWidget))
+	UTextBlock* StatText;
 
 	UPROPERTY(EditAnywhere)
 	UTexture2D* IconPicture;
