@@ -246,15 +246,6 @@ private:
 	/*
 	* Weapon PickupBeam
 	*/
-	void SpawnPickupBeam();
-	void DestroyPickupBeam();
-
-	FVector CenterLocation;
-
-	FTimerHandle SpawnBeamTimer;
-
-	UPROPERTY(EditAnywhere)
-	UNiagaraSystem* PickupBeamSystem;
 
 	UPROPERTY(EditAnywhere)
 	UNiagaraComponent* PickupBeamSystemComponent;
@@ -297,7 +288,6 @@ public:
 	FORCEINLINE USphereComponent* GetAreaSphere() const { return AreaSphere; }
 	FORCEINLINE USkeletalMeshComponent* GetWeaponMesh() const { return WeaponMesh; }
 	FORCEINLINE UWidgetComponent* GetPickupWidget() const { return PickupWidget; }
-	FVector GetCenterLocation();
 	void SetWeaponState(EWeaponState State);
 
 	

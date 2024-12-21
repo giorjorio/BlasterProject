@@ -259,9 +259,18 @@ void AWeapon::OnEquipped()
 	WeaponMesh->SetEnableGravity(false);
 	WeaponMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
-	PickupBeamSystemComponent->SetVisibility(false);
+	if(PickupBeamSystemComponent->IsVisible())
+	{
+		PickupBeamSystemComponent->SetVisibility(false);
+	}
+
 
 	EnableCustomDepth(false);
+
+	if (WeaponType == EWeaponType::EWT_AssaultRifle)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Hello"));
+	}
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
 	{
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
@@ -287,7 +296,10 @@ void AWeapon::OnEquippedSecondary()
 {
 	ShowPickupWidget(false);
 
-	PickupBeamSystemComponent->SetVisibility(false);
+	if (PickupBeamSystemComponent->IsVisible())
+	{
+		PickupBeamSystemComponent->SetVisibility(false);
+	}
 
 	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	if (WeaponMesh)
@@ -298,23 +310,13 @@ void AWeapon::OnEquippedSecondary()
 		WeaponMesh->SetCustomDepthStencilValue(CUSTOM_DEPTH_TAN);
 		WeaponMesh->MarkRenderStateDirty();
 	}
+
 	if (WeaponType == EWeaponType::EWT_SubmachineGun)
 	{
 		WeaponMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 		WeaponMesh->SetEnableGravity(true);
 		WeaponMesh->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	}
-
-	if (GetWorldTimerManager().IsTimerActive(SpawnBeamTimer))
-	{
-		GetWorldTimerManager().ClearTimer(SpawnBeamTimer);
-	}
-	else
-	{
-		DestroyPickupBeam();
-	}
-
-	//DestroyPickupBeam();
 
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
 	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault )
@@ -346,15 +348,6 @@ void AWeapon::OnDropped()
 
 	PickupBeamSystemComponent->SetVisibility(true);
 
-	//SpawnPickupBeam();
-
-	GetWorldTimerManager().SetTimer(
-		SpawnBeamTimer,
-		this,
-		&AWeapon::SpawnPickupBeam,
-		2.5f
-	);
-
 	BlasterOwnerCharacter = BlasterOwnerCharacter == nullptr ? Cast<ABlasterCharacter>(GetOwner()) : BlasterOwnerCharacter;
 	if (BlasterOwnerCharacter && !BlasterOwnerCharacter->IsLocallyControlled() && bUseServerSideRewindDefault)
 	{
@@ -374,51 +367,7 @@ void AWeapon::ShowPickupWidget(bool bShowWidget)
 	}
 }
 
-FVector AWeapon::GetCenterLocation()
-{
-	if (WeaponMesh == nullptr) { return FVector(); }
 
-	CenterLocation = WeaponMesh->GetSocketLocation(FName("CenterSocket"));
-
-	return CenterLocation;
-
-}
-
-void AWeapon::SpawnPickupBeam()
-{
-	if (PickupBeamSystem)
-	{
-		/*PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-			this,
-			PickupBeamSystem,
-			GetCenterLocation(),
-			FRotator(0.f, 0.f, 180.f),
-			FVector(1.f),
-			false
-		);*/
-		/*PickupBeamSystemComponent = UNiagaraFunctionLibrary::SpawnSystemAttached(
-			PickupBeamSystem,
-			GetRootComponent(),
-			FName(),
-			GetCenterLocation(),
-			FRotator(0.f, 0.f, 180.f),
-			EAttachLocation::KeepWorldPosition,
-			false
-		);*/
-		//PickupBeamSystemComponent->SetUsingAbsoluteRotation(true);
-
-
-	}
-}
-
-void AWeapon::DestroyPickupBeam()
-{
-	if (PickupBeamSystemComponent)
-	{
-		PickupBeamSystemComponent->DestroyComponent();
-		PickupBeamSystemComponent = nullptr;
-	}
-}
 
 void AWeapon::Fire(const FVector& HitTarget)
 {
